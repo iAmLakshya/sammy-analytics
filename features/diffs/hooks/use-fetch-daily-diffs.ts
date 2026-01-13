@@ -1,19 +1,5 @@
-import { useQuery } from "@tanstack/react-query"
+import { useApiQuery } from "@/shared/lib/use-api-query"
+import { API_ENDPOINTS } from "@/shared/lib/api-endpoints"
 
-import type { DailyDiffsResponse } from "../types"
-
-const fetchDailyDiffs = async (): Promise<DailyDiffsResponse> => {
-  const response = await fetch("/api/diffs/daily")
-  if (!response.ok) {
-    throw new Error("Failed to fetch daily diffs")
-  }
-  return response.json()
-}
-
-export const useFetchDailyDiffs = () => {
-  return useQuery({
-    queryKey: ["diffs", "daily"],
-    queryFn: fetchDailyDiffs,
-    staleTime: 60 * 1000,
-  })
-}
+export const useFetchDailyDiffs = () =>
+  useApiQuery(API_ENDPOINTS.diffs.daily)

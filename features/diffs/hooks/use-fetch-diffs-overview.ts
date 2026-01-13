@@ -1,19 +1,5 @@
-import { useQuery } from "@tanstack/react-query"
+import { useApiQuery } from "@/shared/lib/use-api-query"
+import { API_ENDPOINTS } from "@/shared/lib/api-endpoints"
 
-import type { DiffsOverviewResponse } from "../types"
-
-const fetchDiffsOverview = async (): Promise<DiffsOverviewResponse> => {
-  const response = await fetch("/api/diffs/overview")
-  if (!response.ok) {
-    throw new Error("Failed to fetch diffs overview")
-  }
-  return response.json()
-}
-
-export const useFetchDiffsOverview = () => {
-  return useQuery({
-    queryKey: ["diffs", "overview"],
-    queryFn: fetchDiffsOverview,
-    staleTime: 60 * 1000,
-  })
-}
+export const useFetchDiffsOverview = () =>
+  useApiQuery(API_ENDPOINTS.diffs.overview)

@@ -1,19 +1,5 @@
-import { useQuery } from "@tanstack/react-query"
+import { useApiQuery } from "@/shared/lib/use-api-query"
+import { API_ENDPOINTS } from "@/shared/lib/api-endpoints"
 
-import type { TeamOverviewResponse } from "../types"
-
-const fetchTeamOverview = async (): Promise<TeamOverviewResponse> => {
-  const response = await fetch("/api/team/overview")
-  if (!response.ok) {
-    throw new Error("Failed to fetch team overview")
-  }
-  return response.json()
-}
-
-export const useFetchTeamOverview = () => {
-  return useQuery({
-    queryKey: ["team", "overview"],
-    queryFn: fetchTeamOverview,
-    staleTime: 60 * 1000,
-  })
-}
+export const useFetchTeamOverview = () =>
+  useApiQuery(API_ENDPOINTS.team.overview)
