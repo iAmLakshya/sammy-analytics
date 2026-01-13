@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
 
 type BadgeVariant = "default" | "success" | "warning" | "destructive"
@@ -19,6 +20,7 @@ type MetricCardProps = {
   badgeVariant?: BadgeVariant
   description: string
   icon?: Icon
+  isLoading?: boolean
 }
 
 const badgeStyles: Record<BadgeVariant, string> = {
@@ -35,7 +37,22 @@ export const MetricCard = ({
   badgeVariant = "default",
   description,
   icon: Icon,
+  isLoading,
 }: MetricCardProps) => {
+  if (isLoading) {
+    return (
+      <Card>
+        <CardHeader className="pb-2">
+          <Skeleton className="h-4 w-24" />
+          <Skeleton className="mt-2 h-9 w-32" />
+        </CardHeader>
+        <CardFooter>
+          <Skeleton className="h-3 w-36" />
+        </CardFooter>
+      </Card>
+    )
+  }
+
   return (
     <Card>
       <CardHeader className="pb-2">

@@ -3,25 +3,28 @@
 import {
   IconAlertTriangle,
   IconCheck,
-  IconClock,
   IconX,
 } from "@tabler/icons-react"
 
-import { Badge } from "@/components/ui/badge"
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-
 import { MetricCard } from "@/features/diffs"
-import { MetricGrid, ChartPlaceholder } from "@/features/diffs"
-import { PriorityBreakdown } from "./priority-breakdown"
+
+import { useFetchConflictsOverview } from "../hooks/use-fetch-conflicts-overview"
+import { useFetchDailyConflicts } from "../hooks/use-fetch-daily-conflicts"
+import { useFetchConflictActivity } from "../hooks/use-fetch-conflict-activity"
+
+import { DispositionChart } from "./disposition-chart"
+import { DailyConflictsChart } from "./daily-conflicts-chart"
+import { ReviewActivityChart } from "./review-activity-chart"
+import { PriorityChart } from "./priority-chart"
+import { AgingChart } from "./aging-chart"
+import { TimeToReviewCard } from "./time-to-review-card"
+import { UserCorrectionsCard } from "./user-corrections-card"
 
 export const ConflictsContent = () => {
+  const { data: overview, isLoading: isLoadingOverview } = useFetchConflictsOverview()
+  const { data: dailyData, isLoading: isLoadingDaily } = useFetchDailyConflicts()
+  const { data: activityData, isLoading: isLoadingActivity } = useFetchConflictActivity()
+
   return (
     <div className="flex flex-col gap-6 p-4 md:p-6">
       <div>
@@ -31,147 +34,78 @@ export const ConflictsContent = () => {
         </p>
       </div>
 
-      {/* Disposition Summary */}
+      {/* Disposition Summary Cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <MetricCard
           label="Needs Review"
-          value="5,840"
-          badge="38.7%"
+          value={overview?.dispositionSummary.find(d => d.disposition === "NEEDS_REVIEW")?.count.toLocaleString() ?? "—"}
+          badge={overview?.dispositionSummary.find(d => d.disposition === "NEEDS_REVIEW")?.percentage + "%"}
           badgeVariant="warning"
           description="Awaiting human review"
           icon={IconAlertTriangle}
+          isLoading={isLoadingOverview}
         />
         <MetricCard
           label="Accepted"
-          value="6,950"
-          badge="46.05%"
+          value={overview?.dispositionSummary.find(d => d.disposition === "ACCEPTED")?.count.toLocaleString() ?? "—"}
+          badge={overview?.dispositionSummary.find(d => d.disposition === "ACCEPTED")?.percentage + "%"}
           badgeVariant="success"
           description="Approved changes"
           icon={IconCheck}
+          isLoading={isLoadingOverview}
         />
         <MetricCard
           label="Rejected"
-          value="2,300"
-          badge="15.25%"
+          value={overview?.dispositionSummary.find(d => d.disposition === "REJECTED")?.count.toLocaleString() ?? "—"}
+          badge={overview?.dispositionSummary.find(d => d.disposition === "REJECTED")?.percentage + "%"}
           badgeVariant="destructive"
           description="Declined changes"
           icon={IconX}
+          isLoading={isLoadingOverview}
         />
       </div>
 
-      {/* Priority Breakdown */}
-      <PriorityBreakdown />
-
-      {/* Time to Review */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Time to Review</CardTitle>
-            <CardDescription>
-              How long conflicts wait before being reviewed
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="rounded-lg border p-4">
-                <div className="mb-1 text-xs uppercase tracking-wider text-muted-foreground">
-                  Accepted Conflicts
-                </div>
-                <div className="text-2xl font-semibold tabular-nums">8.45h avg</div>
-                <div className="text-xs text-muted-foreground">
-                  Median: 5.32h | Min: 0.25h | Max: 48.67h
-                </div>
-              </div>
-              <div className="rounded-lg border p-4">
-                <div className="mb-1 text-xs uppercase tracking-wider text-muted-foreground">
-                  Rejected Conflicts
-                </div>
-                <div className="text-2xl font-semibold tabular-nums">12.18h avg</div>
-                <div className="text-xs text-muted-foreground">
-                  Median: 9.15h | Min: 0.50h | Max: 62.34h
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>User Corrections</CardTitle>
-            <CardDescription>
-              When users provide their own corrections vs just rejecting
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <MetricGrid
-              columns={3}
-              items={[
-                { label: "Total Corrections", value: "412", subtext: "4.45% rate" },
-                { label: "Unique Correctors", value: "7", subtext: "Active users" },
-              ]}
-            />
-          </CardContent>
-        </Card>
+      {/* Charts Row 1: Disposition Donut + Priority */}
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <DispositionChart
+          data={overview?.dispositionSummary ?? []}
+          isLoading={isLoadingOverview}
+        />
+        <PriorityChart
+          data={overview?.priorityBreakdown ?? []}
+          isLoading={isLoadingOverview}
+        />
       </div>
 
-      {/* Conflicts Per Day Chart Placeholder */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Conflicts Over Time</CardTitle>
-          <CardDescription>
-            Daily conflict creation with disposition breakdown
-          </CardDescription>
-          <CardAction>
-            <Badge variant="outline">Last 30 days</Badge>
-          </CardAction>
-        </CardHeader>
-        <CardContent>
-          <ChartPlaceholder
-            icon={IconClock}
-            title="Line chart: conflicts_created over time"
-            subtitle="Breakdown: needs_review, accepted, rejected"
-          />
-        </CardContent>
-      </Card>
+      {/* Daily Conflicts Chart */}
+      <DailyConflictsChart
+        data={dailyData?.data ?? []}
+        isLoading={isLoadingDaily}
+      />
 
-      {/* Pending Aging */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Pending Conflicts Aging</CardTitle>
-          <CardDescription>
-            How long conflicts have been waiting for review
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <MetricGrid
-            columns={5}
-            items={[
-              { label: "Total Pending", value: "5,840" },
-              { label: "Last 24h", value: "842" },
-              { label: "Last 7d", value: "3,567" },
-              { label: "Last 30d", value: "5,124" },
-              { label: "Older than 30d", value: "716", highlight: true },
-            ]}
-          />
-        </CardContent>
-      </Card>
+      {/* Charts Row 2: Review Activity */}
+      <ReviewActivityChart
+        data={activityData?.data ?? []}
+        isLoading={isLoadingActivity}
+      />
 
-      {/* Review Activity Chart Placeholder */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Review Activity</CardTitle>
-          <CardDescription>
-            Daily reviews completed with unique reviewers
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <ChartPlaceholder
-            icon={IconCheck}
-            title="Line chart: reviews_completed over time"
-            subtitle="With accepted, rejected, unique_reviewers"
-          />
-        </CardContent>
-      </Card>
+      {/* Aging Chart */}
+      <AgingChart
+        data={overview?.pendingAging ?? { total_pending: 0, avg_age_hours: "0", last_24h: 0, last_7d: 0, last_30d: 0, older_than_30d: 0 }}
+        isLoading={isLoadingOverview}
+      />
+
+      {/* Time to Review + User Corrections */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <TimeToReviewCard
+          data={overview?.timeToReview ?? []}
+          isLoading={isLoadingOverview}
+        />
+        <UserCorrectionsCard
+          data={overview?.userCorrections ?? { total_user_corrections: 0, unique_correctors: 0, correction_rate_percentage: "0" }}
+          isLoading={isLoadingOverview}
+        />
+      </div>
     </div>
   )
 }

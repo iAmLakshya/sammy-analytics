@@ -1,3 +1,5 @@
+'use client';
+
 import { Badge } from "@/components/ui/badge"
 import {
   Card,
@@ -14,6 +16,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { InfoTooltip } from "@/components/ui/info-tooltip"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 
 type DocumentData = {
   title: string
@@ -67,11 +71,61 @@ const documentsData: DocumentData[] = [
   },
 ]
 
+// Resolution progress bar component
+const ResolutionProgress = ({ doc }: { doc: DocumentData }) => {
+  const resolved = doc.acceptedConflicts + doc.rejectedConflicts;
+  const total = doc.totalConflicts;
+  const resolvedPercent = (resolved / total) * 100;
+  const acceptedPercent = (doc.acceptedConflicts / total) * 100;
+  const rejectedPercent = (doc.rejectedConflicts / total) * 100;
+
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <div className="flex items-center gap-2 min-w-[120px]">
+          <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden flex">
+            <div
+              className="h-full bg-emerald-500 dark:bg-emerald-400"
+              style={{ width: `${acceptedPercent}%` }}
+            />
+            <div
+              className="h-full bg-rose-500 dark:bg-rose-400"
+              style={{ width: `${rejectedPercent}%` }}
+            />
+          </div>
+          <span className="text-xs text-muted-foreground tabular-nums w-10">
+            {resolvedPercent.toFixed(0)}%
+          </span>
+        </div>
+      </TooltipTrigger>
+      <TooltipContent>
+        <div className="text-xs space-y-1">
+          <div className="flex justify-between gap-4">
+            <span className="text-emerald-500">Accepted:</span>
+            <span className="tabular-nums">{doc.acceptedConflicts} ({acceptedPercent.toFixed(1)}%)</span>
+          </div>
+          <div className="flex justify-between gap-4">
+            <span className="text-rose-500">Rejected:</span>
+            <span className="tabular-nums">{doc.rejectedConflicts} ({rejectedPercent.toFixed(1)}%)</span>
+          </div>
+          <div className="flex justify-between gap-4 border-t pt-1 mt-1">
+            <span className="text-amber-500">Pending:</span>
+            <span className="tabular-nums">{doc.pendingConflicts} ({(100 - resolvedPercent).toFixed(1)}%)</span>
+          </div>
+        </div>
+      </TooltipContent>
+    </Tooltip>
+  );
+};
+
 export const DocumentsTable = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Documents With Most Updates</CardTitle>
+        <CardTitle className="flex items-center gap-2">
+          Documents Needing Attention
+          <InfoTooltip content="Documents with the most conflict activity in the last 30 days. Focus on documents with high pending counts and low resolution rates." />
+        </CardTitle>
         <CardDescription>
           Top documents by conflict activity in the last 30 days
         </CardDescription>
@@ -81,51 +135,42 @@ export const DocumentsTable = () => {
           <TableHeader>
             <TableRow>
               <TableHead>Document</TableHead>
-              <TableHead className="text-right">Analysis Runs</TableHead>
-              <TableHead className="text-right">Total Conflicts</TableHead>
+              <TableHead className="text-right">Runs</TableHead>
+              <TableHead className="text-right">Conflicts</TableHead>
               <TableHead className="text-right">Pending</TableHead>
-              <TableHead className="text-right">Accepted</TableHead>
-              <TableHead className="text-right">Rejected</TableHead>
+              <TableHead>Resolution Progress</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {documentsData.map((doc) => (
-              <TableRow key={doc.title}>
-                <TableCell className="max-w-[300px] truncate font-medium">
-                  {doc.title}
-                </TableCell>
-                <TableCell className="text-right tabular-nums">
-                  {doc.analysisRuns}
-                </TableCell>
-                <TableCell className="text-right tabular-nums">
-                  {doc.totalConflicts}
-                </TableCell>
-                <TableCell className="text-right">
-                  <Badge
-                    variant="outline"
-                    className="tabular-nums text-warning-foreground"
-                  >
-                    {doc.pendingConflicts}
-                  </Badge>
-                </TableCell>
-                <TableCell className="text-right">
-                  <Badge
-                    variant="outline"
-                    className="tabular-nums text-success-foreground"
-                  >
-                    {doc.acceptedConflicts}
-                  </Badge>
-                </TableCell>
-                <TableCell className="text-right">
-                  <Badge
-                    variant="outline"
-                    className="tabular-nums text-destructive"
-                  >
-                    {doc.rejectedConflicts}
-                  </Badge>
-                </TableCell>
-              </TableRow>
-            ))}
+            {documentsData.map((doc) => {
+              const pendingPercent = (doc.pendingConflicts / doc.totalConflicts) * 100;
+              const isHighPending = pendingPercent > 40;
+
+              return (
+                <TableRow key={doc.title}>
+                  <TableCell className="max-w-[300px] truncate font-medium">
+                    {doc.title}
+                  </TableCell>
+                  <TableCell className="text-right tabular-nums text-muted-foreground">
+                    {doc.analysisRuns}
+                  </TableCell>
+                  <TableCell className="text-right tabular-nums">
+                    {doc.totalConflicts.toLocaleString()}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <Badge
+                      variant="outline"
+                      className={`tabular-nums ${isHighPending ? 'text-destructive border-destructive/30' : 'text-warning-foreground'}`}
+                    >
+                      {doc.pendingConflicts}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <ResolutionProgress doc={doc} />
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </CardContent>

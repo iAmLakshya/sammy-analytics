@@ -1,26 +1,84 @@
 "use client"
 
+import { useMemo } from "react"
 import {
   IconActivity,
   IconBrain,
   IconClock,
   IconTarget,
+  IconChartBar,
+  IconAlertCircle,
 } from "@tabler/icons-react"
 
 import { Badge } from "@/components/ui/badge"
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton"
 
-import { MetricCard, ChartPlaceholder } from "@/features/diffs"
+import { MetricCard } from "@/features/diffs"
+import { useFetchAnalysisOverview } from "../hooks/use-fetch-analysis-overview"
+import { useFetchDailyAnalysis } from "../hooks/use-fetch-daily-analysis"
 import { AnalysisRunsTable } from "./analysis-runs-table"
+import { AnalysisRunsChart } from "./analysis-runs-chart"
+import { ConflictDetectionChart } from "./conflict-detection-chart"
+import { PerformanceDistributionChart } from "./performance-distribution-chart"
 
 export const AnalysisContent = () => {
+  const {
+    data: overview,
+    isLoading: isOverviewLoading,
+    error: overviewError,
+  } = useFetchAnalysisOverview()
+
+  const {
+    data: dailyData,
+    isLoading: isDailyLoading,
+    error: dailyError,
+  } = useFetchDailyAnalysis()
+
+  const formatDuration = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60)
+    const secs = Math.round(seconds % 60)
+    if (mins === 0) return `${secs}s`
+    return secs > 0 ? `${mins}m ${secs}s` : `${mins}m`
+  }
+
+  // Calculate detection rate from daily data
+  const detectionRate = useMemo(() => {
+    if (!dailyData?.data?.length) return null
+    const totalRuns = dailyData.data.reduce((acc, d) => acc + d.total_runs, 0)
+    const runsWithConflicts = dailyData.data.reduce(
+      (acc, d) => acc + d.runs_with_conflicts,
+      0
+    )
+    return ((runsWithConflicts / totalRuns) * 100).toFixed(1)
+  }, [dailyData])
+
+  // Calculate today's stats
+  const todayStats = useMemo(() => {
+    if (!dailyData?.data?.length) return null
+    const today = dailyData.data[0]
+    return {
+      runs: today.total_runs,
+      conflicts: today.conflicts_detected,
+      rate: ((today.runs_with_conflicts / today.total_runs) * 100).toFixed(1),
+    }
+  }, [dailyData])
+
+  if (overviewError || dailyError) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-4 p-12">
+        <IconAlertCircle className="h-12 w-12 text-muted-foreground" />
+        <p className="text-muted-foreground">Failed to load analysis data</p>
+      </div>
+    )
+  }
+
   return (
     <div className="flex flex-col gap-6 p-4 md:p-6">
       <div>
@@ -30,73 +88,182 @@ export const AnalysisContent = () => {
         </p>
       </div>
 
-      {/* Performance Overview */}
+      {/* Performance Overview - Key Metrics */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <MetricCard
-          label="Completed Runs"
-          value="3,702"
-          description="Last 30 days"
-          icon={IconBrain}
+        {isOverviewLoading ? (
+          <>
+            <MetricCardSkeleton />
+            <MetricCardSkeleton />
+            <MetricCardSkeleton />
+            <MetricCardSkeleton />
+          </>
+        ) : overview ? (
+          <>
+            <MetricCard
+              label="Completed Runs"
+              value={overview.performance.completed_runs.toLocaleString()}
+              description="Last 30 days"
+              icon={IconBrain}
+            />
+            <MetricCard
+              label="Avg Duration"
+              value={formatDuration(overview.performance.avg_duration_seconds)}
+              description={`Median: ${formatDuration(overview.performance.median_duration_seconds)}`}
+              icon={IconClock}
+            />
+            <MetricCard
+              label="Detection Rate"
+              value={detectionRate ? `${detectionRate}%` : "—"}
+              badge={detectionRate && Number(detectionRate) > 70 ? "High" : undefined}
+              badgeVariant={
+                detectionRate && Number(detectionRate) > 70
+                  ? "success"
+                  : undefined
+              }
+              description="Runs detecting conflicts"
+              icon={IconTarget}
+            />
+            <MetricCard
+              label="Today's Runs"
+              value={todayStats ? todayStats.runs.toLocaleString() : "—"}
+              description={
+                todayStats
+                  ? `${todayStats.conflicts} conflicts detected`
+                  : "Loading..."
+              }
+              icon={IconActivity}
+            />
+          </>
+        ) : null}
+      </div>
+
+      {/* Charts Grid - Analysis Activity */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <AnalysisRunsChart
+          data={dailyData?.data ?? []}
+          isLoading={isDailyLoading}
         />
-        <MetricCard
-          label="Avg Duration"
-          value="487s"
-          description="~8 minutes per run"
-          icon={IconClock}
-        />
-        <MetricCard
-          label="Median Duration"
-          value="412s"
-          description="~7 minutes typical"
-          icon={IconTarget}
-        />
-        <MetricCard
-          label="Duration Range"
-          value="52s - 1,843s"
-          description="Min to Max"
-          icon={IconActivity}
+        <ConflictDetectionChart
+          data={dailyData?.data ?? []}
+          isLoading={isDailyLoading}
         />
       </div>
 
-      {/* Analysis Runs Per Day */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Analysis Runs Over Time</CardTitle>
-          <CardDescription>
-            Daily analysis activity with conflict detection rates
-          </CardDescription>
-          <CardAction>
-            <Badge variant="outline">Last 30 days</Badge>
-          </CardAction>
-        </CardHeader>
-        <CardContent>
-          <ChartPlaceholder
-            icon={IconBrain}
-            title="Line chart: total_runs over time"
-            subtitle="With runs_with_conflicts, conflicts_detected"
-          />
-        </CardContent>
-      </Card>
-
-      {/* Conflict Detection Stats */}
-      <AnalysisRunsTable />
-
       {/* Performance Distribution */}
+      <PerformanceDistributionChart
+        data={overview?.performanceDistribution ?? []}
+        performance={
+          overview?.performance ?? {
+            completed_runs: 0,
+            avg_duration_seconds: 0,
+            median_duration_seconds: 0,
+            min_duration_seconds: 0,
+            max_duration_seconds: 0,
+          }
+        }
+        isLoading={isOverviewLoading}
+      />
+
+      {/* Detailed Table */}
+      <AnalysisRunsTable
+        data={dailyData?.data ?? []}
+        isLoading={isDailyLoading}
+      />
+
+      {/* System Health Summary */}
       <Card>
         <CardHeader>
-          <CardTitle>Performance Distribution</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <IconChartBar className="h-5 w-5" />
+            System Health Summary
+          </CardTitle>
           <CardDescription>
-            Analysis run duration distribution
+            Key insights from analysis engine performance
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <ChartPlaceholder
-            icon={IconActivity}
-            title="Histogram: run duration distribution"
-            subtitle="Buckets from 0-120s, 120-300s, 300-600s, 600s+"
-          />
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <InsightCard
+              title="Performance"
+              value={
+                overview
+                  ? `${formatDuration(overview.performance.median_duration_seconds)} median`
+                  : "—"
+              }
+              status={
+                overview && overview.performance.median_duration_seconds < 600
+                  ? "good"
+                  : "warning"
+              }
+              description="Analysis runs complete efficiently"
+            />
+            <InsightCard
+              title="Detection"
+              value={detectionRate ? `${detectionRate}% rate` : "—"}
+              status={
+                detectionRate && Number(detectionRate) > 70 ? "good" : "warning"
+              }
+              description="High conflict detection accuracy"
+            />
+            <InsightCard
+              title="Throughput"
+              value={
+                todayStats
+                  ? `${todayStats.runs.toLocaleString()} today`
+                  : "—"
+              }
+              status="good"
+              description="System processing at capacity"
+            />
+          </div>
         </CardContent>
       </Card>
     </div>
+  )
+}
+
+// Helper component for insight cards
+const InsightCard = ({
+  title,
+  value,
+  status,
+  description,
+}: {
+  title: string
+  value: string
+  status: "good" | "warning" | "critical"
+  description: string
+}) => {
+  const statusColors = {
+    good: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400",
+    warning:
+      "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400",
+    critical:
+      "bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-400",
+  }
+
+  return (
+    <div className="rounded-lg border p-4">
+      <div className="flex items-center justify-between">
+        <span className="text-sm font-medium">{title}</span>
+        <Badge className={statusColors[status]}>
+          {status === "good" ? "Healthy" : status === "warning" ? "Monitor" : "Action"}
+        </Badge>
+      </div>
+      <div className="mt-2 text-2xl font-semibold tabular-nums">{value}</div>
+      <p className="mt-1 text-xs text-muted-foreground">{description}</p>
+    </div>
+  )
+}
+
+const MetricCardSkeleton = () => {
+  return (
+    <Card>
+      <CardContent className="p-6">
+        <Skeleton className="h-4 w-24" />
+        <Skeleton className="mt-2 h-8 w-20" />
+        <Skeleton className="mt-2 h-3 w-32" />
+      </CardContent>
+    </Card>
   )
 }
