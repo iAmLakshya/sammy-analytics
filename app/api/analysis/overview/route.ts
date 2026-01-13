@@ -1,19 +1,13 @@
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
+import { wrapRouteHandler, RouteContext } from "@/shared/utils/server/wrap-route-handler"
+import { getAnalysisOverview } from "./service"
 
-import {
-  analysisPerformance,
-  performanceDistribution,
-} from "@/features/analysis/data/mock.analysis.data"
-import type { AnalysisOverviewResponse } from "@/features/analysis/types"
-
-export async function GET() {
-  // Simulate network delay for realistic behavior
-  await new Promise((resolve) => setTimeout(resolve, 200))
-
-  const response: AnalysisOverviewResponse = {
-    performance: analysisPerformance,
-    performanceDistribution,
-  }
-
-  return NextResponse.json(response)
+export const GET = async (request: NextRequest, context: RouteContext) => {
+  return wrapRouteHandler(request, context, (deps) => async (req, ctx) => {
+    const result = await getAnalysisOverview(deps)()
+    if ("statusCode" in result) {
+        throw result
+    }
+    return NextResponse.json(result)
+  })
 }

@@ -1,15 +1,13 @@
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
+import { wrapRouteHandler, RouteContext } from "@/shared/utils/server/wrap-route-handler"
+import { getDailySyncs } from "./service"
 
-import { dailySyncs } from "@/features/web-sources/data/mock.web-sources.data"
-import type { DailySyncsResponse } from "@/features/web-sources/types"
-
-export async function GET() {
-  // Simulate network delay for realistic behavior
-  await new Promise((resolve) => setTimeout(resolve, 150))
-
-  const response: DailySyncsResponse = {
-    data: dailySyncs,
-  }
-
-  return NextResponse.json(response)
+export const GET = async (request: NextRequest, context: RouteContext) => {
+  return wrapRouteHandler(request, context, (deps) => async (req, ctx) => {
+    const result = await getDailySyncs(deps)()
+    if ("statusCode" in result) {
+        throw result
+    }
+    return NextResponse.json(result)
+  })
 }

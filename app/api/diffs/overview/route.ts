@@ -1,21 +1,13 @@
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
+import { wrapRouteHandler, RouteContext } from "@/shared/utils/server/wrap-route-handler"
+import { getDiffsOverview } from "./service"
 
-import {
-  stateDistribution,
-  pendingDiffsBacklog,
-  timeToResolution,
-} from "@/features/diffs/data/mock.diffs.data"
-import type { DiffsOverviewResponse } from "@/features/diffs/types"
-
-export async function GET() {
-  // Simulate network delay for realistic behavior
-  await new Promise((resolve) => setTimeout(resolve, 200))
-
-  const response: DiffsOverviewResponse = {
-    stateDistribution,
-    backlog: pendingDiffsBacklog,
-    timeToResolution,
-  }
-
-  return NextResponse.json(response)
+export const GET = async (request: NextRequest, context: RouteContext) => {
+  return wrapRouteHandler(request, context, (deps) => async (req, ctx) => {
+    const result = await getDiffsOverview(deps)()
+    if ("statusCode" in result) {
+        throw result
+    }
+    return NextResponse.json(result)
+  })
 }

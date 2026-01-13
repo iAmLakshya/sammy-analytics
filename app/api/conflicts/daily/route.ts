@@ -1,15 +1,13 @@
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
+import { wrapRouteHandler, RouteContext } from "@/shared/utils/server/wrap-route-handler"
+import { getDailyConflicts } from "./service"
 
-import { dailyConflicts } from "@/features/conflicts/data/mock.conflicts.data"
-import type { DailyConflictsResponse } from "@/features/conflicts/types"
-
-export async function GET() {
-  // Simulate network delay for realistic behavior
-  await new Promise((resolve) => setTimeout(resolve, 150))
-
-  const response: DailyConflictsResponse = {
-    data: dailyConflicts,
-  }
-
-  return NextResponse.json(response)
+export const GET = async (request: NextRequest, context: RouteContext) => {
+  return wrapRouteHandler(request, context, (deps) => async (req, ctx) => {
+    const result = await getDailyConflicts(deps)()
+    if ("statusCode" in result) {
+        throw result
+    }
+    return NextResponse.json(result)
+  })
 }

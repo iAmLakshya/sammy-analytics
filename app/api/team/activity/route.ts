@@ -1,15 +1,13 @@
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
+import { wrapRouteHandler, RouteContext } from "@/shared/utils/server/wrap-route-handler"
+import { getTeamActivity } from "./service"
 
-import { dailyReviewActivity } from "@/features/team/data/mock.team.data"
-import type { ReviewActivityResponse } from "@/features/team/types"
-
-export async function GET() {
-  // Simulate network delay for realistic behavior
-  await new Promise((resolve) => setTimeout(resolve, 150))
-
-  const response: ReviewActivityResponse = {
-    data: dailyReviewActivity,
-  }
-
-  return NextResponse.json(response)
+export const GET = async (request: NextRequest, context: RouteContext) => {
+  return wrapRouteHandler(request, context, (deps) => async (req, ctx) => {
+    const result = await getTeamActivity(deps)()
+    if ("statusCode" in result) {
+        throw result
+    }
+    return NextResponse.json(result)
+  })
 }
