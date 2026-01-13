@@ -65,9 +65,9 @@ export const DiffsContent = () => {
   return (
     <div className="flex flex-col gap-6 p-4 md:p-6">
       <div>
-        <h1 className="text-2xl font-semibold">Diffs Analytics</h1>
+        <h1 className="text-2xl font-semibold">Suggested Edits</h1>
         <p className="text-sm text-muted-foreground">
-          Track document version changes, state transitions, and resolution times
+          Track AI-suggested changes to your documents and how quickly they get reviewed
         </p>
       </div>
 
@@ -86,31 +86,31 @@ export const DiffsContent = () => {
         ) : (
           <>
             <MetricCard
-              label="Total Diffs"
+              label="Total Suggestions"
               value={formatNumber(totalDiffs)}
-              description="All time document diffs"
+              description="All-time AI suggestions"
               icon={IconFileDescription}
             />
             <MetricCard
-              label="Draft"
+              label="Being Prepared"
               value={formatNumber(getStateCard("DRAFT")?.count ?? 0)}
               badge={`${getStateCard("DRAFT")?.percentage ?? 0}%`}
-              description="Awaiting review"
+              description="Not yet ready for review"
               icon={IconClock}
             />
             <MetricCard
-              label="Applied"
+              label="Published"
               value={formatNumber(getStateCard("APPLIED")?.count ?? 0)}
               badge={`${getStateCard("APPLIED")?.percentage ?? 0}%`}
               badgeVariant="success"
-              description="Successfully merged"
+              description="Approved and live"
               icon={IconCheck}
             />
             <MetricCard
-              label="Archived"
+              label="Dismissed"
               value={formatNumber(getStateCard("ARCHIVED")?.count ?? 0)}
               badge={`${getStateCard("ARCHIVED")?.percentage ?? 0}%`}
-              description="Dismissed or superseded"
+              description="Skipped or no longer needed"
               icon={IconArchive}
             />
           </>
@@ -134,15 +134,15 @@ export const DiffsContent = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             {isBacklogCritical && <IconAlertCircle className="size-5 text-destructive" />}
-            Pending Diffs Backlog
-            <InfoTooltip content="Diffs waiting to be reviewed. High average age or large backlog indicates review bottlenecks that need attention." />
+            Review Backlog
+            <InfoTooltip content="Suggestions waiting for your team's review. If wait times get too long, you may need more reviewers or faster turnaround." />
           </CardTitle>
           <CardDescription>
-            Current unresolved diffs requiring attention
+            Suggestions that still need your team's attention
           </CardDescription>
           <CardAction>
             <Badge variant={isBacklogCritical ? "destructive" : "outline"}>
-              {isBacklogCritical ? "Needs Attention" : "Live"}
+              {isBacklogCritical ? "Needs Attention" : "On Track"}
             </Badge>
           </CardAction>
         </CardHeader>
@@ -161,28 +161,28 @@ export const DiffsContent = () => {
               columns={4}
               items={[
                 {
-                  label: "Total Pending",
+                  label: "Waiting for Review",
                   value: formatNumber(
                     overviewData?.backlog.pending_diffs ?? 0
                   ),
                   highlight: true,
                 },
                 {
-                  label: "Affected Documents",
+                  label: "Documents Affected",
                   value: formatNumber(
                     overviewData?.backlog.affected_documents ?? 0
                   ),
                 },
                 {
-                  label: "Analysis Runs",
+                  label: "From Scans",
                   value: formatNumber(
                     overviewData?.backlog.from_analysis_runs ?? 0
                   ),
                 },
                 {
-                  label: "Avg Age",
+                  label: "Avg Wait Time",
                   value: `${overviewData?.backlog.avg_age_hours ?? 0}h`,
-                  subtext: avgAgeHours > 168 ? "⚠ Over 7 days" : "Hours in queue",
+                  subtext: avgAgeHours > 168 ? "⚠ Over 7 days" : "Time in queue",
                 },
               ]}
             />

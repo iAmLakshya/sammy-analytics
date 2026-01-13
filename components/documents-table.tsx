@@ -101,15 +101,15 @@ const ResolutionProgress = ({ doc }: { doc: DocumentData }) => {
       <TooltipContent>
         <div className="text-xs space-y-1">
           <div className="flex justify-between gap-4">
-            <span className="text-emerald-500">Accepted:</span>
+            <span className="text-emerald-500">Approved:</span>
             <span className="tabular-nums">{doc.acceptedConflicts} ({acceptedPercent.toFixed(1)}%)</span>
           </div>
           <div className="flex justify-between gap-4">
-            <span className="text-rose-500">Rejected:</span>
+            <span className="text-rose-500">Declined:</span>
             <span className="tabular-nums">{doc.rejectedConflicts} ({rejectedPercent.toFixed(1)}%)</span>
           </div>
           <div className="flex justify-between gap-4 border-t pt-1 mt-1">
-            <span className="text-amber-500">Pending:</span>
+            <span className="text-amber-500">Still pending:</span>
             <span className="tabular-nums">{doc.pendingConflicts} ({(100 - resolvedPercent).toFixed(1)}%)</span>
           </div>
         </div>
@@ -124,10 +124,10 @@ export const DocumentsTable = () => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           Documents Needing Attention
-          <InfoTooltip content="Documents with the most conflict activity in the last 30 days. Focus on documents with high pending counts and low resolution rates." />
+          <InfoTooltip content="Your busiest documents with the most issues. Prioritize documents with many pending items and low completion rates." />
         </CardTitle>
         <CardDescription>
-          Top documents by conflict activity in the last 30 days
+          Top documents by issue volume in the last 30 days
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -135,10 +135,10 @@ export const DocumentsTable = () => {
           <TableHeader>
             <TableRow>
               <TableHead>Document</TableHead>
-              <TableHead className="text-right">Runs</TableHead>
-              <TableHead className="text-right">Conflicts</TableHead>
+              <TableHead className="text-right">Scans</TableHead>
+              <TableHead className="text-right">Issues</TableHead>
               <TableHead className="text-right">Pending</TableHead>
-              <TableHead>Resolution Progress</TableHead>
+              <TableHead>Completion</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

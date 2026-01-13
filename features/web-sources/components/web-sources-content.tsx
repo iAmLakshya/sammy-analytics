@@ -35,9 +35,9 @@ export const WebSourcesContent = () => {
   return (
     <div className="flex flex-col gap-6 p-4 md:p-6">
       <div>
-        <h1 className="text-2xl font-semibold">Web Sources</h1>
+        <h1 className="text-2xl font-semibold">External Sources</h1>
         <p className="text-sm text-muted-foreground">
-          Monitor web page syncing and document conflicts from external sources
+          How fresh your web content is and what changes have been detected
         </p>
       </div>
 
@@ -53,26 +53,26 @@ export const WebSourcesContent = () => {
         ) : overviewData ? (
           <>
             <MetricCard
-              label="Total Web Pages"
+              label="Pages Monitored"
               value={overviewData.syncOverview.total_web_pages.toLocaleString()}
-              description="Tracked across all sources"
+              description="Web pages being tracked"
               icon={IconWorldWww}
             />
             <MetricCard
-              label="Documents with Conflicts"
+              label="Documents with Changes"
               value={overviewData.webWatch.total_documents_with_conflicts.toLocaleString()}
               badgeVariant="warning"
-              description={`${overviewData.webWatch.avg_conflicts_per_doc.toFixed(1)} avg per doc`}
+              description={`${overviewData.webWatch.avg_conflicts_per_doc.toFixed(1)} changes per doc`}
             />
             <MetricCard
-              label="High Priority"
+              label="Urgent"
               value={overviewData.webWatch.docs_with_high_priority.toLocaleString()}
               badgeVariant="destructive"
-              description="Requires immediate attention"
+              description="Need immediate attention"
               icon={IconAlertTriangle}
             />
             <MetricCard
-              label="Synced Today"
+              label="Checked Today"
               value={overviewData.syncOverview.synced_last_24h.toLocaleString()}
               badge={`${Math.round((overviewData.syncOverview.synced_last_24h / overviewData.syncOverview.total_web_pages) * 100)}%`}
               description="Pages refreshed in last 24h"
@@ -144,39 +144,39 @@ export const WebSourcesContent = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <IconClock className="size-5" />
-              Sync Health Summary
-              <InfoTooltip content="Overview of web page sync status. Fresh pages (synced within 7 days) contain up-to-date content. Stale pages (30+ days) may have outdated information and should be re-synced." />
+              Content Freshness
+              <InfoTooltip content="How current your external sources are. Fresh pages (checked within 7 days) have up-to-date info. Stale pages (30+ days) may be outdated." />
             </CardTitle>
             <CardDescription>
-              Overview of page freshness and conflict distribution
+              Are your external sources up to date?
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
               <SyncHealthCard
-                label="Fresh Pages"
+                label="Up to Date"
                 value={overviewData.syncOverview.synced_last_7d}
                 total={overviewData.syncOverview.total_web_pages}
-                description="Synced within 7 days"
+                description="Checked within 7 days"
                 variant="success"
               />
               <SyncHealthCard
-                label="Pending Conflicts"
+                label="Issues Pending"
                 value={overviewData.webWatch.total_pending_conflicts}
-                description="Awaiting resolution"
+                description="Awaiting your review"
                 variant="warning"
               />
               <SyncHealthCard
-                label="Rejected"
+                label="Declined"
                 value={overviewData.webWatch.total_rejected_conflicts}
-                description="Changes declined"
+                description="Changes not applied"
                 variant="muted"
               />
               <SyncHealthCard
-                label="Stale Pages"
+                label="Outdated"
                 value={overviewData.syncOverview.total_web_pages - overviewData.syncOverview.synced_last_30d}
                 total={overviewData.syncOverview.total_web_pages}
-                description="Not synced in 30+ days"
+                description="Not checked in 30+ days"
                 variant="destructive"
               />
             </div>

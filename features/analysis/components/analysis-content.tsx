@@ -82,9 +82,9 @@ export const AnalysisContent = () => {
   return (
     <div className="flex flex-col gap-6 p-4 md:p-6">
       <div>
-        <h1 className="text-2xl font-semibold">Analysis Engine</h1>
+        <h1 className="text-2xl font-semibold">Automated Scanning</h1>
         <p className="text-sm text-muted-foreground">
-          Monitor analysis run performance and conflict detection rates
+          How well the AI is finding issues in your documents
         </p>
       </div>
 
@@ -100,19 +100,19 @@ export const AnalysisContent = () => {
         ) : overview ? (
           <>
             <MetricCard
-              label="Completed Runs"
+              label="Scans Completed"
               value={overview.performance.completed_runs.toLocaleString()}
               description="Last 30 days"
               icon={IconBrain}
             />
             <MetricCard
-              label="Avg Duration"
+              label="Scan Speed"
               value={formatDuration(overview.performance.avg_duration_seconds)}
-              description={`Median: ${formatDuration(overview.performance.median_duration_seconds)}`}
+              description={`Typical: ${formatDuration(overview.performance.median_duration_seconds)}`}
               icon={IconClock}
             />
             <MetricCard
-              label="Detection Rate"
+              label="Issue Detection"
               value={detectionRate ? `${detectionRate}%` : "—"}
               badge={detectionRate && Number(detectionRate) > 70 ? "High" : undefined}
               badgeVariant={
@@ -120,15 +120,15 @@ export const AnalysisContent = () => {
                   ? "success"
                   : undefined
               }
-              description="Runs detecting conflicts"
+              description="Scans that found issues"
               icon={IconTarget}
             />
             <MetricCard
-              label="Today's Runs"
+              label="Today's Activity"
               value={todayStats ? todayStats.runs.toLocaleString() : "—"}
               description={
                 todayStats
-                  ? `${todayStats.conflicts} conflicts detected`
+                  ? `${todayStats.conflicts} issues found`
                   : "Loading..."
               }
               icon={IconActivity}
@@ -175,19 +175,19 @@ export const AnalysisContent = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <IconChartBar className="h-5 w-5" />
-            System Health Summary
+            AI Performance Summary
           </CardTitle>
           <CardDescription>
-            Key insights from analysis engine performance
+            How well the automated scanning is working
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <InsightCard
-              title="Performance"
+              title="Speed"
               value={
                 overview
-                  ? `${formatDuration(overview.performance.median_duration_seconds)} median`
+                  ? `${formatDuration(overview.performance.median_duration_seconds)} typical`
                   : "—"
               }
               status={
@@ -195,25 +195,25 @@ export const AnalysisContent = () => {
                   ? "good"
                   : "warning"
               }
-              description="Analysis runs complete efficiently"
+              description="Scans completing quickly"
             />
             <InsightCard
-              title="Detection"
-              value={detectionRate ? `${detectionRate}% rate` : "—"}
+              title="Accuracy"
+              value={detectionRate ? `${detectionRate}% detection` : "—"}
               status={
                 detectionRate && Number(detectionRate) > 70 ? "good" : "warning"
               }
-              description="High conflict detection accuracy"
+              description="Finding issues reliably"
             />
             <InsightCard
-              title="Throughput"
+              title="Capacity"
               value={
                 todayStats
-                  ? `${todayStats.runs.toLocaleString()} today`
+                  ? `${todayStats.runs.toLocaleString()} scans today`
                   : "—"
               }
               status="good"
-              description="System processing at capacity"
+              description="Handling your document volume"
             />
           </div>
         </CardContent>

@@ -21,32 +21,32 @@ interface HealthIndicator {
 
 const healthData: HealthIndicator[] = [
   {
-    label: "Review Velocity",
+    label: "Review Speed",
     status: "healthy",
     value: "186/day",
-    description: "Avg reviews per day this week",
-    tooltip: "Number of conflicts resolved per day. Target: >150/day for healthy throughput.",
+    description: "Issues handled daily",
+    tooltip: "How many issues your team resolves per day. Higher is better. Goal: 150+ per day.",
   },
   {
-    label: "Queue Health",
+    label: "Backlog Age",
     status: "warning",
     value: "5.2 days",
-    description: "Avg time in pending queue",
-    tooltip: "Average age of pending conflicts. Target: <3 days. Items older than 7 days are flagged as stale.",
+    description: "Avg wait time for review",
+    tooltip: "How long issues sit before being reviewed. Shorter is better. Goal: under 3 days.",
   },
   {
-    label: "Sync Coverage",
+    label: "Content Freshness",
     status: "healthy",
     value: "94.2%",
-    description: "Web sources synced <24h",
-    tooltip: "Percentage of web sources that have synced within the last 24 hours. Target: >90%.",
+    description: "Sources checked today",
+    tooltip: "Percentage of web sources checked in the last 24 hours. Goal: 90% or higher.",
   },
   {
-    label: "Analysis Health",
+    label: "System Reliability",
     status: "healthy",
     value: "99.1%",
-    description: "Successful analysis runs",
-    tooltip: "Percentage of analysis runs that completed without errors. Target: >98%.",
+    description: "Scans completed successfully",
+    tooltip: "How often automated scans complete without errors. Goal: 98% or higher.",
   },
 ];
 
@@ -81,11 +81,11 @@ export const HealthIndicators = () => {
         <div className="flex items-center justify-between">
           <div>
             <CardTitle className="flex items-center gap-2 text-base">
-              System Health
-              <InfoTooltip content="Quick overview of key system metrics. Green indicates healthy, yellow needs attention, red requires immediate action." />
+              Performance Overview
+              <InfoTooltip content="Key metrics at a glance. Green means on track, yellow needs attention, red requires immediate action." />
             </CardTitle>
             <CardDescription className="text-sm">
-              Real-time status indicators
+              How your content operations are performing
             </CardDescription>
           </div>
           <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border">

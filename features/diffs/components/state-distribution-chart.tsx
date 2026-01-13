@@ -25,28 +25,28 @@ import type { DiffStateDistribution } from "../types"
 
 const stateConfig = {
   DRAFT: {
-    label: "Draft",
+    label: "Preparing",
     color: "hsl(var(--chart-1))",
     icon: IconFileDescription,
-    description: "Work in progress",
+    description: "Being created",
   },
   PREVIEW: {
-    label: "Preview",
+    label: "Ready",
     color: "hsl(var(--chart-2))",
     icon: IconEye,
-    description: "Ready for review",
+    description: "Awaiting review",
   },
   APPLIED: {
-    label: "Applied",
+    label: "Published",
     color: "hsl(var(--chart-3))",
     icon: IconCheck,
-    description: "Successfully merged",
+    description: "Live in documents",
   },
   ARCHIVED: {
-    label: "Archived",
+    label: "Dismissed",
     color: "hsl(var(--muted-foreground))",
     icon: IconArchive,
-    description: "Dismissed",
+    description: "Skipped",
   },
 }
 
@@ -82,11 +82,11 @@ export const StateDistributionChart = ({
     <Card className="flex flex-col">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          Diff Pipeline
-          <InfoTooltip content="Shows the flow of diffs through different states. Diffs start as drafts, move to preview for review, then are either applied (merged) or archived (dismissed)." />
+          Suggestion Pipeline
+          <InfoTooltip content="How suggestions flow from creation to completion. They start as drafts, become ready for review, then get published (approved) or dismissed (skipped)." />
         </CardTitle>
         <CardDescription>
-          Document version workflow stages
+          From AI suggestion to published content
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-1 space-y-6">
@@ -142,9 +142,9 @@ export const StateDistributionChart = ({
         {/* Completion metric */}
         <div className="flex items-center justify-between rounded-lg bg-muted/50 p-3">
           <div>
-            <div className="text-sm font-medium">Completion Rate</div>
+            <div className="text-sm font-medium">Success Rate</div>
             <div className="text-xs text-muted-foreground">
-              Diffs successfully applied
+              Suggestions that made it live
             </div>
           </div>
           <ProgressRing

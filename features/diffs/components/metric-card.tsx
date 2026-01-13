@@ -25,9 +25,9 @@ type MetricCardProps = {
 
 const badgeStyles: Record<BadgeVariant, string> = {
   default: "text-muted-foreground",
-  success: "text-success-foreground",
-  warning: "text-warning-foreground",
-  destructive: "text-destructive",
+  success: "text-emerald-700 dark:text-emerald-400",
+  warning: "text-amber-700 dark:text-amber-400",
+  destructive: "text-rose-700 dark:text-rose-400",
 }
 
 export const MetricCard = ({

@@ -20,17 +20,17 @@ import type { TimeToResolution } from "../types"
 
 const stateConfig: Record<string, { label: string; color: string; icon: typeof IconEye }> = {
   PREVIEW: {
-    label: "Preview",
+    label: "Ready for Review",
     color: "hsl(var(--chart-2))",
     icon: IconEye,
   },
   APPLIED: {
-    label: "Applied",
+    label: "Published",
     color: "hsl(var(--chart-3))",
     icon: IconCheck,
   },
   ARCHIVED: {
-    label: "Archived",
+    label: "Dismissed",
     color: "hsl(var(--muted-foreground))",
     icon: IconArchive,
   },
@@ -81,11 +81,11 @@ export const ResolutionTimeChart = ({
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          Time to Resolution
-          <InfoTooltip content="Shows how long diffs take to reach their final state. The bar shows the range (min to max), with the marker indicating median time. Faster resolution times indicate efficient review processes." />
+          Processing Time
+          <InfoTooltip content="How long suggestions take to complete. Faster times mean your documents stay up-to-date. The bar shows the range, with the marker showing the typical time." />
         </CardTitle>
         <CardDescription>
-          Time distribution for diffs to reach final state
+          How quickly suggestions move through the pipeline
         </CardDescription>
         <CardAction>
           <Badge variant="outline">All time</Badge>
@@ -98,19 +98,19 @@ export const ResolutionTimeChart = ({
             <div className="text-2xl font-bold tabular-nums">
               {overallStats.avgTime.toFixed(1)}h
             </div>
-            <div className="text-xs text-muted-foreground">Average Time</div>
+            <div className="text-xs text-muted-foreground">Average</div>
           </div>
           <div className="text-center border-x">
             <div className="text-2xl font-bold tabular-nums">
               {overallStats.medianTime.toFixed(1)}h
             </div>
-            <div className="text-xs text-muted-foreground">Median Time</div>
+            <div className="text-xs text-muted-foreground">Typical</div>
           </div>
           <div className="text-center">
             <div className="text-2xl font-bold tabular-nums">
               {overallStats.totalResolved.toLocaleString()}
             </div>
-            <div className="text-xs text-muted-foreground">Total Resolved</div>
+            <div className="text-xs text-muted-foreground">Total Completed</div>
           </div>
         </div>
 
@@ -126,7 +126,7 @@ export const ResolutionTimeChart = ({
                   {Icon && <Icon className="size-4" style={{ color: item.color }} />}
                   <span className="text-sm font-medium">{item.label}</span>
                   <span className="text-xs text-muted-foreground ml-auto">
-                    {item.count.toLocaleString()} diffs
+                    {item.count.toLocaleString()} suggestions
                   </span>
                 </div>
                 <RangeBar
@@ -147,11 +147,11 @@ export const ResolutionTimeChart = ({
         <div className="flex items-center justify-center gap-6 pt-2 border-t text-xs text-muted-foreground">
           <div className="flex items-center gap-1.5">
             <div className="h-3 w-3 rounded-sm bg-muted-foreground/30" />
-            <span>Range (min-max)</span>
+            <span>Range (fastest to slowest)</span>
           </div>
           <div className="flex items-center gap-1.5">
             <div className="h-4 w-2 rounded-sm bg-chart-1" />
-            <span>Median</span>
+            <span>Typical</span>
           </div>
           <div className="flex items-center gap-1.5">
             <div className="h-5 w-0.5 bg-foreground" />

@@ -42,8 +42,7 @@ export const TeamContent = () => {
       <div>
         <h1 className="text-2xl font-semibold">Team Activity</h1>
         <p className="text-sm text-muted-foreground">
-          Track reviewer performance, engagement patterns, and identify areas
-          requiring attention
+          How your team is handling content reviews and who's most active
         </p>
       </div>
 
@@ -68,29 +67,29 @@ export const TeamContent = () => {
               icon={IconUsers}
             />
             <MetricCard
-              label="Total Reviews"
+              label="Reviews Completed"
               value={formatNumber(overviewData?.overview.totalReviews ?? 0)}
               description="Last 30 days"
               icon={IconTrophy}
             />
             <MetricCard
-              label="Avg Reviews/Day"
+              label="Daily Output"
               value={formatNumber(overviewData?.overview.avgReviewsPerDay ?? 0)}
-              description="Team average"
+              description="Team average per day"
               icon={IconCalendar}
             />
             <MetricCard
-              label="Avg Review Time"
+              label="Response Time"
               value={`${overviewData?.overview.avgReviewTimeHours ?? 0}h`}
-              description="Time to decision"
+              description="Time to complete review"
               icon={IconClock}
             />
             <MetricCard
-              label="Correction Rate"
+              label="Manual Fixes"
               value={`${overviewData?.overview.correctionRate ?? 0}%`}
               badge={`${overviewData?.corrections.unique_correctors ?? 0} contributors`}
               badgeVariant="default"
-              description="User-provided fixes"
+              description="Reviews with custom edits"
               icon={IconEdit}
             />
           </>
@@ -126,13 +125,13 @@ export const TeamContent = () => {
         <CardHeader className="pb-4">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-lg font-semibold">User Corrections</h3>
+              <h3 className="text-lg font-semibold">Manual Improvements</h3>
               <p className="text-sm text-muted-foreground">
-                Reviewers who provide their own fixes when rejecting AI suggestions
+                When reviewers write their own fixes instead of just declining
               </p>
             </div>
             <Badge variant="outline">
-              {overviewData?.corrections.correction_rate_percentage ?? 0}% rate
+              {overviewData?.corrections.correction_rate_percentage ?? 0}% of reviews
             </Badge>
           </div>
         </CardHeader>
@@ -153,7 +152,7 @@ export const TeamContent = () => {
                   {overviewData?.corrections.total_user_corrections.toLocaleString()}
                 </span>
                 <span className="text-sm text-muted-foreground">
-                  Total Corrections
+                  Total Improvements
                 </span>
               </div>
               <div className="flex flex-col">
@@ -161,7 +160,7 @@ export const TeamContent = () => {
                   {overviewData?.corrections.unique_correctors}
                 </span>
                 <span className="text-sm text-muted-foreground">
-                  Unique Contributors
+                  Team Members Contributing
                 </span>
               </div>
               <div className="flex flex-col">
@@ -175,8 +174,7 @@ export const TeamContent = () => {
             </div>
           )}
           <p className="mt-4 text-sm text-muted-foreground">
-            User corrections help improve AI accuracy over time. A healthy correction
-            rate indicates engaged reviewers who catch nuanced issues.
+            Manual fixes help train the AI to be more accurate over time. Teams that provide corrections help improve suggestions for everyone.
           </p>
         </CardContent>
       </Card>

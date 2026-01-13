@@ -47,8 +47,8 @@ export const SectionCards = () => {
       <Card className="@container/card">
         <CardHeader>
           <CardDescription className="flex items-center gap-1.5">
-            Pending Diffs
-            <InfoTooltip content="Document versions waiting to be reviewed and applied. Includes drafts (in progress) and previews (ready for review)." />
+            Suggested Edits
+            <InfoTooltip content="AI-suggested changes to your documents awaiting review. These need your team's approval before going live." />
           </CardDescription>
           <CardTitle className="flex items-center gap-3 text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
             10,600
@@ -62,7 +62,7 @@ export const SectionCards = () => {
           <CardAction>
             <Badge variant="outline">
               <IconFileDescription className="size-3" />
-              Draft + Preview
+              In Queue
             </Badge>
           </CardAction>
         </CardHeader>
@@ -73,10 +73,10 @@ export const SectionCards = () => {
             ) : diffsTrend === 'down' ? (
               <IconTrendingDown className="size-3.5 text-chart-3" />
             ) : null}
-            8,420 drafts, 2,180 in preview
+            8,420 being prepared, 2,180 ready for review
           </div>
           <div className="text-muted-foreground">
-            Avg age: 142.35 hours
+            Waiting ~6 days on average
           </div>
         </CardFooter>
       </Card>
@@ -84,8 +84,8 @@ export const SectionCards = () => {
       <Card className="@container/card">
         <CardHeader>
           <CardDescription className="flex items-center gap-1.5">
-            Pending Conflicts
-            <InfoTooltip content="Detected conflicts between document versions that need human review. High priority conflicts should be addressed first." />
+            Issues to Review
+            <InfoTooltip content="Discrepancies found between your documents and source content. Your team needs to decide whether to accept or reject these changes." />
           </CardDescription>
           <CardTitle className="flex items-center gap-3 text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
             5,840
@@ -99,7 +99,7 @@ export const SectionCards = () => {
           <CardAction>
             <Badge variant="outline">
               <IconAlertTriangle className="size-3" />
-              Needs Review
+              Action Needed
             </Badge>
           </CardAction>
         </CardHeader>
@@ -110,10 +110,10 @@ export const SectionCards = () => {
             ) : conflictsTrend === 'up' ? (
               <IconTrendingUp className="size-3.5 text-chart-1" />
             ) : null}
-            1,240 high priority
+            1,240 are urgent
           </div>
           <div className="text-muted-foreground">
-            Across 1,842 documents
+            Affecting 1,842 documents
           </div>
         </CardFooter>
       </Card>
@@ -121,8 +121,8 @@ export const SectionCards = () => {
       <Card className="@container/card">
         <CardHeader>
           <CardDescription className="flex items-center gap-1.5">
-            Conflicts Resolved
-            <InfoTooltip content="Conflicts that have been reviewed and either accepted (changes applied) or rejected (changes discarded). Higher acceptance rates indicate better content quality." />
+            Issues Resolved
+            <InfoTooltip content="Issues that your team has reviewed. A high approval rate means AI suggestions are well-aligned with your content standards." />
           </CardDescription>
           <CardTitle className="flex items-center gap-3 text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
             9,250
@@ -136,7 +136,7 @@ export const SectionCards = () => {
           <CardAction>
             <Badge variant="outline">
               <IconCheck className="size-3" />
-              Completed
+              Done
             </Badge>
           </CardAction>
         </CardHeader>
@@ -145,10 +145,10 @@ export const SectionCards = () => {
             {resolvedTrend === 'up' && (
               <IconTrendingUp className="size-3.5 text-chart-3" />
             )}
-            6,950 accepted, 2,300 rejected
+            6,950 approved, 2,300 declined
           </div>
           <div className="text-muted-foreground">
-            75.1% acceptance rate
+            75.1% approval rate
           </div>
         </CardFooter>
       </Card>
@@ -156,8 +156,8 @@ export const SectionCards = () => {
       <Card className="@container/card">
         <CardHeader>
           <CardDescription className="flex items-center gap-1.5">
-            Avg Review Time
-            <InfoTooltip content="Average time from conflict detection to resolution. Lower times indicate faster review cycles. Target: <4h for high priority items." />
+            Turnaround Time
+            <InfoTooltip content="How quickly your team reviews issues. Faster turnaround means your documents stay up-to-date. Goal: under 4 hours for urgent items." />
           </CardDescription>
           <CardTitle className="flex items-center gap-3 text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
             8.45h
@@ -171,7 +171,7 @@ export const SectionCards = () => {
           <CardAction>
             <Badge variant="outline">
               <IconClock className="size-3" />
-              Median: 5.32h
+              Typical: 5.32h
             </Badge>
           </CardAction>
         </CardHeader>
@@ -182,7 +182,7 @@ export const SectionCards = () => {
             ) : reviewTrend === 'up' ? (
               <IconTrendingUp className="size-3.5 text-chart-1" />
             ) : null}
-            8 active reviewers
+            8 team members reviewing
           </div>
           <div className="text-muted-foreground">
             1,496 reviews this week

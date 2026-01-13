@@ -23,13 +23,13 @@ import type { ConflictsByPriority } from "../types"
 
 const priorityConfig = {
   High: {
-    label: "High",
+    label: "Urgent",
     icon: IconAlertCircle,
     iconColor: "text-primary",
     barColor: "hsl(var(--primary))",
   },
   Medium: {
-    label: "Medium",
+    label: "Normal",
     icon: IconAlertTriangle,
     iconColor: "text-primary/70",
     barColor: "hsl(var(--primary) / 0.7)",
@@ -67,11 +67,11 @@ export const PriorityChart = ({ data, isLoading }: PriorityChartProps) => {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          Priority Matrix
-          <InfoTooltip content="Conflicts categorized by urgency. High priority conflicts should be addressed first as they may impact critical documents." />
+          By Urgency
+          <InfoTooltip content="Issues sorted by how quickly they need attention. Urgent issues affect important documents and should be handled first." />
         </CardTitle>
         <CardDescription>
-          Breakdown by priority level and status
+          Which issues need your attention first
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-5">
@@ -137,7 +137,7 @@ export const PriorityChart = ({ data, isLoading }: PriorityChartProps) => {
         {/* Summary footer */}
         <div className="flex items-center justify-between rounded-lg bg-muted/50 p-3 mt-4">
           <div className="text-sm">
-            <span className="text-muted-foreground">Total pending: </span>
+            <span className="text-muted-foreground">Total awaiting review: </span>
             <span className="font-semibold tabular-nums">{totalPending.toLocaleString()}</span>
           </div>
           {highPriorityPending > 0 && (
@@ -146,7 +146,7 @@ export const PriorityChart = ({ data, isLoading }: PriorityChartProps) => {
               <span className="font-semibold tabular-nums">
                 {highPriorityPending.toLocaleString()}
               </span>
-              <span className="text-muted-foreground">high priority</span>
+              <span className="text-muted-foreground">urgent</span>
             </div>
           )}
         </div>

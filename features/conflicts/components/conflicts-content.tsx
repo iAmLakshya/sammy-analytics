@@ -28,38 +28,38 @@ export const ConflictsContent = () => {
   return (
     <div className="flex flex-col gap-6 p-4 md:p-6">
       <div>
-        <h1 className="text-2xl font-semibold">Conflicts Analytics</h1>
+        <h1 className="text-2xl font-semibold">Content Issues</h1>
         <p className="text-sm text-muted-foreground">
-          Monitor conflict detection, review activity, and resolution patterns
+          See what needs your team's attention and how reviews are progressing
         </p>
       </div>
 
       {/* Disposition Summary Cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <MetricCard
-          label="Needs Review"
+          label="Awaiting Review"
           value={overview?.dispositionSummary.find(d => d.disposition === "NEEDS_REVIEW")?.count.toLocaleString() ?? "—"}
           badge={overview?.dispositionSummary.find(d => d.disposition === "NEEDS_REVIEW")?.percentage + "%"}
           badgeVariant="warning"
-          description="Awaiting human review"
+          description="Your team needs to decide"
           icon={IconAlertTriangle}
           isLoading={isLoadingOverview}
         />
         <MetricCard
-          label="Accepted"
+          label="Approved"
           value={overview?.dispositionSummary.find(d => d.disposition === "ACCEPTED")?.count.toLocaleString() ?? "—"}
           badge={overview?.dispositionSummary.find(d => d.disposition === "ACCEPTED")?.percentage + "%"}
           badgeVariant="success"
-          description="Approved changes"
+          description="Changes applied to documents"
           icon={IconCheck}
           isLoading={isLoadingOverview}
         />
         <MetricCard
-          label="Rejected"
+          label="Declined"
           value={overview?.dispositionSummary.find(d => d.disposition === "REJECTED")?.count.toLocaleString() ?? "—"}
           badge={overview?.dispositionSummary.find(d => d.disposition === "REJECTED")?.percentage + "%"}
           badgeVariant="destructive"
-          description="Declined changes"
+          description="Changes not applied"
           icon={IconX}
           isLoading={isLoadingOverview}
         />
