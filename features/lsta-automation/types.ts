@@ -1,3 +1,106 @@
+export type TaskStatus =
+  | "pending"
+  | "completed"
+  | "processing"
+  | "failed"
+  | "retrying";
+
+export type StepStatus = "pending" | "failed" | "completed";
+
+export interface LstaTaskStep {
+  step: string;
+  title: string;
+  description: string;
+  statusDescription: string | null;
+  data: Record<string, unknown>;
+  errorReasons: string[];
+  status: StepStatus;
+  startedAt: string | null;
+  endedAt: string | null;
+}
+
+export interface LstaTaskBatch {
+  id: string;
+  name: string;
+}
+
+export interface LstaTask {
+  id: string;
+  organisationId: string;
+  companyId: string;
+  leId: string;
+  certificate: string | null;
+  specialCase: boolean;
+  submitted: boolean;
+  status: TaskStatus;
+  statusDescription: string | null;
+  batch: LstaTaskBatch;
+  steps: LstaTaskStep[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CountByStatus {
+  pending: number;
+  completed: number;
+  processing: number;
+  failed: number;
+  retrying: number;
+}
+
+export interface LstaTaskListMetadata {
+  totalCount: number;
+  countByStatus: CountByStatus;
+}
+
+export interface LstaTaskListResponse {
+  metadata: LstaTaskListMetadata;
+  tasks: LstaTask[];
+  page: number;
+  size: number;
+  totalPages: number;
+}
+
+export type LstaTaskDetailResponse = LstaTask;
+
+export interface LstaTaskRetryResponse {
+  success: boolean;
+  task: LstaTask;
+}
+
+export interface Batch {
+  id: string;
+  name: string;
+  dateRange: {
+    start: string;
+    end: string;
+  };
+  createdAt: string;
+  submissionCount: number;
+}
+
+export interface LstaKpiMetrics {
+  totalSubmissions: number;
+  completionRate: number;
+  avgProcessingTime: number;
+
+  queuedCount: number;
+  processingCount: number;
+  completedCount: number;
+  needsReviewCount: number;
+  retryingCount: number;
+
+  completionRateTrend: number[];
+  submissionVolumeTrend: number[];
+
+  periodStats: {
+    period: string;
+    total: number;
+    completed: number;
+    failed: number;
+  }[];
+}
+
 export type SubmissionStatus =
   | "queued"
   | "processing"
@@ -53,39 +156,6 @@ export interface Submission {
   nextRetryAt: string | null;
   retryCount: number;
   batchId: string | null;
-}
-
-export interface Batch {
-  id: string;
-  name: string;
-  dateRange: {
-    start: string;
-    end: string;
-  };
-  createdAt: string;
-  submissionCount: number;
-}
-
-export interface LstaKpiMetrics {
-  totalSubmissions: number;
-  completionRate: number;
-  avgProcessingTime: number;
-
-  queuedCount: number;
-  processingCount: number;
-  completedCount: number;
-  needsReviewCount: number;
-  retryingCount: number;
-
-  completionRateTrend: number[];
-  submissionVolumeTrend: number[];
-
-  periodStats: {
-    period: string;
-    total: number;
-    completed: number;
-    failed: number;
-  }[];
 }
 
 export type PeriodType = "monthly" | "quarterly" | "yearly";
