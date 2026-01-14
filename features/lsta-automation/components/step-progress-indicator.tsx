@@ -6,14 +6,8 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { STEP_LABELS } from "../types";
 import type { StepResult, PipelineStep } from "../types";
-
-const stepLabels: Record<PipelineStep, string> = {
-  "payroll-download": "Download LSTA",
-  "data-extraction": "Extract & Map",
-  "tax-submission": "Submit to ELSTER",
-  "document-upload": "Upload to Personio",
-};
 
 interface StepProgressIndicatorProps {
   steps: StepResult[];
@@ -63,7 +57,7 @@ export const StepProgressIndicator = ({
             break;
         }
 
-        let tooltipContent = stepLabels[stepResult.step];
+        let tooltipContent = STEP_LABELS[stepResult.step];
         if (stepResult.status === "failed" && stepResult.errorMessage) {
           tooltipContent += `: ${stepResult.errorMessage}`;
         } else if (stepResult.status === "completed") {

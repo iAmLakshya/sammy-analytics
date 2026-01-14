@@ -11,17 +11,38 @@ export type PipelineStep =
   | "tax-submission"
   | "document-upload";
 
+export const STEP_LABELS: Record<PipelineStep, string> = {
+  "payroll-download": "Download LSTA",
+  "data-extraction": "Extract & Map",
+  "tax-submission": "Submit to ELSTER",
+  "document-upload": "Upload to Personio",
+};
+
+export interface StepOutput {
+  recordsProcessed?: number;
+  documentId?: string;
+  confirmationNumber?: string;
+  downloadedFile?: string;
+  extractedFields?: string[];
+  [key: string]: unknown;
+}
+
 export interface StepResult {
   step: PipelineStep;
   status: "completed" | "failed" | "skipped" | "pending";
   completedAt: string | null;
   errorMessage: string | null;
+  output: StepOutput | null;
+  activityDescription: string | null;
 }
 
 export interface Submission {
   id: string;
-  companyName: string;
-  legalEntityName: string;
+  companyId: string;
+  legalEntityId: string;
+  certificate: string | null;
+  isSpecialCase: boolean;
+  isSubmittedAndUploaded: boolean;
   period: string;
   periodType: "monthly" | "quarterly" | "yearly";
   status: SubmissionStatus;

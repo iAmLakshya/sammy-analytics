@@ -4,15 +4,9 @@ import { useState, useMemo, Fragment } from "react";
 import { IconRefresh, IconChevronRight } from "@tabler/icons-react";
 import { motion, AnimatePresence } from "motion/react";
 import { Button } from "@/components/ui/button";
+import { STEP_LABELS } from "../types";
 import type { Submission, PipelineStep, StepResult } from "../types";
 import { StepPill, StepDetailPanel } from "./step-detail-card";
-
-const stepLabels: Record<PipelineStep, string> = {
-  "payroll-download": "Download LSTA",
-  "data-extraction": "Extract & Map",
-  "tax-submission": "Submit to ELSTER",
-  "document-upload": "Upload to Personio",
-};
 
 const getDefaultSelectedIndex = (steps: StepResult[], currentStep: PipelineStep | null): number => {
   if (currentStep) {
@@ -66,7 +60,7 @@ export const ExpandableRowContent = ({
                 <Fragment key={stepResult.step}>
                   <StepPill
                     stepResult={stepResult}
-                    stepLabel={stepLabels[stepResult.step]}
+                    stepLabel={STEP_LABELS[stepResult.step]}
                     isActive={isActive}
                     isSelected={selectedIndex === index}
                     onClick={() => setSelectedIndex(index)}
