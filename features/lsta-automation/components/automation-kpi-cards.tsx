@@ -7,7 +7,6 @@ import type { Submission } from "../types";
 
 interface AutomationKpiCardsProps {
   submissions: Submission[];
-  batchName: string | null;
 }
 
 export const AutomationKpiCards = ({

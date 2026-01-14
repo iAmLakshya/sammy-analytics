@@ -58,7 +58,6 @@ const statusConfig: Record<
   },
 };
 
-
 const sortSubmissions = (submissions: Submission[]): Submission[] => {
   const priority: Record<SubmissionStatus, number> = {
     "needs-review": 0,
@@ -106,9 +105,7 @@ export const AutomationTable = ({
     });
   };
 
-  const handleRetry = (id: string, companyId: string) => {
-    console.log(`Retry initiated for submission ${id} (${companyId})`);
-  };
+  const handleRetry = () => {};
 
   return (
     <div className="space-y-4">
@@ -218,7 +215,7 @@ export const AutomationTable = ({
                         >
                           <ExpandableRowContent
                             submission={submission}
-                            onRetry={() => handleRetry(submission.id, submission.companyId)}
+                            onRetry={handleRetry}
                           />
                         </motion.div>
                       </td>
