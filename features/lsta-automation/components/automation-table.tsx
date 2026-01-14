@@ -116,16 +116,16 @@ export const AutomationTable = ({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[40px]" />
-              <TableHead className="w-[100px]">Company ID</TableHead>
-              <TableHead className="w-[80px]">LE ID</TableHead>
+              <TableHead className="w-10" />
+              <TableHead>Company ID</TableHead>
+              <TableHead>LE ID</TableHead>
               <TableHead className="hidden md:table-cell">Certificate</TableHead>
-              <TableHead className="hidden w-[100px] text-center md:table-cell">
+              <TableHead className="hidden text-center md:table-cell">
                 Special Case
               </TableHead>
-              <TableHead className="w-[90px] text-center">Submitted</TableHead>
-              <TableHead className="w-[140px]">Progress</TableHead>
-              <TableHead className="w-[100px]">Status</TableHead>
+              <TableHead className="text-center">Submitted</TableHead>
+              <TableHead>Progress</TableHead>
+              <TableHead>Status</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -143,34 +143,27 @@ export const AutomationTable = ({
                       needsReview ? "bg-rose-50/50 dark:bg-rose-950/20" : ""
                     } ${isExpanded ? "bg-muted/30" : ""}`}
                   >
-                    <TableCell className="w-[40px] pr-0">
+                    <TableCell className="w-10 pr-0">
                       <IconChevronRight
                         className={`size-4 text-muted-foreground transition-transform duration-200 ${
                           isExpanded ? "rotate-90" : ""
                         }`}
                       />
                     </TableCell>
-                    <TableCell className="font-mono">
+                    <TableCell className="whitespace-nowrap font-mono">
                       {submission.companyId}
                     </TableCell>
-                    <TableCell className="font-mono">
+                    <TableCell className="whitespace-nowrap font-mono">
                       {submission.legalEntityId}
                     </TableCell>
                     <TableCell className="hidden md:table-cell">
                       {submission.certificate ? (
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <span className="block max-w-[150px] truncate">
-                              {submission.certificate}
-                            </span>
-                          </TooltipTrigger>
-                          <TooltipContent>{submission.certificate}</TooltipContent>
-                        </Tooltip>
+                        <span>{submission.certificate}</span>
                       ) : (
                         <span className="text-muted-foreground">-</span>
                       )}
                     </TableCell>
-                    <TableCell className="hidden text-center md:table-cell">
+                    <TableCell className="hidden whitespace-nowrap text-center md:table-cell">
                       {submission.isSpecialCase ? (
                         <Badge className="bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400">
                           Special
@@ -181,20 +174,20 @@ export const AutomationTable = ({
                         </Badge>
                       )}
                     </TableCell>
-                    <TableCell className="text-center">
+                    <TableCell className="whitespace-nowrap text-center">
                       {submission.isSubmittedAndUploaded ? (
                         <IconCheck className="mx-auto size-4 text-emerald-600 dark:text-emerald-400" />
                       ) : (
                         <IconX className="mx-auto size-4 text-muted-foreground" />
                       )}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="whitespace-nowrap">
                       <StepProgressIndicator
                         steps={submission.steps}
                         currentStep={submission.currentStep}
                       />
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="whitespace-nowrap">
                       {isRetrying && submission.nextRetryAt ? (
                         <Tooltip>
                           <TooltipTrigger asChild>
