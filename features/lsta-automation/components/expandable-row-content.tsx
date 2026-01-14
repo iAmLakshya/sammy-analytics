@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { IconRefresh } from "@tabler/icons-react";
+import { useState, useMemo, Fragment } from "react";
+import { IconRefresh, IconChevronRight } from "@tabler/icons-react";
 import { motion, AnimatePresence } from "motion/react";
 import { Button } from "@/components/ui/button";
 import type { Submission, PipelineStep, StepResult } from "../types";
@@ -28,13 +28,6 @@ const getDefaultSelectedIndex = (steps: StepResult[], currentStep: PipelineStep 
   return lastCompleted !== -1 ? lastCompleted : 0;
 };
 
-const getLastCompletedIndex = (steps: StepResult[]): number => {
-  return steps.reduceRight(
-    (acc, s, i) => (acc === -1 && s.status === "completed" ? i : acc),
-    -1
-  );
-};
-
 interface ExpandableRowContentProps {
   submission: Submission;
   onRetry?: () => void;
@@ -54,11 +47,6 @@ export const ExpandableRowContent = ({
   const selectedStep = steps[selectedIndex];
   const showRetry = status === "needs-review" && onRetry;
 
-  const lastCompletedIndex = getLastCompletedIndex(steps);
-  const progressPercent = lastCompletedIndex >= 0
-    ? (lastCompletedIndex / (steps.length - 1)) * 100
-    : 0;
-
   return (
     <AnimatePresence>
       <motion.div
@@ -70,22 +58,32 @@ export const ExpandableRowContent = ({
         className="overflow-hidden"
       >
         <div className="ml-10 border-l-2 border-muted py-2 pl-4 pr-3">
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1">
             {steps.map((stepResult, index) => {
               const isActive = currentStep === stepResult.step;
+              const isLast = index === steps.length - 1;
               return (
-                <StepPill
-                  key={stepResult.step}
-                  stepResult={stepResult}
-                  stepLabel={stepLabels[stepResult.step]}
-                  isActive={isActive}
-                  isSelected={selectedIndex === index}
-                  onClick={() => setSelectedIndex(index)}
-                />
+                <Fragment key={stepResult.step}>
+                  <StepPill
+                    stepResult={stepResult}
+                    stepLabel={stepLabels[stepResult.step]}
+                    isActive={isActive}
+                    isSelected={selectedIndex === index}
+                    onClick={() => setSelectedIndex(index)}
+                  />
+                  {!isLast && (
+                    <IconChevronRight className="size-3 shrink-0 text-muted-foreground/50" />
+                  )}
+                </Fragment>
               );
             })}
             {showRetry && (
-              <Button variant="outline" size="sm" onClick={onRetry} className="ml-auto shrink-0">
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={onRetry}
+                className="ml-auto h-7 shrink-0 px-2 text-xs"
+              >
                 <IconRefresh className="mr-1 size-3" />
                 Retry
               </Button>

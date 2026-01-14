@@ -5,7 +5,6 @@ import {
   IconChevronRight,
   IconCheck,
   IconX,
-  IconRefresh,
 } from "@tabler/icons-react";
 import { motion, AnimatePresence } from "motion/react";
 import { Badge } from "@/components/ui/badge";
@@ -127,22 +126,21 @@ export const AutomationTable = ({
               <TableHead className="w-[90px] text-center">Submitted</TableHead>
               <TableHead className="w-[140px]">Progress</TableHead>
               <TableHead className="w-[100px]">Status</TableHead>
-              <TableHead className="w-[80px]">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {sortedSubmissions.map((submission) => {
               const status = statusConfig[submission.status];
-              const isNeedsReview = submission.status === "needs-review";
               const isRetrying = submission.status === "retrying";
               const isExpanded = expandedIds.has(submission.id);
+              const needsReview = submission.status === "needs-review";
 
               return (
                 <AnimatePresence key={submission.id} initial={false}>
                   <TableRow
                     onClick={() => toggleExpand(submission.id)}
                     className={`cursor-pointer transition-colors hover:bg-muted/50 ${
-                      isNeedsReview ? "bg-rose-50/50 dark:bg-rose-950/20" : ""
+                      needsReview ? "bg-rose-50/50 dark:bg-rose-950/20" : ""
                     } ${isExpanded ? "bg-muted/30" : ""}`}
                   >
                     <TableCell className="w-[40px] pr-0">
@@ -213,24 +211,10 @@ export const AutomationTable = ({
                         <Badge className={status.className}>{status.label}</Badge>
                       )}
                     </TableCell>
-                    <TableCell>
-                      {isNeedsReview && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleRetry(submission.id, submission.companyId);
-                          }}
-                        >
-                          <IconRefresh className="size-4" />
-                        </Button>
-                      )}
-                    </TableCell>
                   </TableRow>
                   {isExpanded && (
                     <tr>
-                      <td colSpan={9} className="border-0 p-0">
+                      <td colSpan={8} className="border-0 p-0">
                         <motion.div
                           initial={{ height: 0, opacity: 0 }}
                           animate={{ height: "auto", opacity: 1 }}
