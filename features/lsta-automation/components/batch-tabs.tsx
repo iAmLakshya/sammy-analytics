@@ -127,6 +127,7 @@ export const BatchTabs = ({
           size="sm"
           onClick={() => scroll("left")}
           className="h-8 w-8 shrink-0 p-0 text-muted-foreground"
+          aria-label="Scroll tabs left"
         >
           <IconChevronLeft className="size-4" />
         </Button>
@@ -159,6 +160,7 @@ export const BatchTabs = ({
           size="sm"
           onClick={() => scroll("right")}
           className="h-8 w-8 shrink-0 p-0 text-muted-foreground"
+          aria-label="Scroll tabs right"
         >
           <IconChevronRight className="size-4" />
         </Button>
@@ -170,6 +172,7 @@ export const BatchTabs = ({
             variant="ghost"
             size="sm"
             className="h-8 w-8 shrink-0 p-0 text-muted-foreground hover:text-foreground"
+            aria-label="Search batches"
           >
             <IconSearch className="size-4" />
           </Button>
@@ -211,6 +214,7 @@ export const BatchTabs = ({
         size="sm"
         onClick={onAddBatch}
         className="h-8 w-8 shrink-0 p-0 text-muted-foreground hover:text-foreground"
+        aria-label="Add new batch"
       >
         <IconPlus className="size-4" />
       </Button>
