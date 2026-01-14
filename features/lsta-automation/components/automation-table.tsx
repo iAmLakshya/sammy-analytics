@@ -82,8 +82,14 @@ const formatRelativeTime = (isoString: string): string => {
   return `in ${diffDays}d`;
 };
 
-export const AutomationTable = () => {
-  const sortedSubmissions = sortSubmissions(mockSubmissions);
+interface AutomationTableProps {
+  submissions?: Submission[];
+}
+
+export const AutomationTable = ({
+  submissions = mockSubmissions,
+}: AutomationTableProps) => {
+  const sortedSubmissions = sortSubmissions(submissions);
 
   return (
     <div className="space-y-4">
@@ -176,7 +182,7 @@ export const AutomationTable = () => {
       </div>
       <div className="flex items-center justify-between px-2">
         <p className="text-sm text-muted-foreground">
-          Showing {sortedSubmissions.length} of 847 submissions
+          Showing {sortedSubmissions.length} submissions
         </p>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" disabled>
