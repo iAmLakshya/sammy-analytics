@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import { useMemo } from "react"
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
+import { useMemo } from "react";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
-import { Badge } from "@/components/ui/badge"
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardAction,
@@ -11,7 +11,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartContainer,
   ChartLegend,
@@ -19,10 +19,10 @@ import {
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
-} from "@/components/ui/chart"
-import { Skeleton } from "@/components/ui/skeleton"
+} from "@/components/ui/chart";
+import { Skeleton } from "@/components/ui/skeleton";
 
-import type { DailyDiffs } from "../types"
+import type { DailyDiffs } from "../types";
 
 const chartConfig = {
   drafts_created: {
@@ -33,11 +33,11 @@ const chartConfig = {
     label: "Applied",
     color: "var(--chart-3)",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
 interface DailyDiffsChartProps {
-  data: DailyDiffs[]
-  isLoading?: boolean
+  data: DailyDiffs[];
+  isLoading?: boolean;
 }
 
 export const DailyDiffsChart = ({ data, isLoading }: DailyDiffsChartProps) => {
@@ -48,19 +48,19 @@ export const DailyDiffsChart = ({ data, isLoading }: DailyDiffsChartProps) => {
         month: "short",
         day: "numeric",
       }),
-    }))
-  }, [data])
+    }));
+  }, [data]);
 
   const totalDiffs = useMemo(() => {
-    return data.reduce((acc, curr) => acc + curr.diffs_created, 0)
-  }, [data])
+    return data.reduce((acc, curr) => acc + curr.diffs_created, 0);
+  }, [data]);
 
   const avgDailyDiffs = useMemo(() => {
-    return Math.round(totalDiffs / data.length)
-  }, [totalDiffs, data.length])
+    return Math.round(totalDiffs / data.length);
+  }, [totalDiffs, data.length]);
 
   if (isLoading) {
-    return <DailyDiffsChartSkeleton />
+    return <DailyDiffsChartSkeleton />;
   }
 
   return (
@@ -124,8 +124,8 @@ export const DailyDiffsChart = ({ data, isLoading }: DailyDiffsChartProps) => {
         </div>
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
 const DailyDiffsChartSkeleton = () => {
   return (
@@ -138,5 +138,5 @@ const DailyDiffsChartSkeleton = () => {
         <Skeleton className="h-[300px] w-full" />
       </CardContent>
     </Card>
-  )
-}
+  );
+};

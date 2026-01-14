@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import { ChartAreaInteractive } from "@/components/chart-area-interactive"
-import { SectionCards } from "@/components/section-cards"
-import { DocumentsTable } from "@/components/documents-table"
-import { HealthIndicators } from "@/components/health-indicators"
+import { ChartAreaInteractive } from "@/components/chart-area-interactive";
+import { DocumentsTable } from "@/components/documents-table";
+import { HealthIndicators } from "@/components/health-indicators";
+import { SectionCards } from "@/components/section-cards";
 
 export const OverviewContent = () => {
   return (
@@ -19,5 +19,5 @@ export const OverviewContent = () => {
         <DocumentsTable />
       </div>
     </div>
-  )
-}
+  );
+};

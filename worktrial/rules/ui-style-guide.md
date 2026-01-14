@@ -7,6 +7,7 @@ This document outlines the design patterns, styling conventions, and UX principl
 ## Overview
 
 The dashboard uses a modern, clean design language with:
+
 - **Subtle borders and shadows** instead of heavy visual elements
 - **Color-coded status indicators** for quick scanning
 - **Consistent spacing and typography** throughout
@@ -23,16 +24,13 @@ Use `Card` with subtle borders for content containers:
 
 ```tsx
 <Card className="border-border/50">
-  <CardHeader className="pb-4">
-    {/* Header content */}
-  </CardHeader>
-  <CardContent>
-    {/* Body content */}
-  </CardContent>
+  <CardHeader className="pb-4">{/* Header content */}</CardHeader>
+  <CardContent>{/* Body content */}</CardContent>
 </Card>
 ```
 
 Key patterns:
+
 - `border-border/50` - Subtle 50% opacity border
 - `pb-4` on CardHeader - Consistent padding before content
 - Avoid heavy shadows; use borders for definition
@@ -54,21 +52,21 @@ For prominent content (e.g., policy headers, ticket details):
           </span>
           <StageBadge status={status} />
         </div>
-        
+
         {/* Title */}
         <h1 className="mb-3 text-xl font-semibold leading-tight lg:text-2xl">
           {title}
         </h1>
-        
+
         {/* Description */}
         <p className="text-sm text-muted-foreground">{description}</p>
       </div>
-      
+
       {/* Right: Status icon */}
       <StatusIcon />
     </div>
   </CardHeader>
-  
+
   <CardContent>
     {/* Metadata grid */}
     <div className="grid grid-cols-2 gap-4 border-t pt-4 sm:grid-cols-4">
@@ -86,18 +84,18 @@ For items in a list that can be selected (e.g., policy list, ticket queue):
 ```tsx
 <div
   className={`cursor-pointer rounded-lg border-l-2 bg-card p-4 transition-all duration-200 hover:bg-muted/50 ${
-    isSelected
-      ? 'border-l-primary bg-primary/5'
-      : 'border-l-transparent'
+    isSelected ? "border-l-primary bg-primary/5" : "border-l-transparent"
   }`}
   onClick={onClick}
 >
   <div className="flex items-start gap-3">
     {/* Status icon */}
-    <div className={`flex size-10 shrink-0 items-center justify-center rounded-xl ${iconBgColor}`}>
+    <div
+      className={`flex size-10 shrink-0 items-center justify-center rounded-xl ${iconBgColor}`}
+    >
       <Icon className="size-5" />
     </div>
-    
+
     {/* Content */}
     <div className="min-w-0 flex-1">
       {/* Badges */}
@@ -107,17 +105,17 @@ For items in a list that can be selected (e.g., policy list, ticket queue):
         </span>
         <StatusBadge />
       </div>
-      
+
       {/* Title */}
       <h3 className="mb-1 line-clamp-2 text-sm font-medium leading-snug">
         {title}
       </h3>
-      
+
       {/* Summary */}
       <p className="mb-2.5 line-clamp-2 text-xs leading-relaxed text-muted-foreground">
         {summary}
       </p>
-      
+
       {/* Meta row */}
       <div className="flex items-center justify-between">
         {/* Left: team icons, badges */}
@@ -129,6 +127,7 @@ For items in a list that can be selected (e.g., policy list, ticket queue):
 ```
 
 Key patterns:
+
 - `border-l-2` with `border-l-primary` for selection indicator
 - `bg-primary/5` for selected background
 - `hover:bg-muted/50` for hover state
@@ -143,28 +142,34 @@ Key patterns:
 
 Use semantic colors for different states:
 
-| State | Light Mode | Dark Mode |
-|-------|-----------|-----------|
-| **Success/Active** | `bg-emerald-100 text-emerald-700` | `dark:bg-emerald-900/40 dark:text-emerald-400` |
-| **Info/In Progress** | `bg-blue-100 text-blue-700` | `dark:bg-blue-900/40 dark:text-blue-400` |
-| **Warning/Pending** | `bg-amber-100 text-amber-700` | `dark:bg-amber-900/40 dark:text-amber-400` |
-| **Error/Failed** | `bg-rose-100 text-rose-700` | `dark:bg-rose-900/40 dark:text-rose-400` |
-| **Neutral/Draft** | `bg-muted text-muted-foreground` | Same |
+| State                | Light Mode                        | Dark Mode                                      |
+| -------------------- | --------------------------------- | ---------------------------------------------- |
+| **Success/Active**   | `bg-emerald-100 text-emerald-700` | `dark:bg-emerald-900/40 dark:text-emerald-400` |
+| **Info/In Progress** | `bg-blue-100 text-blue-700`       | `dark:bg-blue-900/40 dark:text-blue-400`       |
+| **Warning/Pending**  | `bg-amber-100 text-amber-700`     | `dark:bg-amber-900/40 dark:text-amber-400`     |
+| **Error/Failed**     | `bg-rose-100 text-rose-700`       | `dark:bg-rose-900/40 dark:text-rose-400`       |
+| **Neutral/Draft**    | `bg-muted text-muted-foreground`  | Same                                           |
 
 ### Badge/Pill Pattern
 
 ```tsx
 const StageBadge = ({ status }: { status: string }) => {
   const styles: Record<string, string> = {
-    PROPOSED: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400',
-    IN_PROGRESS: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400',
-    ENACTED: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400',
-    EFFECTIVE: 'bg-emerald-200 text-emerald-800 dark:bg-emerald-800/40 dark:text-emerald-300',
-    FAILED: 'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-400',
+    PROPOSED:
+      "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400",
+    IN_PROGRESS:
+      "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400",
+    ENACTED:
+      "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400",
+    EFFECTIVE:
+      "bg-emerald-200 text-emerald-800 dark:bg-emerald-800/40 dark:text-emerald-300",
+    FAILED: "bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-400",
   };
 
   return (
-    <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${styles[status]}`}>
+    <span
+      className={`rounded-full px-2.5 py-1 text-xs font-medium ${styles[status]}`}
+    >
       {label}
     </span>
   );
@@ -177,23 +182,28 @@ Large icons for visual hierarchy in cards:
 
 ```tsx
 const StatusIcon = ({ status }: { status: string }) => {
-  const isActive = status === 'EFFECTIVE' || status === 'ENACTED';
-  
+  const isActive = status === "EFFECTIVE" || status === "ENACTED";
+
   return (
     <div
       className={`flex size-16 shrink-0 flex-col items-center justify-center rounded-2xl ${
         isActive
-          ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400'
-          : 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400'
+          ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400"
+          : "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400"
       }`}
     >
-      {isActive ? <CheckCircle className="size-8" /> : <Clock className="size-8" />}
+      {isActive ? (
+        <CheckCircle className="size-8" />
+      ) : (
+        <Clock className="size-8" />
+      )}
     </div>
   );
 };
 ```
 
 Sizes:
+
 - `size-16` with `size-8` icon - Hero cards
 - `size-12` with `size-6` icon - Secondary cards
 - `size-10` with `size-5` icon - List items
@@ -207,19 +217,21 @@ Sizes:
 **Whenever you have a scrollable container inside a flex parent, you MUST add `min-h-0` to the flex child:**
 
 ```tsx
-{/* ❌ BROKEN - content overflows, no scroll */}
+{
+  /* ❌ BROKEN - content overflows, no scroll */
+}
 <div className="flex h-full flex-col">
-  <ScrollArea className="flex-1">
-    {/* Content won't scroll! */}
-  </ScrollArea>
-</div>
+  <ScrollArea className="flex-1">{/* Content won't scroll! */}</ScrollArea>
+</div>;
 
-{/* ✅ FIXED - scroll works correctly */}
+{
+  /* ✅ FIXED - scroll works correctly */
+}
 <div className="flex h-full min-h-0 flex-col overflow-hidden">
   <ScrollArea className="h-full flex-1">
     {/* Content scrolls properly */}
   </ScrollArea>
-</div>
+</div>;
 ```
 
 **Why?** By default, flexbox sets `min-height: auto` on children, preventing them from shrinking below content height. `min-h-0` allows shrinking, enabling scroll.
@@ -229,7 +241,10 @@ Sizes:
 ### Two-Pane Resizable Layout
 
 ```tsx
-<ResizablePanelGroup direction="horizontal" className="max-h-[calc(100vh-80px)]">
+<ResizablePanelGroup
+  direction="horizontal"
+  className="max-h-[calc(100vh-80px)]"
+>
   {/* Left Panel - List */}
   <ResizablePanel defaultSize={35} minSize={25} maxSize={50}>
     <div className="flex h-full min-h-0 flex-col overflow-hidden border-r bg-card">
@@ -238,26 +253,29 @@ Sizes:
         {/* Search bar */}
         {/* Filter stats */}
       </div>
-      
+
       {/* Scrollable list */}
       <ScrollArea className="h-full flex-1">
         <div className="space-y-2 px-4 pb-4">
-          {items.map(item => <ItemCard key={item.id} />)}
+          {items.map((item) => (
+            <ItemCard key={item.id} />
+          ))}
         </div>
       </ScrollArea>
     </div>
   </ResizablePanel>
-  
-  <ResizableHandle withHandle className="border-transparent bg-gradient-to-t from-transparent via-border to-transparent" />
-  
+
+  <ResizableHandle
+    withHandle
+    className="border-transparent bg-gradient-to-t from-transparent via-border to-transparent"
+  />
+
   {/* Right Panel - Detail */}
   <ResizablePanel defaultSize={65}>
     <div className="flex h-full min-h-0 flex-col overflow-hidden bg-muted/30">
       <ScrollArea className="h-full flex-1">
         <div className="space-y-6 p-6">
-          <div className="mx-auto max-w-4xl space-y-6">
-            {/* Content */}
-          </div>
+          <div className="mx-auto max-w-4xl space-y-6">{/* Content */}</div>
         </div>
       </ScrollArea>
     </div>
@@ -266,6 +284,7 @@ Sizes:
 ```
 
 Key patterns:
+
 - Left panel: `border-r bg-card` - Solid background with right border
 - Right panel: `bg-muted/30` - Subtle background differentiation
 - Content: `mx-auto max-w-4xl` - Centered with max width for readability
@@ -286,11 +305,11 @@ Key patterns:
         onChange={(e) => setSearch(e.target.value)}
       />
     </div>
-    
+
     <Popover>
       <PopoverTrigger asChild>
         <Button
-          variant={activeFilterCount > 0 ? 'default' : 'outline'}
+          variant={activeFilterCount > 0 ? "default" : "outline"}
           size="sm"
           className="gap-1.5"
         >
@@ -308,7 +327,7 @@ Key patterns:
       </PopoverContent>
     </Popover>
   </div>
-  
+
   {/* Stats Row */}
   <div className="flex items-center justify-between text-xs text-muted-foreground">
     <span>{count} items</span>
@@ -324,12 +343,12 @@ Key patterns:
 For organizing content into sections:
 
 ```tsx
-const [activeTab, setActiveTab] = useState<TabId>('first');
+const [activeTab, setActiveTab] = useState<TabId>("first");
 
 const tabs = [
-  { id: 'first', label: 'First Tab', icon: FileText },
-  { id: 'second', label: 'Second Tab', icon: Clock },
-  { id: 'third', label: 'Third Tab', icon: MessageSquare },
+  { id: "first", label: "First Tab", icon: FileText },
+  { id: "second", label: "Second Tab", icon: Clock },
+  { id: "third", label: "Third Tab", icon: MessageSquare },
 ];
 
 return (
@@ -344,8 +363,8 @@ return (
             onClick={() => setActiveTab(tab.id)}
             className={`flex items-center gap-2 whitespace-nowrap px-5 py-3 text-sm font-medium transition-colors ${
               activeTab === tab.id
-                ? 'border-b-2 border-primary text-primary'
-                : 'text-muted-foreground hover:text-foreground'
+                ? "border-b-2 border-primary text-primary"
+                : "text-muted-foreground hover:text-foreground"
             }`}
           >
             <Icon className="size-4" />
@@ -354,11 +373,11 @@ return (
         );
       })}
     </div>
-    
+
     {/* Tab Content */}
-    {activeTab === 'first' && <FirstContent />}
-    {activeTab === 'second' && <SecondContent />}
-    {activeTab === 'third' && <ThirdContent />}
+    {activeTab === "first" && <FirstContent />}
+    {activeTab === "second" && <SecondContent />}
+    {activeTab === "third" && <ThirdContent />}
   </div>
 );
 ```
@@ -373,35 +392,39 @@ For showing progression/history:
 <div className="relative">
   {/* Vertical line */}
   <div className="absolute left-4 top-0 h-full w-px bg-border" />
-  
+
   {timeline.map((item, i) => (
     <div key={i} className="relative flex items-start gap-4 pb-4 last:pb-0">
       {/* Status indicator */}
       <div
         className={`relative z-10 flex size-8 items-center justify-center rounded-full ${
-          item.status === 'complete'
-            ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-400'
-            : item.status === 'active'
-              ? 'bg-primary/20 text-primary ring-2 ring-primary/30'
-              : 'bg-muted text-muted-foreground'
+          item.status === "complete"
+            ? "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-400"
+            : item.status === "active"
+              ? "bg-primary/20 text-primary ring-2 ring-primary/30"
+              : "bg-muted text-muted-foreground"
         }`}
       >
-        {item.status === 'complete' ? (
+        {item.status === "complete" ? (
           <Check className="size-4" />
-        ) : item.status === 'active' ? (
+        ) : item.status === "active" ? (
           <div className="size-2 animate-pulse rounded-full bg-primary" />
         ) : (
           <div className="size-2 rounded-full bg-muted-foreground/50" />
         )}
       </div>
-      
+
       {/* Content */}
       <div className="min-w-0 flex-1 pt-1">
-        <p className={`text-sm font-medium ${
-          item.status === 'active' ? 'text-primary' : 
-          item.status === 'complete' ? 'text-foreground' : 
-          'text-muted-foreground'
-        }`}>
+        <p
+          className={`text-sm font-medium ${
+            item.status === "active"
+              ? "text-primary"
+              : item.status === "complete"
+                ? "text-foreground"
+                : "text-muted-foreground"
+          }`}
+        >
           {item.label}
         </p>
         <p className="text-xs text-muted-foreground">{item.date}</p>
@@ -418,7 +441,9 @@ For showing progression/history:
 For contextual information:
 
 ```tsx
-{/* Success/Info callout */}
+{
+  /* Success/Info callout */
+}
 <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-4 dark:border-emerald-800 dark:bg-emerald-900/20">
   <h4 className="mb-2 text-sm font-medium text-emerald-900 dark:text-emerald-100">
     Title
@@ -426,9 +451,11 @@ For contextual information:
   <p className="text-sm leading-relaxed text-emerald-800 dark:text-emerald-200">
     Description text here.
   </p>
-</div>
+</div>;
 
-{/* Warning callout */}
+{
+  /* Warning callout */
+}
 <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-900/20">
   <h4 className="mb-2 text-sm font-medium text-amber-900 dark:text-amber-100">
     Title
@@ -436,14 +463,16 @@ For contextual information:
   <p className="text-sm leading-relaxed text-amber-800 dark:text-amber-200">
     Description text here.
   </p>
-</div>
+</div>;
 
-{/* Neutral/muted callout */}
+{
+  /* Neutral/muted callout */
+}
 <div className="rounded-lg border border-dashed border-muted-foreground/30 bg-muted/20 p-5">
   <p className="text-sm leading-relaxed text-muted-foreground">
     Description text here.
   </p>
-</div>
+</div>;
 ```
 
 ---
@@ -458,9 +487,7 @@ Centered with icon, title, and description:
     <Icon className="size-12 text-muted-foreground" />
   </div>
   <h3 className="mt-4 text-lg font-medium">Title</h3>
-  <p className="mt-1 text-sm text-muted-foreground">
-    Description text here
-  </p>
+  <p className="mt-1 text-sm text-muted-foreground">Description text here</p>
 </div>
 ```
 
@@ -537,16 +564,16 @@ For showing associated teams or categories:
 Use `motion/react` for list animations:
 
 ```tsx
-import { AnimatePresence, motion } from 'motion/react';
+import { AnimatePresence, motion } from "motion/react";
 
 <AnimatePresence mode="popLayout">
   {items.map((item) => (
     <motion.div
       key={item.id}
-      style={{ willChange: 'transform, opacity' }}
+      style={{ willChange: "transform, opacity" }}
       layout
       layoutId={item.id}
-      transition={{ duration: 0.2, ease: 'easeOut' }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
       initial={{ opacity: 0, y: 10 }}
@@ -554,10 +581,11 @@ import { AnimatePresence, motion } from 'motion/react';
       <ItemCard item={item} />
     </motion.div>
   ))}
-</AnimatePresence>
+</AnimatePresence>;
 ```
 
 Key patterns:
+
 - `willChange: 'transform, opacity'` for performance
 - `layout` and `layoutId` for smooth reordering
 - Short duration (0.2s) for snappy feel
@@ -567,27 +595,27 @@ Key patterns:
 
 ## 12. Typography Scale
 
-| Element | Classes |
-|---------|---------|
-| Page title | `text-xl font-semibold leading-tight lg:text-2xl` |
-| Section title | `text-lg font-semibold` |
-| Card title | `text-sm font-medium leading-snug` |
-| Body text | `text-sm leading-relaxed` |
-| Small/meta text | `text-xs text-muted-foreground` |
-| Labels | `text-xs uppercase tracking-wider text-muted-foreground` |
+| Element         | Classes                                                  |
+| --------------- | -------------------------------------------------------- |
+| Page title      | `text-xl font-semibold leading-tight lg:text-2xl`        |
+| Section title   | `text-lg font-semibold`                                  |
+| Card title      | `text-sm font-medium leading-snug`                       |
+| Body text       | `text-sm leading-relaxed`                                |
+| Small/meta text | `text-xs text-muted-foreground`                          |
+| Labels          | `text-xs uppercase tracking-wider text-muted-foreground` |
 
 ---
 
 ## 13. Spacing Conventions
 
-| Context | Spacing |
-|---------|---------|
-| Page padding | `p-6` |
-| Card padding | `p-4` or `p-5` |
-| Section gaps | `space-y-6` |
-| Item gaps in list | `space-y-2` |
-| Badge gaps | `gap-2` |
-| Icon gaps | `gap-1` or `gap-1.5` |
+| Context           | Spacing              |
+| ----------------- | -------------------- |
+| Page padding      | `p-6`                |
+| Card padding      | `p-4` or `p-5`       |
+| Section gaps      | `space-y-6`          |
+| Item gaps in list | `space-y-2`          |
+| Badge gaps        | `gap-2`              |
+| Icon gaps         | `gap-1` or `gap-1.5` |
 
 ---
 
@@ -605,4 +633,3 @@ When building a new feature, ensure:
 - [ ] Content is constrained with `max-w-4xl mx-auto`
 - [ ] Metadata uses uppercase tracking-wider labels
 - [ ] Dark mode is supported with `dark:` variants
-

@@ -1,22 +1,22 @@
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 type MetricItem = {
-  label: string
-  value: string
-  subtext?: string
-  highlight?: boolean
-}
+  label: string;
+  value: string;
+  subtext?: string;
+  highlight?: boolean;
+};
 
 type MetricGridProps = {
-  items: MetricItem[]
-  columns?: 3 | 4 | 5
-}
+  items: MetricItem[];
+  columns?: 3 | 4 | 5;
+};
 
 const columnClasses = {
   3: "md:grid-cols-3",
   4: "md:grid-cols-4",
   5: "md:grid-cols-5",
-}
+};
 
 export const MetricGrid = ({ items, columns = 3 }: MetricGridProps) => {
   return (
@@ -46,5 +46,5 @@ export const MetricGrid = ({ items, columns = 3 }: MetricGridProps) => {
         </div>
       ))}
     </div>
-  )
-}
+  );
+};

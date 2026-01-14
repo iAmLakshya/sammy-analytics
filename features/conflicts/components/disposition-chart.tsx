@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
-import { useMemo } from "react"
 import {
-  IconClock,
-  IconCheck,
-  IconX,
   IconArrowDown,
-} from "@tabler/icons-react"
+  IconCheck,
+  IconClock,
+  IconX,
+} from "@tabler/icons-react";
+import { useMemo } from "react";
 
 import {
   Card,
@@ -14,13 +14,13 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Skeleton } from "@/components/ui/skeleton"
-import { InfoTooltip } from "@/components/ui/info-tooltip"
-import { ProgressRing } from "@/components/ui/gauge"
-import { VerticalFunnel } from "@/components/ui/funnel"
+} from "@/components/ui/card";
+import { VerticalFunnel } from "@/components/ui/funnel";
+import { ProgressRing } from "@/components/ui/gauge";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { Skeleton } from "@/components/ui/skeleton";
 
-import type { ConflictDispositionSummary } from "../types"
+import type { ConflictDispositionSummary } from "../types";
 
 const dispositionConfig = {
   NEEDS_REVIEW: {
@@ -41,24 +41,32 @@ const dispositionConfig = {
     icon: IconX,
     description: "Changes declined",
   },
-}
+};
 
 interface DispositionChartProps {
-  data: ConflictDispositionSummary[]
-  isLoading?: boolean
+  data: ConflictDispositionSummary[];
+  isLoading?: boolean;
 }
 
 export const DispositionChart = ({
   data,
   isLoading,
 }: DispositionChartProps) => {
-  const { totalConflicts, resolved, acceptedCount, rejectedCount, pendingCount, acceptanceRate } = useMemo(() => {
-    const total = data.reduce((acc, curr) => acc + curr.count, 0)
-    const accepted = data.find(d => d.disposition === "ACCEPTED")?.count || 0
-    const rejected = data.find(d => d.disposition === "REJECTED")?.count || 0
-    const pending = data.find(d => d.disposition === "NEEDS_REVIEW")?.count || 0
-    const resolvedCount = accepted + rejected
-    const rate = resolvedCount > 0 ? (accepted / resolvedCount) * 100 : 0
+  const {
+    totalConflicts,
+    resolved,
+    acceptedCount,
+    rejectedCount,
+    pendingCount,
+    acceptanceRate,
+  } = useMemo(() => {
+    const total = data.reduce((acc, curr) => acc + curr.count, 0);
+    const accepted = data.find((d) => d.disposition === "ACCEPTED")?.count || 0;
+    const rejected = data.find((d) => d.disposition === "REJECTED")?.count || 0;
+    const pending =
+      data.find((d) => d.disposition === "NEEDS_REVIEW")?.count || 0;
+    const resolvedCount = accepted + rejected;
+    const rate = resolvedCount > 0 ? (accepted / resolvedCount) * 100 : 0;
 
     return {
       totalConflicts: total,
@@ -67,11 +75,11 @@ export const DispositionChart = ({
       rejectedCount: rejected,
       pendingCount: pending,
       acceptanceRate: rate,
-    }
-  }, [data])
+    };
+  }, [data]);
 
   if (isLoading) {
-    return <DispositionChartSkeleton />
+    return <DispositionChartSkeleton />;
   }
 
   return (
@@ -147,8 +155,8 @@ export const DispositionChart = ({
         </div>
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
 const DispositionChartSkeleton = () => {
   return (
@@ -167,5 +175,5 @@ const DispositionChartSkeleton = () => {
         <Skeleton className="h-20 w-full" />
       </CardContent>
     </Card>
-  )
-}
+  );
+};

@@ -1,12 +1,14 @@
-"use client"
+"use client";
 
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -14,15 +16,13 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { Badge } from "@/components/ui/badge"
-import { Skeleton } from "@/components/ui/skeleton"
+} from "@/components/ui/table";
 
-import type { DailyAnalysisRuns } from "../types"
+import type { DailyAnalysisRuns } from "../types";
 
 interface AnalysisRunsTableProps {
-  data: DailyAnalysisRuns[]
-  isLoading?: boolean
+  data: DailyAnalysisRuns[];
+  isLoading?: boolean;
 }
 
 export const AnalysisRunsTable = ({
@@ -30,38 +30,38 @@ export const AnalysisRunsTable = ({
   isLoading,
 }: AnalysisRunsTableProps) => {
   if (isLoading) {
-    return <AnalysisRunsTableSkeleton />
+    return <AnalysisRunsTableSkeleton />;
   }
 
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
-    })
-  }
+    });
+  };
 
   const getDetectionRateBadge = (runs: DailyAnalysisRuns) => {
-    const rate = (runs.runs_with_conflicts / runs.total_runs) * 100
+    const rate = (runs.runs_with_conflicts / runs.total_runs) * 100;
     if (rate >= 70) {
       return (
         <Badge variant="default" className="ml-2 font-normal">
           {rate.toFixed(0)}%
         </Badge>
-      )
+      );
     }
     if (rate >= 50) {
       return (
         <Badge variant="secondary" className="ml-2 font-normal">
           {rate.toFixed(0)}%
         </Badge>
-      )
+      );
     }
     return (
       <Badge variant="outline" className="ml-2 font-normal">
         {rate.toFixed(0)}%
       </Badge>
-    )
-  }
+    );
+  };
 
   return (
     <Card>
@@ -110,8 +110,8 @@ export const AnalysisRunsTable = ({
         </Table>
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
 const AnalysisRunsTableSkeleton = () => {
   return (
@@ -128,5 +128,5 @@ const AnalysisRunsTableSkeleton = () => {
         </div>
       </CardContent>
     </Card>
-  )
-}
+  );
+};

@@ -1,7 +1,7 @@
 import { mockLstaTasks } from "@/features/lsta-automation/data/mock.tasks.data";
 import type { LstaTaskDetailResponse } from "@/features/lsta-automation/types";
-import type { CoreDependencies } from "@/shared/utils/server/wrap-route-handler";
 import { NotFoundError, ServiceError } from "@/shared/utils/server/errors";
+import type { CoreDependencies } from "@/shared/utils/server/wrap-route-handler";
 
 export const getLstaTaskDetail =
   (dependencies: CoreDependencies) =>

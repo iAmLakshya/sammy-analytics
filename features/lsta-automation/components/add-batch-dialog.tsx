@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-import { IconUpload } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -13,12 +11,16 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { IconUpload } from "@tabler/icons-react";
+import { useState } from "react";
 import type { Batch } from "../types";
 
 interface AddBatchDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onAddBatch: (batch: Omit<Batch, "id" | "createdAt" | "submissionCount">) => void;
+  onAddBatch: (
+    batch: Omit<Batch, "id" | "createdAt" | "submissionCount">
+  ) => void;
 }
 
 export const AddBatchDialog = ({

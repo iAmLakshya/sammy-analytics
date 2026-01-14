@@ -1,13 +1,5 @@
 "use client";
 
-import { useRef, useState, useEffect, useCallback } from "react";
-import {
-  IconPlus,
-  IconChevronLeft,
-  IconChevronRight,
-  IconSearch,
-  IconCheck,
-} from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -22,6 +14,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  IconCheck,
+  IconChevronLeft,
+  IconChevronRight,
+  IconPlus,
+  IconSearch,
+} from "@tabler/icons-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { Batch } from "../types";
 
 interface BatchTabsProps {
@@ -116,7 +116,11 @@ export const BatchTabs = ({
 
   const allItems = [
     { id: "all", name: "All", count: totalSubmissions },
-    ...batches.map((b) => ({ id: b.id, name: b.name, count: b.submissionCount })),
+    ...batches.map((b) => ({
+      id: b.id,
+      name: b.name,
+      count: b.submissionCount,
+    })),
   ];
 
   return (

@@ -23,6 +23,6 @@ WHERE
     "last_24h": 842,
     "last_7d": 3567,
     "last_30d": 5124,
-    "older_than_30d": 716
-  }
+    "older_than_30d": 716,
+  },
 ]

@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import { useMemo } from "react"
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
+import { useMemo } from "react";
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
-import { Badge } from "@/components/ui/badge"
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardAction,
@@ -11,7 +11,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartContainer,
   ChartLegend,
@@ -19,10 +19,10 @@ import {
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
-} from "@/components/ui/chart"
-import { Skeleton } from "@/components/ui/skeleton"
+} from "@/components/ui/chart";
+import { Skeleton } from "@/components/ui/skeleton";
 
-import type { ConflictReviewActivity } from "../types"
+import type { ConflictReviewActivity } from "../types";
 
 const chartConfig = {
   reviews_completed: {
@@ -37,14 +37,17 @@ const chartConfig = {
     label: "Rejected",
     color: "var(--chart-4)",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
 interface ReviewActivityChartProps {
-  data: ConflictReviewActivity[]
-  isLoading?: boolean
+  data: ConflictReviewActivity[];
+  isLoading?: boolean;
 }
 
-export const ReviewActivityChart = ({ data, isLoading }: ReviewActivityChartProps) => {
+export const ReviewActivityChart = ({
+  data,
+  isLoading,
+}: ReviewActivityChartProps) => {
   const chartData = useMemo(() => {
     return [...data].reverse().map((item) => ({
       ...item,
@@ -52,20 +55,20 @@ export const ReviewActivityChart = ({ data, isLoading }: ReviewActivityChartProp
         month: "short",
         day: "numeric",
       }),
-    }))
-  }, [data])
+    }));
+  }, [data]);
 
   const totalReviews = useMemo(() => {
-    return data.reduce((acc, curr) => acc + curr.reviews_completed, 0)
-  }, [data])
+    return data.reduce((acc, curr) => acc + curr.reviews_completed, 0);
+  }, [data]);
 
   const avgReviewers = useMemo(() => {
-    const total = data.reduce((acc, curr) => acc + curr.unique_reviewers, 0)
-    return (total / data.length).toFixed(1)
-  }, [data])
+    const total = data.reduce((acc, curr) => acc + curr.unique_reviewers, 0);
+    return (total / data.length).toFixed(1);
+  }, [data]);
 
   if (isLoading) {
-    return <ReviewActivityChartSkeleton />
+    return <ReviewActivityChartSkeleton />;
   }
 
   return (
@@ -131,8 +134,8 @@ export const ReviewActivityChart = ({ data, isLoading }: ReviewActivityChartProp
         </div>
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
 const ReviewActivityChartSkeleton = () => {
   return (
@@ -145,5 +148,5 @@ const ReviewActivityChartSkeleton = () => {
         <Skeleton className="h-[300px] w-full" />
       </CardContent>
     </Card>
-  )
-}
+  );
+};

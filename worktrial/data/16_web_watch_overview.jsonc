@@ -21,6 +21,6 @@ FROM v_web_watch_documents;
     "docs_with_high_priority": 287,
     "docs_with_medium_priority": 642,
     "docs_with_low_priority": 913,
-    "avg_conflicts_per_doc": 3.17
-  }
+    "avg_conflicts_per_doc": 3.17,
+  },
 ]

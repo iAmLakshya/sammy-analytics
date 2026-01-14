@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import { useMemo } from "react"
-import { IconEye, IconCheck, IconArchive } from "@tabler/icons-react"
+import { IconArchive, IconCheck, IconEye } from "@tabler/icons-react";
+import { useMemo } from "react";
 
-import { Badge } from "@/components/ui/badge"
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardAction,
@@ -11,14 +11,17 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Skeleton } from "@/components/ui/skeleton"
-import { InfoTooltip } from "@/components/ui/info-tooltip"
-import { RangeBar } from "@/components/ui/range-bar"
+} from "@/components/ui/card";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { RangeBar } from "@/components/ui/range-bar";
+import { Skeleton } from "@/components/ui/skeleton";
 
-import type { TimeToResolution } from "../types"
+import type { TimeToResolution } from "../types";
 
-const stateConfig: Record<string, { label: string; color: string; icon: typeof IconEye }> = {
+const stateConfig: Record<
+  string,
+  { label: string; color: string; icon: typeof IconEye }
+> = {
   PREVIEW: {
     label: "Ready for Review",
     color: "hsl(var(--chart-2))",
@@ -34,11 +37,11 @@ const stateConfig: Record<string, { label: string; color: string; icon: typeof I
     color: "hsl(var(--muted-foreground))",
     icon: IconArchive,
   },
-}
+};
 
 interface ResolutionTimeChartProps {
-  data: TimeToResolution[]
-  isLoading?: boolean
+  data: TimeToResolution[];
+  isLoading?: boolean;
 }
 
 export const ResolutionTimeChart = ({
@@ -55,26 +58,31 @@ export const ResolutionTimeChart = ({
       color: stateConfig[item.final_state]?.color || "var(--chart-1)",
       count: item.count,
       state: item.final_state,
-    }))
-  }, [data])
+    }));
+  }, [data]);
 
   // Calculate overall averages
   const overallStats = useMemo(() => {
-    if (data.length === 0) return { avgTime: 0, medianTime: 0, totalResolved: 0 }
-    const totalCount = data.reduce((sum, d) => sum + d.count, 0)
-    const weightedAvg = data.reduce(
-      (sum, d) => sum + parseFloat(d.avg_hours_to_resolve) * d.count,
-      0
-    ) / totalCount
-    const weightedMedian = data.reduce(
-      (sum, d) => sum + parseFloat(d.median_hours) * d.count,
-      0
-    ) / totalCount
-    return { avgTime: weightedAvg, medianTime: weightedMedian, totalResolved: totalCount }
-  }, [data])
+    if (data.length === 0)
+      return { avgTime: 0, medianTime: 0, totalResolved: 0 };
+    const totalCount = data.reduce((sum, d) => sum + d.count, 0);
+    const weightedAvg =
+      data.reduce(
+        (sum, d) => sum + parseFloat(d.avg_hours_to_resolve) * d.count,
+        0
+      ) / totalCount;
+    const weightedMedian =
+      data.reduce((sum, d) => sum + parseFloat(d.median_hours) * d.count, 0) /
+      totalCount;
+    return {
+      avgTime: weightedAvg,
+      medianTime: weightedMedian,
+      totalResolved: totalCount,
+    };
+  }, [data]);
 
   if (isLoading) {
-    return <ResolutionTimeChartSkeleton />
+    return <ResolutionTimeChartSkeleton />;
   }
 
   return (
@@ -117,13 +125,15 @@ export const ResolutionTimeChart = ({
         {/* Range bars for each state */}
         <div className="space-y-8 pt-2">
           {rangeData.map((item) => {
-            const config = stateConfig[item.state]
-            const Icon = config?.icon
+            const config = stateConfig[item.state];
+            const Icon = config?.icon;
 
             return (
               <div key={item.state} className="space-y-2">
                 <div className="flex items-center gap-2">
-                  {Icon && <Icon className="size-4" style={{ color: item.color }} />}
+                  {Icon && (
+                    <Icon className="size-4" style={{ color: item.color }} />
+                  )}
                   <span className="text-sm font-medium">{item.label}</span>
                   <span className="text-xs text-muted-foreground ml-auto">
                     {item.count.toLocaleString()} suggestions
@@ -139,7 +149,7 @@ export const ResolutionTimeChart = ({
                   color={item.color}
                 />
               </div>
-            )
+            );
           })}
         </div>
 
@@ -160,8 +170,8 @@ export const ResolutionTimeChart = ({
         </div>
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
 const ResolutionTimeChartSkeleton = () => {
   return (
@@ -189,5 +199,5 @@ const ResolutionTimeChartSkeleton = () => {
         </div>
       </CardContent>
     </Card>
-  )
-}
+  );
+};

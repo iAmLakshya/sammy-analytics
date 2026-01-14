@@ -1,17 +1,16 @@
-"use client"
+"use client";
 
-import { useMemo } from "react"
 import {
-  IconTrophy,
-  IconMedal,
   IconAward,
-  IconUser,
-  IconClock,
   IconCheck,
-  IconX,
-} from "@tabler/icons-react"
+  IconClock,
+  IconMedal,
+  IconTrophy,
+  IconUser,
+} from "@tabler/icons-react";
+import { useMemo } from "react";
 
-import { Badge } from "@/components/ui/badge"
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardAction,
@@ -19,18 +18,17 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Skeleton } from "@/components/ui/skeleton"
-import { InfoTooltip } from "@/components/ui/info-tooltip"
-import { SegmentedBar } from "@/components/ui/funnel"
-import { MiniSparkline } from "@/components/ui/sparkline"
-import { cn } from "@/lib/utils"
+} from "@/components/ui/card";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { Skeleton } from "@/components/ui/skeleton";
+import { MiniSparkline } from "@/components/ui/sparkline";
+import { cn } from "@/lib/utils";
 
-import type { Reviewer } from "../types"
+import type { Reviewer } from "../types";
 
 interface ReviewerLeaderboardChartProps {
-  data: Reviewer[]
-  isLoading?: boolean
+  data: Reviewer[];
+  isLoading?: boolean;
 }
 
 const REVIEWER_NAMES = [
@@ -42,17 +40,15 @@ const REVIEWER_NAMES = [
   "Jordan Lee",
   "Taylor Morgan",
   "Casey Williams",
-]
+];
 
-const REVIEWER_AVATARS = [
-  "SC", "MJ", "ER", "DK", "AT", "JL", "TM", "CW"
-]
+const REVIEWER_AVATARS = ["SC", "MJ", "ER", "DK", "AT", "JL", "TM", "CW"];
 
 const rankConfig = [
   { icon: IconTrophy, bg: "bg-muted", text: "text-primary" },
   { icon: IconMedal, bg: "bg-muted", text: "text-primary/70" },
   { icon: IconAward, bg: "bg-muted", text: "text-primary/50" },
-]
+];
 
 export const ReviewerLeaderboardChart = ({
   data,
@@ -67,7 +63,9 @@ export const ReviewerLeaderboardChart = ({
       rejected: reviewer.rejected,
       corrections: reviewer.corrections_provided,
       avgTime: reviewer.avg_review_time_hours,
-      acceptRate: Math.round((reviewer.accepted / reviewer.reviews_completed) * 100),
+      acceptRate: Math.round(
+        (reviewer.accepted / reviewer.reviews_completed) * 100
+      ),
       // Mock trend data
       trend: [
         Math.floor(reviewer.reviews_completed * 0.1),
@@ -78,15 +76,15 @@ export const ReviewerLeaderboardChart = ({
         Math.floor(reviewer.reviews_completed * 0.15),
         Math.floor(reviewer.reviews_completed * 0.14),
       ],
-    }))
-  }, [data])
+    }));
+  }, [data]);
 
   const totalReviews = useMemo(() => {
-    return data.reduce((acc, r) => acc + r.reviews_completed, 0)
-  }, [data])
+    return data.reduce((acc, r) => acc + r.reviews_completed, 0);
+  }, [data]);
 
   if (isLoading) {
-    return <ReviewerLeaderboardChartSkeleton />
+    return <ReviewerLeaderboardChartSkeleton />;
   }
 
   return (
@@ -96,18 +94,23 @@ export const ReviewerLeaderboardChart = ({
           Top Reviewers
           <InfoTooltip content="Reviewers ranked by total reviews completed in the last 30 days. Higher acceptance rates indicate consistent alignment with content guidelines." />
         </CardTitle>
-        <CardDescription>
-          Most active contributors this month
-        </CardDescription>
+        <CardDescription>Most active contributors this month</CardDescription>
         <CardAction>
           <Badge variant="outline">{data.length} reviewers</Badge>
         </CardAction>
       </CardHeader>
       <CardContent className="space-y-3">
         {reviewerData.slice(0, 6).map((reviewer, index) => {
-          const rankStyle = rankConfig[index] || { icon: IconUser, bg: "bg-muted", text: "text-muted-foreground" }
-          const RankIcon = rankStyle.icon
-          const sharePercent = totalReviews > 0 ? (reviewer.reviews_completed / totalReviews) * 100 : 0
+          const rankStyle = rankConfig[index] || {
+            icon: IconUser,
+            bg: "bg-muted",
+            text: "text-muted-foreground",
+          };
+          const RankIcon = rankStyle.icon;
+          const sharePercent =
+            totalReviews > 0
+              ? (reviewer.reviews_completed / totalReviews) * 100
+              : 0;
 
           return (
             <div
@@ -116,17 +119,22 @@ export const ReviewerLeaderboardChart = ({
             >
               {/* Rank & Avatar */}
               <div className="relative">
-                <div className={cn(
-                  "size-10 rounded-full flex items-center justify-center text-sm font-semibold",
-                  rankStyle.bg, rankStyle.text
-                )}>
+                <div
+                  className={cn(
+                    "size-10 rounded-full flex items-center justify-center text-sm font-semibold",
+                    rankStyle.bg,
+                    rankStyle.text
+                  )}
+                >
                   {reviewer.initials}
                 </div>
                 {index < 3 && (
-                  <div className={cn(
-                    "absolute -top-1 -right-1 size-5 rounded-full flex items-center justify-center",
-                    rankStyle.bg
-                  )}>
+                  <div
+                    className={cn(
+                      "absolute -top-1 -right-1 size-5 rounded-full flex items-center justify-center",
+                      rankStyle.bg
+                    )}
+                  >
                     <RankIcon className={cn("size-3", rankStyle.text)} />
                   </div>
                 )}
@@ -172,24 +180,30 @@ export const ReviewerLeaderboardChart = ({
                 </div>
               </div>
             </div>
-          )
+          );
         })}
 
         {/* Summary footer */}
         <div className="flex items-center justify-between pt-3 mt-3 border-t text-sm">
           <span className="text-muted-foreground">
-            Total reviews: <span className="font-medium text-foreground tabular-nums">{totalReviews.toLocaleString()}</span>
+            Total reviews:{" "}
+            <span className="font-medium text-foreground tabular-nums">
+              {totalReviews.toLocaleString()}
+            </span>
           </span>
           <span className="text-muted-foreground">
-            Avg per reviewer: <span className="font-medium text-foreground tabular-nums">
-              {data.length > 0 ? Math.round(totalReviews / data.length).toLocaleString() : 0}
+            Avg per reviewer:{" "}
+            <span className="font-medium text-foreground tabular-nums">
+              {data.length > 0
+                ? Math.round(totalReviews / data.length).toLocaleString()
+                : 0}
             </span>
           </span>
         </div>
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
 const ReviewerLeaderboardChartSkeleton = () => {
   return (
@@ -211,5 +225,5 @@ const ReviewerLeaderboardChartSkeleton = () => {
         ))}
       </CardContent>
     </Card>
-  )
-}
+  );
+};

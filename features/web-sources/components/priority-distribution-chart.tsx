@@ -1,8 +1,12 @@
-"use client"
+"use client";
 
-import { useMemo } from "react"
-import { Bar, BarChart, Cell, XAxis, YAxis } from "recharts"
-import { IconAlertTriangle, IconAlertCircle, IconInfoCircle } from "@tabler/icons-react"
+import {
+  IconAlertCircle,
+  IconAlertTriangle,
+  IconInfoCircle,
+} from "@tabler/icons-react";
+import { useMemo } from "react";
+import { Bar, BarChart, Cell, XAxis, YAxis } from "recharts";
 
 import {
   Card,
@@ -10,16 +14,16 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
-} from "@/components/ui/chart"
-import { Skeleton } from "@/components/ui/skeleton"
+} from "@/components/ui/chart";
+import { Skeleton } from "@/components/ui/skeleton";
 
-import type { PriorityBreakdown, WebWatchOverview } from "../types"
+import type { PriorityBreakdown, WebWatchOverview } from "../types";
 
 const chartConfig = {
   count: {
@@ -37,30 +41,30 @@ const chartConfig = {
     label: "Low Priority",
     color: "hsl(var(--muted-foreground))",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
 const priorityColors: Record<string, string> = {
   high: "hsl(var(--destructive))",
   medium: "hsl(38 92% 50%)",
   low: "hsl(var(--muted-foreground))",
-}
+};
 
 const PriorityIcon = ({ priority }: { priority: string }) => {
-  const className = "size-4"
+  const className = "size-4";
   switch (priority) {
     case "high":
-      return <IconAlertTriangle className={className} />
+      return <IconAlertTriangle className={className} />;
     case "medium":
-      return <IconAlertCircle className={className} />
+      return <IconAlertCircle className={className} />;
     default:
-      return <IconInfoCircle className={className} />
+      return <IconInfoCircle className={className} />;
   }
-}
+};
 
 interface PriorityDistributionChartProps {
-  data: PriorityBreakdown[]
-  webWatch: WebWatchOverview
-  isLoading?: boolean
+  data: PriorityBreakdown[];
+  webWatch: WebWatchOverview;
+  isLoading?: boolean;
 }
 
 export const PriorityDistributionChart = ({
@@ -74,11 +78,11 @@ export const PriorityDistributionChart = ({
       count: item.count,
       percentage: item.percentage,
       fill: priorityColors[item.priority],
-    }))
-  }, [data])
+    }));
+  }, [data]);
 
   if (isLoading) {
-    return <PriorityDistributionChartSkeleton />
+    return <PriorityDistributionChartSkeleton />;
   }
 
   return (
@@ -86,8 +90,8 @@ export const PriorityDistributionChart = ({
       <CardHeader>
         <CardTitle>Documents by Priority</CardTitle>
         <CardDescription>
-          {webWatch.total_documents_with_conflicts.toLocaleString()} documents with
-          conflicts requiring attention
+          {webWatch.total_documents_with_conflicts.toLocaleString()} documents
+          with conflicts requiring attention
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -130,7 +134,9 @@ export const PriorityDistributionChart = ({
             >
               <div className="flex items-center gap-2">
                 <PriorityIcon priority={item.priority} />
-                <span className="font-medium capitalize">{item.priority} Priority</span>
+                <span className="font-medium capitalize">
+                  {item.priority} Priority
+                </span>
               </div>
               <div className="flex items-center gap-4">
                 <span className="text-sm text-muted-foreground">
@@ -155,8 +161,8 @@ export const PriorityDistributionChart = ({
         </div>
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
 const PriorityDistributionChartSkeleton = () => {
   return (
@@ -174,5 +180,5 @@ const PriorityDistributionChartSkeleton = () => {
         </div>
       </CardContent>
     </Card>
-  )
-}
+  );
+};

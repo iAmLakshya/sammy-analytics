@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { IconInfoCircle } from '@tabler/icons-react';
-import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip';
+import { IconInfoCircle } from "@tabler/icons-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
 
 interface InfoTooltipProps {
   content: string;
@@ -20,9 +20,7 @@ export const InfoTooltip = ({ content, className }: InfoTooltipProps) => {
           <IconInfoCircle className="size-3.5" />
         </button>
       </TooltipTrigger>
-      <TooltipContent className="max-w-xs text-left">
-        {content}
-      </TooltipContent>
+      <TooltipContent className="max-w-xs text-left">{content}</TooltipContent>
     </Tooltip>
   );
 };

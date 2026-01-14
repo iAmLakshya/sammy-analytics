@@ -1,17 +1,17 @@
-"use client"
+"use client";
 
-import { useMemo } from "react"
+import { useMemo } from "react";
 import {
   Bar,
   BarChart,
   CartesianGrid,
-  XAxis,
-  YAxis,
   Cell,
   ReferenceLine,
-} from "recharts"
+  XAxis,
+  YAxis,
+} from "recharts";
 
-import { Badge } from "@/components/ui/badge"
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardAction,
@@ -19,27 +19,27 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
-} from "@/components/ui/chart"
-import { Skeleton } from "@/components/ui/skeleton"
+} from "@/components/ui/chart";
+import { Skeleton } from "@/components/ui/skeleton";
 
-import type { WeekdayActivity } from "../types"
+import type { WeekdayActivity } from "../types";
 
 const chartConfig = {
   reviews_completed: {
     label: "Reviews",
     color: "hsl(var(--primary))",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
 interface WeekdayActivityChartProps {
-  data: WeekdayActivity[]
-  isLoading?: boolean
+  data: WeekdayActivity[];
+  isLoading?: boolean;
 }
 
 export const WeekdayActivityChart = ({
@@ -50,50 +50,49 @@ export const WeekdayActivityChart = ({
   const chartData = useMemo(() => {
     const sorted = [...data].sort((a, b) => {
       // Adjust Sunday (0) to be last
-      const aNum = a.day_number === 0 ? 7 : a.day_number
-      const bNum = b.day_number === 0 ? 7 : b.day_number
-      return aNum - bNum
-    })
+      const aNum = a.day_number === 0 ? 7 : a.day_number;
+      const bNum = b.day_number === 0 ? 7 : b.day_number;
+      return aNum - bNum;
+    });
     return sorted.map((day) => ({
       ...day,
       day: day.day_of_week.slice(0, 3), // Mon, Tue, etc.
       isWeekend: day.day_number === 0 || day.day_number === 6,
-    }))
-  }, [data])
+    }));
+  }, [data]);
 
   const avgReviews = useMemo(() => {
-    const total = data.reduce((acc, d) => acc + d.reviews_completed, 0)
-    return Math.round(total / data.length)
-  }, [data])
+    const total = data.reduce((acc, d) => acc + d.reviews_completed, 0);
+    return Math.round(total / data.length);
+  }, [data]);
 
   const weekdayAvg = useMemo(() => {
     const weekdayData = data.filter(
       (d) => d.day_number !== 0 && d.day_number !== 6
-    )
-    const total = weekdayData.reduce((acc, d) => acc + d.reviews_completed, 0)
-    return Math.round(total / weekdayData.length)
-  }, [data])
+    );
+    const total = weekdayData.reduce((acc, d) => acc + d.reviews_completed, 0);
+    return Math.round(total / weekdayData.length);
+  }, [data]);
 
   const weekendDrop = useMemo(() => {
     const weekendData = data.filter(
       (d) => d.day_number === 0 || d.day_number === 6
-    )
+    );
     const weekendAvg =
       weekendData.reduce((acc, d) => acc + d.reviews_completed, 0) /
-      weekendData.length
-    return Math.round(((weekdayAvg - weekendAvg) / weekdayAvg) * 100)
-  }, [data, weekdayAvg])
+      weekendData.length;
+    return Math.round(((weekdayAvg - weekendAvg) / weekdayAvg) * 100);
+  }, [data, weekdayAvg]);
 
   const peakDay = useMemo(() => {
     return data.reduce(
-      (max, day) =>
-        day.reviews_completed > max.reviews_completed ? day : max,
+      (max, day) => (day.reviews_completed > max.reviews_completed ? day : max),
       data[0]
-    )
-  }, [data])
+    );
+  }, [data]);
 
   if (isLoading) {
-    return <WeekdayActivityChartSkeleton />
+    return <WeekdayActivityChartSkeleton />;
   }
 
   return (
@@ -104,9 +103,7 @@ export const WeekdayActivityChart = ({
           Review patterns across the week showing peak days and weekend coverage
         </CardDescription>
         <CardAction>
-          <Badge variant="outline">
-            {weekendDrop}% weekend drop
-          </Badge>
+          <Badge variant="outline">{weekendDrop}% weekend drop</Badge>
         </CardAction>
       </CardHeader>
       <CardContent>
@@ -130,12 +127,12 @@ export const WeekdayActivityChart = ({
                 <ChartTooltipContent
                   labelFormatter={(_, payload) => {
                     if (payload && payload.length > 0) {
-                      return payload[0].payload.day_of_week
+                      return payload[0].payload.day_of_week;
                     }
-                    return ""
+                    return "";
                   }}
                   formatter={(value, name, item) => {
-                    const payload = item.payload
+                    const payload = item.payload;
                     return (
                       <div className="flex flex-col gap-1">
                         <div className="flex items-center justify-between gap-4">
@@ -157,7 +154,7 @@ export const WeekdayActivityChart = ({
                           </span>
                         </div>
                       </div>
-                    )
+                    );
                   }}
                 />
               }
@@ -209,8 +206,8 @@ export const WeekdayActivityChart = ({
         </div>
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
 const WeekdayActivityChartSkeleton = () => {
   return (
@@ -223,5 +220,5 @@ const WeekdayActivityChartSkeleton = () => {
         <Skeleton className="h-[280px] w-full" />
       </CardContent>
     </Card>
-  )
-}
+  );
+};

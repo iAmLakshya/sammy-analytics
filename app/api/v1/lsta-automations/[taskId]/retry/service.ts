@@ -1,7 +1,14 @@
 import { mockLstaTasks } from "@/features/lsta-automation/data/mock.tasks.data";
-import type { LstaTaskRetryResponse, LstaTask } from "@/features/lsta-automation/types";
+import type {
+  LstaTask,
+  LstaTaskRetryResponse,
+} from "@/features/lsta-automation/types";
+import {
+  BadRequestError,
+  NotFoundError,
+  ServiceError,
+} from "@/shared/utils/server/errors";
 import type { CoreDependencies } from "@/shared/utils/server/wrap-route-handler";
-import { NotFoundError, BadRequestError, ServiceError } from "@/shared/utils/server/errors";
 
 export const retryLstaTask =
   (dependencies: CoreDependencies) =>
@@ -15,7 +22,9 @@ export const retryLstaTask =
 
     const task = mockLstaTasks[taskIndex];
     if (task.status !== "failed") {
-      return new BadRequestError(`Task ${taskId} is not in failed status. Current status: ${task.status}`);
+      return new BadRequestError(
+        `Task ${taskId} is not in failed status. Current status: ${task.status}`
+      );
     }
 
     const updatedTask: LstaTask = {

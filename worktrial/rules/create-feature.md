@@ -3,6 +3,7 @@ comprehensive coding style guide based on all the patterns I've observed.
 ---
 
 # 🏆 Dashboard Gold Standard: Coding Style Guide
+
 ## Based on the `source-watch` Feature Reference Implementation
 
 ---
@@ -104,17 +105,17 @@ comprehensive coding style guide based on all the patterns I've observed.
 
 ```typescript
 // ✅ CORRECT: Single export from index.ts
-export { SourceWatchView } from './source-watch-hub';
+export { SourceWatchView } from "./source-watch-hub";
 ```
 
 ```typescript
-// ✅ CORRECT: Component-level index.ts  
-export { AnalysisDetailViewer } from './analysis-detail-viewer';
+// ✅ CORRECT: Component-level index.ts
+export { AnalysisDetailViewer } from "./analysis-detail-viewer";
 ```
 
 ```typescript
 // ❌ WRONG: Logic or multiple responsibilities in index.ts
-import { something } from './file';
+import { something } from "./file";
 export const processedThing = doSomething(something);
 ```
 
@@ -230,14 +231,16 @@ export const AnalysisDetailViewer = ({
  * LLM DESCRIPTION: ...
  */
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery } from "@tanstack/react-query";
 
 // 1. Fetch function defined OUTSIDE hook (pure function)
 const fetchSourceDetail = async (originId: string): Promise<DetailResponse> => {
-  const response = await fetch(`/api/source-watch/detail?origin_id=${originId}`);
+  const response = await fetch(
+    `/api/source-watch/detail?origin_id=${originId}`
+  );
   if (!response.ok) {
     const error = await response.json();
-    throw new Error(error.message || 'Failed to fetch');
+    throw new Error(error.message || "Failed to fetch");
   }
   return response.json();
 };
@@ -248,7 +251,7 @@ type UseSourceDetailParams = { originId: string | null };
 // 3. Hook export
 export const useSourceDetail = (params: UseSourceDetailParams) => {
   return useQuery({
-    queryKey: ['source-detail', params.originId],
+    queryKey: ["source-detail", params.originId],
     queryFn: () => fetchSourceDetail(params.originId!),
     enabled: !!params.originId,
     staleTime: 10000, // Cache duration in ms
@@ -301,7 +304,7 @@ export const useSourceDetail = (params: SourceDetailParams) => {
  * LLM DESCRIPTION: ...
  */
 
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 // 1. Request interface
 interface RefineDocumentRequest {
@@ -316,22 +319,22 @@ export const useRefineDocument = () => {
 
   return useMutation({
     mutationFn: async (data: RefineDocumentRequest) => {
-      const response = await fetch('/api/content-updates/rerun', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/content-updates/rerun", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.detail || 'Failed to refine document');
+        throw new Error(error.detail || "Failed to refine document");
       }
 
       return response.json();
     },
     onSuccess: () => {
       // Invalidate related queries to refetch
-      queryClient.invalidateQueries({ queryKey: ['source-detail'] });
+      queryClient.invalidateQueries({ queryKey: ["source-detail"] });
     },
   });
 };
@@ -386,9 +389,9 @@ const { mutate, isPending } = useAddContext();
 **Import from `motion/react` for client components:**
 
 ```typescript
-'use client';
+"use client";
 
-import { AnimatePresence, motion } from 'motion/react';
+import { AnimatePresence, motion } from "motion/react";
 ```
 
 **Standard animation config with willChange optimization:**
@@ -413,7 +416,7 @@ import { AnimatePresence, motion } from 'motion/react';
 **For server components, use:**
 
 ```typescript
-import * as motion from 'motion/react-client';
+import * as motion from "motion/react-client";
 ```
 
 **Reference:**
@@ -445,27 +448,27 @@ import * as motion from 'motion/react-client';
 ```typescript
 /**
  * API route for [description]
- * 
+ *
  * GET /api/feature/endpoint?param=X
- * 
+ *
  * HUMAN: [user-facing description]
  * LLM: [technical description]
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 
 import {
   BadRequestError,
   ServiceError,
   UnknownServerError,
-} from '@/shared/utils/server/errors';
+} from "@/shared/utils/server/errors";
 import {
   CoreDependencies,
   RouteContext,
   wrapRouteHandler,
-} from '@/shared/utils/server/wrap-route-handler';
+} from "@/shared/utils/server/wrap-route-handler";
 
-import { getDataFromSupabase } from './supabase';
+import { getDataFromSupabase } from "./supabase";
 
 // 1. Export HTTP method handler
 export const GET = async (request: NextRequest, context: RouteContext) => {
@@ -480,11 +483,11 @@ const handleFetch =
     _context: RouteContext
   ): Promise<NextResponse | ServiceError> => {
     const { searchParams } = new URL(request.url);
-    const param = searchParams.get('param');
+    const param = searchParams.get("param");
 
     // 3. Validate inputs - early return
     if (!param) {
-      return new BadRequestError({ message: 'Missing param' });
+      return new BadRequestError({ message: "Missing param" });
     }
 
     // 4. Call supabase layer
@@ -525,13 +528,13 @@ const handleSourceDetailFetch =
 ```typescript
 /**
  * Database queries for [feature] API endpoint
- * 
+ *
  * HUMAN: [user description]
  * LLM: [technical description]
  */
 
-import { ServiceError, UnknownServerError } from '@/shared/utils/server/errors';
-import { CoreDependencies } from '@/shared/utils/server/wrap-route-handler';
+import { ServiceError, UnknownServerError } from "@/shared/utils/server/errors";
+import { CoreDependencies } from "@/shared/utils/server/wrap-route-handler";
 
 // 1. Export async functions that take dependencies
 export const getDataById = async (
@@ -542,10 +545,10 @@ export const getDataById = async (
 
   // 2. ALWAYS include organisation_id filter
   const { data, error } = await supabaseClient
-    .from('table_name')
-    .select('column1, column2')
-    .eq('id', id)
-    .eq('organisation_id', organisationId);
+    .from("table_name")
+    .select("column1, column2")
+    .eq("id", id)
+    .eq("organisation_id", organisationId);
 
   // 3. Handle errors with ServiceError
   if (error) {
@@ -594,7 +597,7 @@ export const getOriginKindFromOriginId = async (
  */
 
 // 1. Import database types when needed
-import { Database } from '@/shared/types/database';
+import { Database } from "@/shared/types/database";
 
 // 2. Export interfaces alphabetically
 export interface FilterDefinition {
@@ -616,14 +619,14 @@ export interface FilterState {
 
 // 4. Union types for enums
 export type AnalysisStatus =
-  | 'ARCHIVED'
-  | 'COMPLETED'
-  | 'FAILED'
-  | 'PROCESSING'
-  | 'QUEUED';
+  | "ARCHIVED"
+  | "COMPLETED"
+  | "FAILED"
+  | "PROCESSING"
+  | "QUEUED";
 
 // 5. Database enum references
-export type SourcePlatform = Database['public']['Enums']['source_platform'];
+export type SourcePlatform = Database["public"]["Enums"]["source_platform"];
 ```
 
 ---
@@ -737,35 +740,35 @@ export const SourceCardSkeleton = () => {
 **Standard toast usage:**
 
 ```typescript
-import { useToast } from '@/shared/components/ui/use-toast';
+import { useToast } from "@/shared/components/ui/use-toast";
 
 const { toast } = useToast();
 
 // Success toast
 toast({
-  title: 'Success!',
-  description: 'Operation completed successfully',
+  title: "Success!",
+  description: "Operation completed successfully",
 });
 
 // Error toast
 toast({
-  title: 'Error',
-  description: error instanceof Error ? error.message : 'Operation failed',
-  variant: 'destructive',
+  title: "Error",
+  description: error instanceof Error ? error.message : "Operation failed",
+  variant: "destructive",
 });
 
 // With mutation callbacks
 mutate(data, {
   onSuccess: () => {
-    toast({ title: 'Success', description: 'Document refined' });
+    toast({ title: "Success", description: "Document refined" });
     onSuccess?.();
     onClose();
   },
   onError: (error) => {
     toast({
-      title: 'Failed',
-      description: error instanceof Error ? error.message : 'Operation failed',
-      variant: 'destructive',
+      title: "Failed",
+      description: error instanceof Error ? error.message : "Operation failed",
+      variant: "destructive",
     });
   },
 });
@@ -858,8 +861,9 @@ export const DraftDocumentModal = ({
  * @returns S3 key without domain prefix
  */
 export function extractS3Key(fileUrl: string): string {
-  const cdnUrl = process.env.NEXT_PUBLIC_CLOUDFRONT_URL || 'https://cdn.sammylabs.com';
-  return fileUrl.replace(cdnUrl, '').replace(/^\//, '');
+  const cdnUrl =
+    process.env.NEXT_PUBLIC_CLOUDFRONT_URL || "https://cdn.sammylabs.com";
+  return fileUrl.replace(cdnUrl, "").replace(/^\//, "");
 }
 ```
 
@@ -877,14 +881,14 @@ export function extractS3Key(fileUrl: string): string {
 
 ## 14. ⌨️ Naming Conventions
 
-| Entity | Convention | Example |
-|--------|------------|---------|
-| Files/Folders | kebab-case | `source-card.tsx`, `use-source-detail.ts` |
-| Components | PascalCase | `SourceCard`, `AnalysisDetailViewer` |
-| Hooks | camelCase with `use` prefix | `useSourceDetail`, `useAddContext` |
-| Interfaces/Types | PascalCase | `SourceCardProps`, `FilterState` |
-| Variables/Functions | camelCase | `handleSubmit`, `isLoading` |
-| Constants | SCREAMING_SNAKE_CASE | `ADD_CONTEXT_LOADING_MESSAGES` |
+| Entity              | Convention                  | Example                                   |
+| ------------------- | --------------------------- | ----------------------------------------- |
+| Files/Folders       | kebab-case                  | `source-card.tsx`, `use-source-detail.ts` |
+| Components          | PascalCase                  | `SourceCard`, `AnalysisDetailViewer`      |
+| Hooks               | camelCase with `use` prefix | `useSourceDetail`, `useAddContext`        |
+| Interfaces/Types    | PascalCase                  | `SourceCardProps`, `FilterState`          |
+| Variables/Functions | camelCase                   | `handleSubmit`, `isLoading`               |
+| Constants           | SCREAMING_SNAKE_CASE        | `ADD_CONTEXT_LOADING_MESSAGES`            |
 
 ---
 
@@ -910,7 +914,6 @@ Before submitting code, verify:
 - [ ] No `any` types
 - [ ] No unawaited async functions
 
-
 Concise rules for building accessible, fast, delightful UIs Use MUST/SHOULD/NEVER to guide decisions
 
 ## Interactions
@@ -923,7 +926,10 @@ Concise rules for building accessible, fast, delightful UIs Use MUST/SHOULD/NEVE
   - MUST: Hit target ≥24px (mobile ≥44px) If visual <24px, expand hit area
   - MUST: Mobile `<input>` font-size ≥16px or set:
     ```html
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover"
+    />
     ```
   - NEVER: Disable browser zoom
   - MUST: `touch-action: manipulation` to prevent double-tap zoom; set `-webkit-tap-highlight-color` to match design
@@ -977,7 +983,7 @@ Concise rules for building accessible, fast, delightful UIs Use MUST/SHOULD/NEVE
 - MUST: Deliberate alignment to grid/baseline/edges/optical centers—no accidental placement
 - SHOULD: Balance icon/text lockups (stroke/weight/size/spacing/color)
 - MUST: Verify mobile, laptop, ultra-wide (simulate ultra-wide at 50% zoom)
-- MUST: Respect safe areas (use env(safe-area-inset-*))
+- MUST: Respect safe areas (use env(safe-area-inset-\*))
 - MUST: Avoid unwanted scrollbars; fix overflows
 
 ## Content & Accessibility
@@ -1025,7 +1031,6 @@ Concise rules for building accessible, fast, delightful UIs Use MUST/SHOULD/NEVE
 - MUST: Increase contrast on `:hover/:active/:focus`
 - SHOULD: Match browser UI to bg
 - SHOULD: Avoid gradient banding (use masks when needed)
-
 
 # :compass: Dashboard Style Guide
 
@@ -1282,38 +1287,41 @@ Define the type ONCE and reuse in frontend and API. Don't redefine the same type
 # Unix Design Philosophy
 
 ## Summary
+
 This rule enforces the Unix design philosophy in all code contributions. Code should embody simplicity, composability, and clarity. Every function, class, or module should be designed to **do one thing well**, avoid unnecessary complexity, and enable composition with other tools.
 
 ## Rules
-- **Do One Thing Well**  
-  - Each program, function, or module should have a single responsibility.  
-  - Split responsibilities into separate functions or files if they diverge.  
 
-- **Write for Composition**  
-  - Design outputs so they can be easily consumed by other parts of the system.  
-  - Prefer return values, streams, or simple data structures over side effects.  
+- **Do One Thing Well**
+  - Each program, function, or module should have a single responsibility.
+  - Split responsibilities into separate functions or files if they diverge.
 
-- **Clarity over Cleverness**  
-  - Prioritize readable and maintainable code.  
-  - Avoid unnecessary abstractions or "magic."  
+- **Write for Composition**
+  - Design outputs so they can be easily consumed by other parts of the system.
+  - Prefer return values, streams, or simple data structures over side effects.
 
-- **Small, Focused Interfaces**  
-  - Expose minimal, clear APIs.  
-  - Prefer a few small, predictable functions over large, sprawling ones.  
+- **Clarity over Cleverness**
+  - Prioritize readable and maintainable code.
+  - Avoid unnecessary abstractions or "magic."
 
-- **Text as a Universal Interface**  
-  - Favor plain text or widely supported formats (JSON, CSV, YAML) for data exchange.  
-  - Avoid proprietary formats unless absolutely necessary.  
+- **Small, Focused Interfaces**
+  - Expose minimal, clear APIs.
+  - Prefer a few small, predictable functions over large, sprawling ones.
 
-- **Silence is Golden**  
-  - Functions should not log or print unless explicitly required.  
-  - Errors and warnings should be meaningful and actionable.  
+- **Text as a Universal Interface**
+  - Favor plain text or widely supported formats (JSON, CSV, YAML) for data exchange.
+  - Avoid proprietary formats unless absolutely necessary.
 
-- **Build from Simple Tools**  
-  - Prefer combining simple building blocks over writing monolithic code.  
-  - Encourage reusability across different contexts.  
+- **Silence is Golden**
+  - Functions should not log or print unless explicitly required.
+  - Errors and warnings should be meaningful and actionable.
+
+- **Build from Simple Tools**
+  - Prefer combining simple building blocks over writing monolithic code.
+  - Encourage reusability across different contexts.
 
 ## When in Doubt
-- Ask: *“Does this do one thing well?”*  
-- If not, refactor into smaller parts.  
-- If still uncertain, lean toward simplicity and clarity.  
+
+- Ask: _“Does this do one thing well?”_
+- If not, refactor into smaller parts.
+- If still uncertain, lean toward simplicity and clarity.

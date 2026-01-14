@@ -1,11 +1,11 @@
 "use client";
 
-import { IconCheck, IconX, IconLoader2, IconMinus } from "@tabler/icons-react";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { IconCheck, IconLoader2, IconMinus, IconX } from "@tabler/icons-react";
 import type { LstaTaskStep } from "../types";
 
 interface StepProgressIndicatorProps {

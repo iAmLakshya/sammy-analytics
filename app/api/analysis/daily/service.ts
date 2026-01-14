@@ -1,7 +1,7 @@
 import { dailyAnalysisRuns } from "@/features/analysis/data/mock.analysis.data";
 import type { DailyAnalysisResponse } from "@/features/analysis/types";
-import { CoreDependencies } from "@/shared/utils/server/wrap-route-handler";
 import { ServiceError } from "@/shared/utils/server/errors";
+import { CoreDependencies } from "@/shared/utils/server/wrap-route-handler";
 
 export const getDailyAnalysis =
   (dependencies: CoreDependencies) =>

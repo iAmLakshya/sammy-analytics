@@ -1,6 +1,6 @@
 "use client";
 
-import { IconCheck, IconX, IconLoader2 } from "@tabler/icons-react";
+import { IconCheck, IconLoader2, IconX } from "@tabler/icons-react";
 import type { LstaTaskStep } from "../types";
 
 interface StepPillProps {
@@ -27,17 +27,23 @@ export const StepPill = ({
   if (status === "completed") {
     icon = <IconCheck className="size-3" strokeWidth={2.5} />;
     borderClass = "border-emerald-500";
-    bgClass = isSelected ? "bg-emerald-50 dark:bg-emerald-950/50" : "bg-white dark:bg-background";
+    bgClass = isSelected
+      ? "bg-emerald-50 dark:bg-emerald-950/50"
+      : "bg-white dark:bg-background";
     textClass = "text-emerald-600 dark:text-emerald-400";
   } else if (status === "failed") {
     icon = <IconX className="size-3" strokeWidth={2.5} />;
     borderClass = "border-rose-500";
-    bgClass = isSelected ? "bg-rose-50 dark:bg-rose-950/50" : "bg-white dark:bg-background";
+    bgClass = isSelected
+      ? "bg-rose-50 dark:bg-rose-950/50"
+      : "bg-white dark:bg-background";
     textClass = "text-rose-600 dark:text-rose-400";
   } else if (isInProgress) {
     icon = <IconLoader2 className="size-3 animate-spin" />;
     borderClass = "border-amber-500";
-    bgClass = isSelected ? "bg-amber-50 dark:bg-amber-950/50" : "bg-white dark:bg-background";
+    bgClass = isSelected
+      ? "bg-amber-50 dark:bg-amber-950/50"
+      : "bg-white dark:bg-background";
     textClass = "text-amber-600 dark:text-amber-400";
   } else {
     icon = <span className="size-1 rounded-full bg-muted-foreground/40" />;
@@ -87,7 +93,10 @@ export const StepDetailPanel = ({ step, isActive }: StepDetailPanelProps) => {
         <span className="flex flex-wrap gap-x-3">
           {Object.entries(data).map(([key, value]) => (
             <span key={key}>
-              {formatOutputKey(key)}: <span className="font-medium text-foreground">{formatOutputValue(value)}</span>
+              {formatOutputKey(key)}:{" "}
+              <span className="font-medium text-foreground">
+                {formatOutputValue(value)}
+              </span>
             </span>
           ))}
         </span>

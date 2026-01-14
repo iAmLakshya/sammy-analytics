@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import type {
+  PeriodType,
   Submission,
   SubmissionFilters,
   SubmissionStatus,
-  PeriodType,
 } from "../types";
 
 const DEFAULT_FILTERS: SubmissionFilters = {

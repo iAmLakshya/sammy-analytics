@@ -1,7 +1,7 @@
 import { reviewActivity } from "@/features/conflicts/data/mock.conflicts.data";
 import type { ConflictActivityResponse } from "@/features/conflicts/types";
-import { CoreDependencies } from "@/shared/utils/server/wrap-route-handler";
 import { ServiceError } from "@/shared/utils/server/errors";
+import { CoreDependencies } from "@/shared/utils/server/wrap-route-handler";
 
 export const getReviewActivity =
   (dependencies: CoreDependencies) =>

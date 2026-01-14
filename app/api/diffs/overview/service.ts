@@ -1,11 +1,11 @@
 import {
-  stateDistribution,
   pendingDiffsBacklog,
+  stateDistribution,
   timeToResolution,
 } from "@/features/diffs/data/mock.diffs.data";
 import type { DiffsOverviewResponse } from "@/features/diffs/types";
-import { CoreDependencies } from "@/shared/utils/server/wrap-route-handler";
 import { ServiceError } from "@/shared/utils/server/errors";
+import { CoreDependencies } from "@/shared/utils/server/wrap-route-handler";
 
 export const getDiffsOverview =
   (dependencies: CoreDependencies) =>

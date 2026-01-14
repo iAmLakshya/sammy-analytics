@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { useMemo } from "react"
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Cell } from "recharts"
-import { IconAlertTriangle } from "@tabler/icons-react"
+import { IconAlertTriangle } from "@tabler/icons-react";
+import { useMemo } from "react";
+import { Bar, BarChart, CartesianGrid, Cell, XAxis, YAxis } from "recharts";
 
 import {
   Card,
@@ -10,41 +10,53 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
-} from "@/components/ui/chart"
-import { Skeleton } from "@/components/ui/skeleton"
+} from "@/components/ui/chart";
+import { Skeleton } from "@/components/ui/skeleton";
 
-import type { PendingConflictsAging } from "../types"
+import type { PendingConflictsAging } from "../types";
 
 const chartConfig = {
   count: {
     label: "Conflicts",
     color: "var(--chart-2)",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
 interface AgingChartProps {
-  data: PendingConflictsAging
-  isLoading?: boolean
+  data: PendingConflictsAging;
+  isLoading?: boolean;
 }
 
 export const AgingChart = ({ data, isLoading }: AgingChartProps) => {
   const chartData = useMemo(() => {
     return [
       { bucket: "< 24h", count: data.last_24h, color: "var(--chart-1)" },
-      { bucket: "1-7 days", count: data.last_7d - data.last_24h, color: "var(--chart-2)" },
-      { bucket: "7-30 days", count: data.last_30d - data.last_7d, color: "var(--chart-3)" },
-      { bucket: "> 30 days", count: data.older_than_30d, color: "var(--chart-4)" },
-    ]
-  }, [data])
+      {
+        bucket: "1-7 days",
+        count: data.last_7d - data.last_24h,
+        color: "var(--chart-2)",
+      },
+      {
+        bucket: "7-30 days",
+        count: data.last_30d - data.last_7d,
+        color: "var(--chart-3)",
+      },
+      {
+        bucket: "> 30 days",
+        count: data.older_than_30d,
+        color: "var(--chart-4)",
+      },
+    ];
+  }, [data]);
 
   if (isLoading) {
-    return <AgingChartSkeleton />
+    return <AgingChartSkeleton />;
   }
 
   return (
@@ -112,8 +124,8 @@ export const AgingChart = ({ data, isLoading }: AgingChartProps) => {
         </div>
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
 const AgingChartSkeleton = () => {
   return (
@@ -131,5 +143,5 @@ const AgingChartSkeleton = () => {
         </div>
       </CardContent>
     </Card>
-  )
-}
+  );
+};

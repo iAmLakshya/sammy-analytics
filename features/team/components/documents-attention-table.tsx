@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import { useMemo } from "react"
-import { IconAlertTriangle, IconFileText } from "@tabler/icons-react"
+import { IconAlertTriangle, IconFileText } from "@tabler/icons-react";
+import { useMemo } from "react";
 
-import { Badge } from "@/components/ui/badge"
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardAction,
@@ -11,7 +11,8 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -19,20 +20,19 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { Skeleton } from "@/components/ui/skeleton"
+} from "@/components/ui/table";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip"
+} from "@/components/ui/tooltip";
 
-import type { DocumentActivity } from "../types"
+import type { DocumentActivity } from "../types";
 
 interface DocumentsAttentionTableProps {
-  data: DocumentActivity[]
-  isLoading?: boolean
+  data: DocumentActivity[];
+  isLoading?: boolean;
 }
 
 export const DocumentsAttentionTable = ({
@@ -40,15 +40,15 @@ export const DocumentsAttentionTable = ({
   isLoading,
 }: DocumentsAttentionTableProps) => {
   const totalPending = useMemo(() => {
-    return data.reduce((acc, d) => acc + d.pending_conflicts, 0)
-  }, [data])
+    return data.reduce((acc, d) => acc + d.pending_conflicts, 0);
+  }, [data]);
 
   const highPriorityDocs = useMemo(() => {
-    return data.filter((d) => d.pending_conflicts > 100).length
-  }, [data])
+    return data.filter((d) => d.pending_conflicts > 100).length;
+  }, [data]);
 
   if (isLoading) {
-    return <DocumentsAttentionTableSkeleton />
+    return <DocumentsAttentionTableSkeleton />;
   }
 
   return (
@@ -90,13 +90,13 @@ export const DocumentsAttentionTable = ({
                   ((doc.accepted_conflicts + doc.rejected_conflicts) /
                     doc.total_conflicts) *
                     100
-                )
+                );
                 const acceptanceRate = Math.round(
                   (doc.accepted_conflicts /
                     (doc.accepted_conflicts + doc.rejected_conflicts)) *
                     100
-                )
-                const isPriority = doc.pending_conflicts > 100
+                );
+                const isPriority = doc.pending_conflicts > 100;
 
                 return (
                   <TableRow key={doc.flow_id}>
@@ -153,7 +153,7 @@ export const DocumentsAttentionTable = ({
                       </div>
                     </TableCell>
                   </TableRow>
-                )
+                );
               })}
             </TableBody>
           </Table>
@@ -173,8 +173,8 @@ export const DocumentsAttentionTable = ({
         </div>
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
 const DocumentsAttentionTableSkeleton = () => {
   return (
@@ -198,5 +198,5 @@ const DocumentsAttentionTableSkeleton = () => {
         </div>
       </CardContent>
     </Card>
-  )
-}
+  );
+};

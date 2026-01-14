@@ -1,6 +1,6 @@
-import { useQuery, UseQueryOptions } from "@tanstack/react-query"
-import { fetchApi } from "./api-client"
-import type { ApiEndpoint, ApiEndpointMap } from "./api-endpoints"
+import { useQuery, UseQueryOptions } from "@tanstack/react-query";
+import { fetchApi } from "./api-client";
+import type { ApiEndpoint, ApiEndpointMap } from "./api-endpoints";
 
 type QueryKeyFromEndpoint<T extends string> = T extends `/${infer Rest}`
   ? Rest extends `api/${infer Path}`
@@ -8,7 +8,7 @@ type QueryKeyFromEndpoint<T extends string> = T extends `/${infer Rest}`
       ? [First, Second]
       : [Path]
     : [Rest]
-  : [T]
+  : [T];
 
 export function useApiQuery<E extends ApiEndpoint>(
   endpoint: E,
@@ -16,12 +16,12 @@ export function useApiQuery<E extends ApiEndpoint>(
 ) {
   const queryKey = endpoint
     .replace("/api/", "")
-    .split("/") as QueryKeyFromEndpoint<E>
+    .split("/") as QueryKeyFromEndpoint<E>;
 
   return useQuery<ApiEndpointMap[E]>({
     queryKey,
     queryFn: () => fetchApi<ApiEndpointMap[E]>(endpoint),
     staleTime: 60 * 1000,
     ...options,
-  })
+  });
 }

@@ -1,22 +1,22 @@
 // Components
-export { TeamContent } from "./components/team-content"
-export { ReviewerLeaderboardChart } from "./components/reviewer-leaderboard-chart"
-export { WeekdayActivityChart } from "./components/weekday-activity-chart"
-export { ReviewTrendsChart } from "./components/review-trends-chart"
-export { DocumentsAttentionTable } from "./components/documents-attention-table"
+export { DocumentsAttentionTable } from "./components/documents-attention-table";
+export { ReviewTrendsChart } from "./components/review-trends-chart";
+export { ReviewerLeaderboardChart } from "./components/reviewer-leaderboard-chart";
+export { TeamContent } from "./components/team-content";
+export { WeekdayActivityChart } from "./components/weekday-activity-chart";
 
 // Hooks
-export { useFetchTeamOverview } from "./hooks/use-fetch-team-overview"
-export { useFetchReviewActivity } from "./hooks/use-fetch-review-activity"
+export { useFetchReviewActivity } from "./hooks/use-fetch-review-activity";
+export { useFetchTeamOverview } from "./hooks/use-fetch-team-overview";
 
 // Types
 export type {
-  Reviewer,
-  WeekdayActivity,
   DailyReviewActivity,
   DocumentActivity,
-  UserCorrectionsSummary,
+  ReviewActivityResponse,
+  Reviewer,
   TeamOverview,
   TeamOverviewResponse,
-  ReviewActivityResponse,
-} from "./types"
+  UserCorrectionsSummary,
+  WeekdayActivity,
+} from "./types";

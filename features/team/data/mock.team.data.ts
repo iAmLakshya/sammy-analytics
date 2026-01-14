@@ -1,11 +1,11 @@
 import type {
-  Reviewer,
-  WeekdayActivity,
   DailyReviewActivity,
   DocumentActivity,
-  UserCorrectionsSummary,
+  Reviewer,
   TeamOverview,
-} from "../types"
+  UserCorrectionsSummary,
+  WeekdayActivity,
+} from "../types";
 
 // From 24_most_active_reviewers.jsonc
 export const reviewers: Reviewer[] = [
@@ -89,7 +89,7 @@ export const reviewers: Reviewer[] = [
     latest_review: "2026-01-12 09:45:18.456+00",
     avg_review_time_hours: 15.42,
   },
-]
+];
 
 // From 25_review_by_day_of_week.jsonc
 export const weekdayActivity: WeekdayActivity[] = [
@@ -142,7 +142,7 @@ export const weekdayActivity: WeekdayActivity[] = [
     unique_reviewers: 2,
     avg_review_time_hours: 18.45,
   },
-]
+];
 
 // From 11_conflict_review_activity.jsonc
 export const dailyReviewActivity: DailyReviewActivity[] = [
@@ -209,7 +209,7 @@ export const dailyReviewActivity: DailyReviewActivity[] = [
     rejected: 18,
     unique_reviewers: 4,
   },
-]
+];
 
 // From 27_documents_most_updates.jsonc (top 10 for display)
 export const documentsNeedingAttention: DocumentActivity[] = [
@@ -313,14 +313,14 @@ export const documentsNeedingAttention: DocumentActivity[] = [
     rejected_conflicts: 17,
     latest_analysis: "2025-12-29 08:08:39.255793+00",
   },
-]
+];
 
 // From 13_user_corrections.jsonc
 export const userCorrections: UserCorrectionsSummary = {
   total_user_corrections: 412,
   unique_correctors: 7,
   correction_rate_percentage: "4.45",
-}
+};
 
 // Calculated team overview
 export const teamOverview: TeamOverview = {
@@ -336,4 +336,4 @@ export const teamOverview: TeamOverview = {
         10
     ) / 10,
   correctionRate: userCorrections.correction_rate_percentage,
-}
+};

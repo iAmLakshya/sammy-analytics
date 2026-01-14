@@ -23,62 +23,62 @@ ORDER BY date DESC;
     "conflicts_created": 289,
     "needs_review": 124,
     "accepted": 135,
-    "rejected": 30
+    "rejected": 30,
   },
   {
     "date": "2026-01-11",
     "conflicts_created": 156,
     "needs_review": 67,
     "accepted": 72,
-    "rejected": 17
+    "rejected": 17,
   },
   {
     "date": "2026-01-10",
     "conflicts_created": 342,
     "needs_review": 145,
     "accepted": 159,
-    "rejected": 38
+    "rejected": 38,
   },
   {
     "date": "2026-01-09",
     "conflicts_created": 298,
     "needs_review": 128,
     "accepted": 138,
-    "rejected": 32
+    "rejected": 32,
   },
   {
     "date": "2026-01-08",
     "conflicts_created": 412,
     "needs_review": 178,
     "accepted": 186,
-    "rejected": 48
+    "rejected": 48,
   },
   {
     "date": "2026-01-07",
     "conflicts_created": 385,
     "needs_review": 165,
     "accepted": 174,
-    "rejected": 46
+    "rejected": 46,
   },
   {
     "date": "2026-01-06",
     "conflicts_created": 367,
     "needs_review": 156,
     "accepted": 168,
-    "rejected": 43
+    "rejected": 43,
   },
   {
     "date": "2026-01-05",
     "conflicts_created": 198,
     "needs_review": 84,
     "accepted": 92,
-    "rejected": 22
+    "rejected": 22,
   },
   {
     "date": "2026-01-04",
     "conflicts_created": 167,
     "needs_review": 71,
     "accepted": 78,
-    "rejected": 18
-  }
+    "rejected": 18,
+  },
 ]

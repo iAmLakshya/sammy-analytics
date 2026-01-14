@@ -1,8 +1,8 @@
 import type {
-  DailyAnalysisRuns,
   AnalysisPerformance,
+  DailyAnalysisRuns,
   PerformanceBucket,
-} from "../types"
+} from "../types";
 
 // Daily analysis runs data - from 22_analysis_runs_per_day.jsonc
 export const dailyAnalysisRuns: DailyAnalysisRuns[] = [
@@ -69,7 +69,7 @@ export const dailyAnalysisRuns: DailyAnalysisRuns[] = [
     conflicts_detected: 167,
     avg_conflicts_per_run: 0.94,
   },
-]
+];
 
 // Analysis performance metrics - from 23_analysis_performance.jsonc
 export const analysisPerformance: AnalysisPerformance = {
@@ -78,7 +78,7 @@ export const analysisPerformance: AnalysisPerformance = {
   median_duration_seconds: 412.18,
   min_duration_seconds: 52.34,
   max_duration_seconds: 1842.67,
-}
+};
 
 // Simulated performance distribution for histogram
 // Based on typical right-skewed distribution with median around 412s
@@ -89,4 +89,4 @@ export const performanceDistribution: PerformanceBucket[] = [
   { range: "8-12m", count: 687, percentage: 18.6 },
   { range: "12-20m", count: 298, percentage: 8.1 },
   { range: "20m+", count: 90, percentage: 2.4 },
-]
+];

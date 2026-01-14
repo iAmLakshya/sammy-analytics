@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { IconCheck, IconX } from "@tabler/icons-react"
+import { IconCheck, IconX } from "@tabler/icons-react";
 
 import {
   Card,
@@ -8,23 +8,26 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Skeleton } from "@/components/ui/skeleton"
+} from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
-import type { TimeToReview } from "../types"
+import type { TimeToReview } from "../types";
 
 interface TimeToReviewCardProps {
-  data: TimeToReview[]
-  isLoading?: boolean
+  data: TimeToReview[];
+  isLoading?: boolean;
 }
 
-export const TimeToReviewCard = ({ data, isLoading }: TimeToReviewCardProps) => {
+export const TimeToReviewCard = ({
+  data,
+  isLoading,
+}: TimeToReviewCardProps) => {
   if (isLoading) {
-    return <TimeToReviewCardSkeleton />
+    return <TimeToReviewCardSkeleton />;
   }
 
-  const accepted = data.find((d) => d.disposition === "ACCEPTED")
-  const rejected = data.find((d) => d.disposition === "REJECTED")
+  const accepted = data.find((d) => d.disposition === "ACCEPTED");
+  const rejected = data.find((d) => d.disposition === "REJECTED");
 
   return (
     <Card>
@@ -49,10 +52,13 @@ export const TimeToReviewCard = ({ data, isLoading }: TimeToReviewCardProps) => 
               </div>
               <div className="text-2xl font-semibold tabular-nums">
                 {accepted.avg_hours_to_review}h
-                <span className="ml-1 text-sm font-normal text-muted-foreground">avg</span>
+                <span className="ml-1 text-sm font-normal text-muted-foreground">
+                  avg
+                </span>
               </div>
               <div className="mt-1 text-xs text-muted-foreground">
-                Median: {accepted.median_hours}h • Min: {accepted.min_hours}h • Max: {accepted.max_hours}h
+                Median: {accepted.median_hours}h • Min: {accepted.min_hours}h •
+                Max: {accepted.max_hours}h
               </div>
             </div>
           )}
@@ -69,18 +75,21 @@ export const TimeToReviewCard = ({ data, isLoading }: TimeToReviewCardProps) => 
               </div>
               <div className="text-2xl font-semibold tabular-nums">
                 {rejected.avg_hours_to_review}h
-                <span className="ml-1 text-sm font-normal text-muted-foreground">avg</span>
+                <span className="ml-1 text-sm font-normal text-muted-foreground">
+                  avg
+                </span>
               </div>
               <div className="mt-1 text-xs text-muted-foreground">
-                Median: {rejected.median_hours}h • Min: {rejected.min_hours}h • Max: {rejected.max_hours}h
+                Median: {rejected.median_hours}h • Min: {rejected.min_hours}h •
+                Max: {rejected.max_hours}h
               </div>
             </div>
           )}
         </div>
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
 const TimeToReviewCardSkeleton = () => {
   return (
@@ -97,5 +106,5 @@ const TimeToReviewCardSkeleton = () => {
         </div>
       </CardContent>
     </Card>
-  )
-}
+  );
+};

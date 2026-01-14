@@ -1,15 +1,21 @@
-'use client';
+"use client";
 
 import {
-  IconCircleCheck,
-  IconAlertTriangle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { cn } from "@/lib/utils";
+import {
   IconAlertCircle,
-} from "@tabler/icons-react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { InfoTooltip } from "@/components/ui/info-tooltip"
-import { cn } from "@/lib/utils"
+  IconAlertTriangle,
+  IconCircleCheck,
+} from "@tabler/icons-react";
 
-type HealthStatus = 'healthy' | 'warning' | 'critical';
+type HealthStatus = "healthy" | "warning" | "critical";
 
 interface HealthIndicator {
   label: string;
@@ -25,28 +31,32 @@ const healthData: HealthIndicator[] = [
     status: "healthy",
     value: "186/day",
     description: "Issues handled daily",
-    tooltip: "How many issues your team resolves per day. Higher is better. Goal: 150+ per day.",
+    tooltip:
+      "How many issues your team resolves per day. Higher is better. Goal: 150+ per day.",
   },
   {
     label: "Backlog Age",
     status: "warning",
     value: "5.2 days",
     description: "Avg wait time for review",
-    tooltip: "How long issues sit before being reviewed. Shorter is better. Goal: under 3 days.",
+    tooltip:
+      "How long issues sit before being reviewed. Shorter is better. Goal: under 3 days.",
   },
   {
     label: "Content Freshness",
     status: "healthy",
     value: "94.2%",
     description: "Sources checked today",
-    tooltip: "Percentage of web sources checked in the last 24 hours. Goal: 90% or higher.",
+    tooltip:
+      "Percentage of web sources checked in the last 24 hours. Goal: 90% or higher.",
   },
   {
     label: "System Reliability",
     status: "healthy",
     value: "99.1%",
     description: "Scans completed successfully",
-    tooltip: "How often automated scans complete without errors. Goal: 98% or higher.",
+    tooltip:
+      "How often automated scans complete without errors. Goal: 98% or higher.",
   },
 ];
 
@@ -69,11 +79,11 @@ const statusConfig = {
 };
 
 export const HealthIndicators = () => {
-  const overallStatus = healthData.some(h => h.status === 'critical')
-    ? 'critical'
-    : healthData.some(h => h.status === 'warning')
-    ? 'warning'
-    : 'healthy';
+  const overallStatus = healthData.some((h) => h.status === "critical")
+    ? "critical"
+    : healthData.some((h) => h.status === "warning")
+      ? "warning"
+      : "healthy";
 
   return (
     <Card>
@@ -89,8 +99,17 @@ export const HealthIndicators = () => {
             </CardDescription>
           </div>
           <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border">
-            <div className={cn("size-2 rounded-full animate-pulse", statusConfig[overallStatus].dot)} />
-            {overallStatus === 'healthy' ? 'All Systems Operational' : overallStatus === 'warning' ? 'Needs Attention' : 'Action Required'}
+            <div
+              className={cn(
+                "size-2 rounded-full animate-pulse",
+                statusConfig[overallStatus].dot
+              )}
+            />
+            {overallStatus === "healthy"
+              ? "All Systems Operational"
+              : overallStatus === "warning"
+                ? "Needs Attention"
+                : "Action Required"}
           </div>
         </div>
       </CardHeader>
@@ -111,7 +130,10 @@ export const HealthIndicators = () => {
                       <span className="text-xs font-medium text-muted-foreground truncate">
                         {indicator.label}
                       </span>
-                      <InfoTooltip content={indicator.tooltip} className="shrink-0" />
+                      <InfoTooltip
+                        content={indicator.tooltip}
+                        className="shrink-0"
+                      />
                     </div>
                     <div className="text-lg font-semibold tabular-nums mt-0.5">
                       {indicator.value}

@@ -1,9 +1,30 @@
-import type { AnalysisOverviewResponse, DailyAnalysisResponse } from "@/features/analysis/types"
-import type { ConflictsOverviewResponse, DailyConflictsResponse, ConflictActivityResponse } from "@/features/conflicts/types"
-import type { DiffsOverviewResponse, DailyDiffsResponse, WeeklyDiffsResponse } from "@/features/diffs/types"
-import type { TeamOverviewResponse, ReviewActivityResponse } from "@/features/team/types"
-import type { WebSourcesOverviewResponse, DailySyncsResponse } from "@/features/web-sources/types"
-import type { LstaTaskListResponse, LstaTaskDetailResponse, LstaTaskRetryResponse } from "@/features/lsta-automation/types"
+import type {
+  AnalysisOverviewResponse,
+  DailyAnalysisResponse,
+} from "@/features/analysis/types";
+import type {
+  ConflictActivityResponse,
+  ConflictsOverviewResponse,
+  DailyConflictsResponse,
+} from "@/features/conflicts/types";
+import type {
+  DailyDiffsResponse,
+  DiffsOverviewResponse,
+  WeeklyDiffsResponse,
+} from "@/features/diffs/types";
+import type {
+  LstaTaskDetailResponse,
+  LstaTaskListResponse,
+  LstaTaskRetryResponse,
+} from "@/features/lsta-automation/types";
+import type {
+  ReviewActivityResponse,
+  TeamOverviewResponse,
+} from "@/features/team/types";
+import type {
+  DailySyncsResponse,
+  WebSourcesOverviewResponse,
+} from "@/features/web-sources/types";
 
 export const API_ENDPOINTS = {
   analysis: {
@@ -33,24 +54,24 @@ export const API_ENDPOINTS = {
     detail: "/api/v1/lsta-automations/:taskId",
     retry: "/api/v1/lsta-automations/:taskId/retry",
   },
-} as const
+} as const;
 
 export type ApiEndpointMap = {
-  "/api/analysis/overview": AnalysisOverviewResponse
-  "/api/analysis/daily": DailyAnalysisResponse
-  "/api/conflicts/overview": ConflictsOverviewResponse
-  "/api/conflicts/daily": DailyConflictsResponse
-  "/api/conflicts/activity": ConflictActivityResponse
-  "/api/diffs/overview": DiffsOverviewResponse
-  "/api/diffs/daily": DailyDiffsResponse
-  "/api/diffs/weekly": WeeklyDiffsResponse
-  "/api/team/overview": TeamOverviewResponse
-  "/api/team/activity": ReviewActivityResponse
-  "/api/web-sources/overview": WebSourcesOverviewResponse
-  "/api/web-sources/daily": DailySyncsResponse
-  "/api/v1/lsta-automations": LstaTaskListResponse
-  "/api/v1/lsta-automations/:taskId": LstaTaskDetailResponse
-  "/api/v1/lsta-automations/:taskId/retry": LstaTaskRetryResponse
-}
+  "/api/analysis/overview": AnalysisOverviewResponse;
+  "/api/analysis/daily": DailyAnalysisResponse;
+  "/api/conflicts/overview": ConflictsOverviewResponse;
+  "/api/conflicts/daily": DailyConflictsResponse;
+  "/api/conflicts/activity": ConflictActivityResponse;
+  "/api/diffs/overview": DiffsOverviewResponse;
+  "/api/diffs/daily": DailyDiffsResponse;
+  "/api/diffs/weekly": WeeklyDiffsResponse;
+  "/api/team/overview": TeamOverviewResponse;
+  "/api/team/activity": ReviewActivityResponse;
+  "/api/web-sources/overview": WebSourcesOverviewResponse;
+  "/api/web-sources/daily": DailySyncsResponse;
+  "/api/v1/lsta-automations": LstaTaskListResponse;
+  "/api/v1/lsta-automations/:taskId": LstaTaskDetailResponse;
+  "/api/v1/lsta-automations/:taskId/retry": LstaTaskRetryResponse;
+};
 
-export type ApiEndpoint = keyof ApiEndpointMap
+export type ApiEndpoint = keyof ApiEndpointMap;

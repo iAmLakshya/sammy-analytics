@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useMemo } from 'react';
-import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip';
-import { cn } from '@/lib/utils';
+import { cn } from "@/lib/utils";
+import { useMemo } from "react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
 
 interface HeatmapCell {
   label: string;
@@ -14,7 +14,7 @@ interface HeatmapGridProps {
   data: HeatmapCell[][];
   rowLabels?: string[];
   columnLabels?: string[];
-  colorScale?: 'green' | 'orange' | 'blue' | 'neutral';
+  colorScale?: "green" | "orange" | "blue" | "neutral";
   className?: string;
   cellSize?: number;
   gap?: number;
@@ -22,32 +22,32 @@ interface HeatmapGridProps {
 
 const colorScales = {
   green: {
-    0: 'bg-muted/30',
-    1: 'bg-emerald-100 dark:bg-emerald-900/30',
-    2: 'bg-emerald-200 dark:bg-emerald-800/40',
-    3: 'bg-emerald-300 dark:bg-emerald-700/50',
-    4: 'bg-emerald-500 dark:bg-emerald-600/70',
+    0: "bg-muted/30",
+    1: "bg-emerald-100 dark:bg-emerald-900/30",
+    2: "bg-emerald-200 dark:bg-emerald-800/40",
+    3: "bg-emerald-300 dark:bg-emerald-700/50",
+    4: "bg-emerald-500 dark:bg-emerald-600/70",
   },
   orange: {
-    0: 'bg-muted/30',
-    1: 'bg-orange-100 dark:bg-orange-900/30',
-    2: 'bg-orange-200 dark:bg-orange-800/40',
-    3: 'bg-orange-300 dark:bg-orange-700/50',
-    4: 'bg-orange-500 dark:bg-orange-600/70',
+    0: "bg-muted/30",
+    1: "bg-orange-100 dark:bg-orange-900/30",
+    2: "bg-orange-200 dark:bg-orange-800/40",
+    3: "bg-orange-300 dark:bg-orange-700/50",
+    4: "bg-orange-500 dark:bg-orange-600/70",
   },
   blue: {
-    0: 'bg-muted/30',
-    1: 'bg-blue-100 dark:bg-blue-900/30',
-    2: 'bg-blue-200 dark:bg-blue-800/40',
-    3: 'bg-blue-300 dark:bg-blue-700/50',
-    4: 'bg-blue-500 dark:bg-blue-600/70',
+    0: "bg-muted/30",
+    1: "bg-blue-100 dark:bg-blue-900/30",
+    2: "bg-blue-200 dark:bg-blue-800/40",
+    3: "bg-blue-300 dark:bg-blue-700/50",
+    4: "bg-blue-500 dark:bg-blue-600/70",
   },
   neutral: {
-    0: 'bg-muted/30',
-    1: 'bg-muted/50',
-    2: 'bg-muted/70',
-    3: 'bg-muted-foreground/30',
-    4: 'bg-muted-foreground/50',
+    0: "bg-muted/30",
+    1: "bg-muted/50",
+    2: "bg-muted/70",
+    3: "bg-muted-foreground/30",
+    4: "bg-muted-foreground/50",
   },
 };
 
@@ -55,7 +55,7 @@ export const HeatmapGrid = ({
   data,
   rowLabels,
   columnLabels,
-  colorScale = 'green',
+  colorScale = "green",
   className,
   cellSize = 20,
   gap = 2,
@@ -79,12 +79,12 @@ export const HeatmapGrid = ({
   const colors = colorScales[colorScale];
 
   return (
-    <div className={cn('flex flex-col', className)}>
+    <div className={cn("flex flex-col", className)}>
       {/* Column labels */}
       {columnLabels && (
         <div
           className="flex mb-1"
-          style={{ marginLeft: rowLabels ? '2rem' : 0, gap }}
+          style={{ marginLeft: rowLabels ? "2rem" : 0, gap }}
         >
           {columnLabels.map((label, i) => (
             <div
@@ -103,9 +103,7 @@ export const HeatmapGrid = ({
         <div key={rowIndex} className="flex items-center" style={{ gap }}>
           {/* Row label */}
           {rowLabels && (
-            <div
-              className="text-[10px] text-muted-foreground w-8 text-right pr-2"
-            >
+            <div className="text-[10px] text-muted-foreground w-8 text-right pr-2">
               {rowLabels[rowIndex]}
             </div>
           )}
@@ -116,7 +114,7 @@ export const HeatmapGrid = ({
               <TooltipTrigger asChild>
                 <div
                   className={cn(
-                    'rounded-sm transition-colors cursor-default',
+                    "rounded-sm transition-colors cursor-default",
                     colors[getIntensity(cell.value) as keyof typeof colors]
                   )}
                   style={{ width: cellSize, height: cellSize }}
@@ -139,15 +137,15 @@ export const HeatmapGrid = ({
 // Calendar-style heatmap (weeks as columns, days as rows)
 interface CalendarHeatmapProps {
   data: { date: string; value: number }[];
-  colorScale?: 'green' | 'orange' | 'blue' | 'neutral';
+  colorScale?: "green" | "orange" | "blue" | "neutral";
   className?: string;
 }
 
-const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const dayLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 export const CalendarHeatmap = ({
   data,
-  colorScale = 'green',
+  colorScale = "green",
   className,
 }: CalendarHeatmapProps) => {
   const { weeks, months } = useMemo(() => {
@@ -171,14 +169,22 @@ export const CalendarHeatmap = ({
       const weekKey = weekStart.getTime();
 
       if (!weekMap.has(weekKey)) {
-        weekMap.set(weekKey, Array(7).fill(null).map(() => ({ label: '', value: 0 })));
+        weekMap.set(
+          weekKey,
+          Array(7)
+            .fill(null)
+            .map(() => ({ label: "", value: 0 }))
+        );
       }
 
       const week = weekMap.get(weekKey)!;
       week[dayOfWeek] = {
-        label: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        label: date.toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+        }),
         value: item.value,
-        tooltip: `${date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}: ${item.value.toLocaleString()}`,
+        tooltip: `${date.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}: ${item.value.toLocaleString()}`,
       };
 
       // Track month changes
@@ -186,7 +192,7 @@ export const CalendarHeatmap = ({
       if (month !== lastMonth) {
         monthMarkers.push({
           weekIndex: Array.from(weekMap.keys()).indexOf(weekKey),
-          label: date.toLocaleDateString('en-US', { month: 'short' }),
+          label: date.toLocaleDateString("en-US", { month: "short" }),
         });
         lastMonth = month;
       }
@@ -206,7 +212,7 @@ export const CalendarHeatmap = ({
     .map((_, dayIndex) => weeks.map((week) => week[dayIndex]));
 
   return (
-    <div className={cn('flex flex-col gap-1', className)}>
+    <div className={cn("flex flex-col gap-1", className)}>
       {/* Month labels */}
       <div className="flex ml-8 gap-0.5 text-[10px] text-muted-foreground h-4">
         {months.map((marker, i) => (

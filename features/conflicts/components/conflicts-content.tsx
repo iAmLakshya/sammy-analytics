@@ -1,29 +1,28 @@
-"use client"
+"use client";
 
-import {
-  IconAlertTriangle,
-  IconCheck,
-  IconX,
-} from "@tabler/icons-react"
+import { IconAlertTriangle, IconCheck, IconX } from "@tabler/icons-react";
 
-import { MetricCard } from "@/features/diffs"
+import { MetricCard } from "@/components/metric-card";
 
-import { useFetchConflictsOverview } from "../hooks/use-fetch-conflicts-overview"
-import { useFetchDailyConflicts } from "../hooks/use-fetch-daily-conflicts"
-import { useFetchConflictActivity } from "../hooks/use-fetch-conflict-activity"
+import { useFetchConflictActivity } from "../hooks/use-fetch-conflict-activity";
+import { useFetchConflictsOverview } from "../hooks/use-fetch-conflicts-overview";
+import { useFetchDailyConflicts } from "../hooks/use-fetch-daily-conflicts";
 
-import { DispositionChart } from "./disposition-chart"
-import { DailyConflictsChart } from "./daily-conflicts-chart"
-import { ReviewActivityChart } from "./review-activity-chart"
-import { PriorityChart } from "./priority-chart"
-import { AgingChart } from "./aging-chart"
-import { TimeToReviewCard } from "./time-to-review-card"
-import { UserCorrectionsCard } from "./user-corrections-card"
+import { AgingChart } from "./aging-chart";
+import { DailyConflictsChart } from "./daily-conflicts-chart";
+import { DispositionChart } from "./disposition-chart";
+import { PriorityChart } from "./priority-chart";
+import { ReviewActivityChart } from "./review-activity-chart";
+import { TimeToReviewCard } from "./time-to-review-card";
+import { UserCorrectionsCard } from "./user-corrections-card";
 
 export const ConflictsContent = () => {
-  const { data: overview, isLoading: isLoadingOverview } = useFetchConflictsOverview()
-  const { data: dailyData, isLoading: isLoadingDaily } = useFetchDailyConflicts()
-  const { data: activityData, isLoading: isLoadingActivity } = useFetchConflictActivity()
+  const { data: overview, isLoading: isLoadingOverview } =
+    useFetchConflictsOverview();
+  const { data: dailyData, isLoading: isLoadingDaily } =
+    useFetchDailyConflicts();
+  const { data: activityData, isLoading: isLoadingActivity } =
+    useFetchConflictActivity();
 
   return (
     <div className="flex flex-col gap-6 p-4 md:p-6">
@@ -38,8 +37,16 @@ export const ConflictsContent = () => {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <MetricCard
           label="Awaiting Review"
-          value={overview?.dispositionSummary.find(d => d.disposition === "NEEDS_REVIEW")?.count.toLocaleString() ?? "—"}
-          badge={overview?.dispositionSummary.find(d => d.disposition === "NEEDS_REVIEW")?.percentage + "%"}
+          value={
+            overview?.dispositionSummary
+              .find((d) => d.disposition === "NEEDS_REVIEW")
+              ?.count.toLocaleString() ?? "—"
+          }
+          badge={
+            overview?.dispositionSummary.find(
+              (d) => d.disposition === "NEEDS_REVIEW"
+            )?.percentage + "%"
+          }
           badgeVariant="warning"
           description="Your team needs to decide"
           icon={IconAlertTriangle}
@@ -47,8 +54,16 @@ export const ConflictsContent = () => {
         />
         <MetricCard
           label="Approved"
-          value={overview?.dispositionSummary.find(d => d.disposition === "ACCEPTED")?.count.toLocaleString() ?? "—"}
-          badge={overview?.dispositionSummary.find(d => d.disposition === "ACCEPTED")?.percentage + "%"}
+          value={
+            overview?.dispositionSummary
+              .find((d) => d.disposition === "ACCEPTED")
+              ?.count.toLocaleString() ?? "—"
+          }
+          badge={
+            overview?.dispositionSummary.find(
+              (d) => d.disposition === "ACCEPTED"
+            )?.percentage + "%"
+          }
           badgeVariant="success"
           description="Changes applied to documents"
           icon={IconCheck}
@@ -56,8 +71,16 @@ export const ConflictsContent = () => {
         />
         <MetricCard
           label="Declined"
-          value={overview?.dispositionSummary.find(d => d.disposition === "REJECTED")?.count.toLocaleString() ?? "—"}
-          badge={overview?.dispositionSummary.find(d => d.disposition === "REJECTED")?.percentage + "%"}
+          value={
+            overview?.dispositionSummary
+              .find((d) => d.disposition === "REJECTED")
+              ?.count.toLocaleString() ?? "—"
+          }
+          badge={
+            overview?.dispositionSummary.find(
+              (d) => d.disposition === "REJECTED"
+            )?.percentage + "%"
+          }
           badgeVariant="destructive"
           description="Changes not applied"
           icon={IconX}
@@ -91,7 +114,16 @@ export const ConflictsContent = () => {
 
       {/* Aging Chart */}
       <AgingChart
-        data={overview?.pendingAging ?? { total_pending: 0, avg_age_hours: "0", last_24h: 0, last_7d: 0, last_30d: 0, older_than_30d: 0 }}
+        data={
+          overview?.pendingAging ?? {
+            total_pending: 0,
+            avg_age_hours: "0",
+            last_24h: 0,
+            last_7d: 0,
+            last_30d: 0,
+            older_than_30d: 0,
+          }
+        }
         isLoading={isLoadingOverview}
       />
 
@@ -102,10 +134,16 @@ export const ConflictsContent = () => {
           isLoading={isLoadingOverview}
         />
         <UserCorrectionsCard
-          data={overview?.userCorrections ?? { total_user_corrections: 0, unique_correctors: 0, correction_rate_percentage: "0" }}
+          data={
+            overview?.userCorrections ?? {
+              total_user_corrections: 0,
+              unique_correctors: 0,
+              correction_rate_percentage: "0",
+            }
+          }
           isLoading={isLoadingOverview}
         />
       </div>
     </div>
-  )
-}
+  );
+};

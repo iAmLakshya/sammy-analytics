@@ -1,15 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { IconChevronRight, IconCheck, IconX } from "@tabler/icons-react";
-import { motion, AnimatePresence } from "motion/react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import {
   Table,
   TableBody,
@@ -18,9 +10,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { IconCheck, IconChevronRight, IconX } from "@tabler/icons-react";
+import { AnimatePresence, motion } from "motion/react";
+import { useState } from "react";
 import type { LstaTask, TaskStatus } from "../types";
-import { StepProgressIndicator } from "./step-progress-indicator";
 import { ExpandableRowContent } from "./expandable-row-content";
+import { StepProgressIndicator } from "./step-progress-indicator";
 
 const statusConfig: Record<TaskStatus, { label: string; className: string }> = {
   pending: {
@@ -29,19 +29,23 @@ const statusConfig: Record<TaskStatus, { label: string; className: string }> = {
   },
   processing: {
     label: "Processing",
-    className: "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400 animate-pulse",
+    className:
+      "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400 animate-pulse",
   },
   completed: {
     label: "Completed",
-    className: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400",
+    className:
+      "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400",
   },
   failed: {
     label: "Failed",
-    className: "bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-400",
+    className:
+      "bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-400",
   },
   retrying: {
     label: "Retrying",
-    className: "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400",
+    className:
+      "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400",
   },
 };
 
@@ -58,7 +62,9 @@ const sortTasks = (tasks: LstaTask[]): LstaTask[] => {
 
 const getCurrentStepId = (task: LstaTask): string | null => {
   if (task.status === "processing") {
-    const activeStep = task.steps.find((s) => s.status === "pending" && s.startedAt);
+    const activeStep = task.steps.find(
+      (s) => s.status === "pending" && s.startedAt
+    );
     return activeStep?.step ?? null;
   }
   return null;
@@ -105,7 +111,9 @@ export const AutomationTable = ({
               <TableHead className="w-10" />
               <TableHead>Company ID</TableHead>
               <TableHead>LE ID</TableHead>
-              <TableHead className="hidden md:table-cell">Certificate</TableHead>
+              <TableHead className="hidden md:table-cell">
+                Certificate
+              </TableHead>
               <TableHead className="hidden text-center md:table-cell">
                 Special Case
               </TableHead>
@@ -161,7 +169,9 @@ export const AutomationTable = ({
                           </span>
                         </TooltipTrigger>
                         <TooltipContent>
-                          {task.specialCase ? "Special case" : "Standard submission"}
+                          {task.specialCase
+                            ? "Special case"
+                            : "Standard submission"}
                         </TooltipContent>
                       </Tooltip>
                     </TableCell>
@@ -173,19 +183,28 @@ export const AutomationTable = ({
                       )}
                     </TableCell>
                     <TableCell className="whitespace-nowrap">
-                      <StepProgressIndicator steps={task.steps} currentStepId={currentStepId} />
+                      <StepProgressIndicator
+                        steps={task.steps}
+                        currentStepId={currentStepId}
+                      />
                     </TableCell>
                     <TableCell className="whitespace-nowrap">
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Badge className={config.className}>{config.label}</Badge>
-                        </TooltipTrigger>
-                        {task.statusDescription && (
+                      {task.statusDescription ? (
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Badge className={config.className}>
+                              {config.label}
+                            </Badge>
+                          </TooltipTrigger>
                           <TooltipContent>
                             <p>{task.statusDescription}</p>
                           </TooltipContent>
-                        )}
-                      </Tooltip>
+                        </Tooltip>
+                      ) : (
+                        <Badge className={config.className}>
+                          {config.label}
+                        </Badge>
+                      )}
                     </TableCell>
                   </TableRow>
                   {isExpanded && (

@@ -1,34 +1,34 @@
-import { type Icon } from "@tabler/icons-react"
+import { type Icon } from "@tabler/icons-react";
 
-import { Badge } from "@/components/ui/badge"
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Skeleton } from "@/components/ui/skeleton"
-import { cn } from "@/lib/utils"
+} from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
-type BadgeVariant = "default" | "success" | "warning" | "destructive"
+type BadgeVariant = "default" | "success" | "warning" | "destructive";
 
 type MetricCardProps = {
-  label: string
-  value: string
-  badge?: string
-  badgeVariant?: BadgeVariant
-  description: string
-  icon?: Icon
-  isLoading?: boolean
-}
+  label: string;
+  value: string;
+  badge?: string;
+  badgeVariant?: BadgeVariant;
+  description: string;
+  icon?: Icon;
+  isLoading?: boolean;
+};
 
 const badgeStyles: Record<BadgeVariant, string> = {
   default: "text-muted-foreground",
   success: "text-emerald-700 dark:text-emerald-400",
   warning: "text-amber-700 dark:text-amber-400",
   destructive: "text-rose-700 dark:text-rose-400",
-}
+};
 
 export const MetricCard = ({
   label,
@@ -50,7 +50,7 @@ export const MetricCard = ({
           <Skeleton className="h-3 w-36" />
         </CardFooter>
       </Card>
-    )
+    );
   }
 
   return (
@@ -74,5 +74,5 @@ export const MetricCard = ({
         {description}
       </CardFooter>
     </Card>
-  )
-}
+  );
+};

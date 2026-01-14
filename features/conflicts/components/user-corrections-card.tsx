@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { IconPencil, IconUsers } from "@tabler/icons-react"
+import { IconPencil, IconUsers } from "@tabler/icons-react";
 
 import {
   Card,
@@ -8,19 +8,22 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Skeleton } from "@/components/ui/skeleton"
+} from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
-import type { UserCorrections } from "../types"
+import type { UserCorrections } from "../types";
 
 interface UserCorrectionsCardProps {
-  data: UserCorrections
-  isLoading?: boolean
+  data: UserCorrections;
+  isLoading?: boolean;
 }
 
-export const UserCorrectionsCard = ({ data, isLoading }: UserCorrectionsCardProps) => {
+export const UserCorrectionsCard = ({
+  data,
+  isLoading,
+}: UserCorrectionsCardProps) => {
   if (isLoading) {
-    return <UserCorrectionsCardSkeleton />
+    return <UserCorrectionsCardSkeleton />;
   }
 
   return (
@@ -38,7 +41,9 @@ export const UserCorrectionsCard = ({ data, isLoading }: UserCorrectionsCardProp
               <div className="flex size-6 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/40">
                 <IconPencil className="size-4 text-blue-700 dark:text-blue-400" />
               </div>
-              <span className="text-xs text-muted-foreground">Total Corrections</span>
+              <span className="text-xs text-muted-foreground">
+                Total Corrections
+              </span>
             </div>
             <div className="text-2xl font-semibold tabular-nums">
               {data.total_user_corrections.toLocaleString()}
@@ -52,18 +57,22 @@ export const UserCorrectionsCard = ({ data, isLoading }: UserCorrectionsCardProp
               <div className="flex size-6 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-900/40">
                 <IconUsers className="size-4 text-amber-700 dark:text-amber-400" />
               </div>
-              <span className="text-xs text-muted-foreground">Unique Correctors</span>
+              <span className="text-xs text-muted-foreground">
+                Unique Correctors
+              </span>
             </div>
             <div className="text-2xl font-semibold tabular-nums">
               {data.unique_correctors}
             </div>
-            <div className="mt-1 text-xs text-muted-foreground">Active users</div>
+            <div className="mt-1 text-xs text-muted-foreground">
+              Active users
+            </div>
           </div>
         </div>
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
 const UserCorrectionsCardSkeleton = () => {
   return (
@@ -80,5 +89,5 @@ const UserCorrectionsCardSkeleton = () => {
         </div>
       </CardContent>
     </Card>
-  )
-}
+  );
+};

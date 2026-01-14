@@ -1,7 +1,10 @@
-import { mockLstaTasks, computeCountByStatus } from "@/features/lsta-automation/data/mock.tasks.data";
+import {
+  computeCountByStatus,
+  mockLstaTasks,
+} from "@/features/lsta-automation/data/mock.tasks.data";
 import type { LstaTaskListResponse } from "@/features/lsta-automation/types";
-import type { CoreDependencies } from "@/shared/utils/server/wrap-route-handler";
 import type { ServiceError } from "@/shared/utils/server/errors";
+import type { CoreDependencies } from "@/shared/utils/server/wrap-route-handler";
 
 interface ListParams {
   batchId?: string;
@@ -21,7 +24,10 @@ export const getLstaTaskList =
     const totalCount = filteredTasks.length;
     const totalPages = Math.ceil(totalCount / params.size);
     const startIndex = (params.page - 1) * params.size;
-    const paginatedTasks = filteredTasks.slice(startIndex, startIndex + params.size);
+    const paginatedTasks = filteredTasks.slice(
+      startIndex,
+      startIndex + params.size
+    );
 
     return {
       metadata: {

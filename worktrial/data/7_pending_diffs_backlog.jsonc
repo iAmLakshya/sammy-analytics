@@ -26,6 +26,6 @@ WHERE
     "from_analysis_runs": 4521,
     "oldest_diff": "2025-12-18 08:24:15.422392+00",
     "newest_diff": "2026-01-12 16:42:33.277746+00",
-    "avg_age_hours": "142.35"
-  }
+    "avg_age_hours": "142.35",
+  },
 ]

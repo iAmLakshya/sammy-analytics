@@ -4,8 +4,8 @@ export class ApiError extends Error {
     public status: number,
     public statusText: string
   ) {
-    super(message)
-    this.name = "ApiError"
+    super(message);
+    this.name = "ApiError";
   }
 }
 
@@ -19,15 +19,15 @@ export async function fetchApi<T>(
       ...options?.headers,
     },
     ...options,
-  })
+  });
 
   if (!response.ok) {
     throw new ApiError(
       `Failed to fetch ${endpoint}`,
       response.status,
       response.statusText
-    )
+    );
   }
 
-  return response.json()
+  return response.json();
 }

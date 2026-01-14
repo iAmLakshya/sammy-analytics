@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import { Suspense, useState } from "react"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
-import { Skeleton } from "@/components/ui/skeleton"
-import { DASHBOARD_TABS, type TabId } from "@/lib/constants"
-import { useTabState } from "@/hooks/use-tab-state"
+import { Skeleton } from "@/components/ui/skeleton";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { useTabState } from "@/hooks/use-tab-state";
+import { DASHBOARD_TABS, type TabId } from "@/lib/constants";
+import { Suspense, useState } from "react";
 
 const DATE_RANGES = [
   { value: "1d", label: "1D" },
@@ -13,19 +13,19 @@ const DATE_RANGES = [
   { value: "14d", label: "14D" },
   { value: "30d", label: "30D" },
   { value: "90d", label: "90D" },
-]
+];
 
 const DashboardHeaderContent = () => {
-  const { activeTab, setActiveTab } = useTabState()
-  const [dateRange, setDateRange] = useState("30d")
+  const { activeTab, setActiveTab } = useTabState();
+  const [dateRange, setDateRange] = useState("30d");
 
   const handleTabChange = (value: string) => {
-    setActiveTab(value as TabId)
-  }
+    setActiveTab(value as TabId);
+  };
 
   const handleDateRangeChange = (value: string) => {
-    if (value) setDateRange(value)
-  }
+    if (value) setDateRange(value);
+  };
 
   return (
     <>
@@ -65,8 +65,8 @@ const DashboardHeaderContent = () => {
         </ToggleGroup>
       </div>
     </>
-  )
-}
+  );
+};
 
 const DashboardHeaderFallback = () => (
   <>
@@ -75,12 +75,12 @@ const DashboardHeaderFallback = () => (
       <Skeleton className="h-8 w-[180px]" />
     </div>
   </>
-)
+);
 
 export const DashboardHeader = () => {
   return (
     <Suspense fallback={<DashboardHeaderFallback />}>
       <DashboardHeaderContent />
     </Suspense>
-  )
-}
+  );
+};

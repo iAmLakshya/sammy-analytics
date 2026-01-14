@@ -24,7 +24,7 @@ GROUP BY state;
     "avg_hours_to_resolve": "18.45",
     "median_hours": "14.32",
     "min_hours": "2.15",
-    "max_hours": "72.80"
+    "max_hours": "72.80",
   },
   {
     "final_state": "APPLIED",
@@ -32,7 +32,7 @@ GROUP BY state;
     "avg_hours_to_resolve": "36.78",
     "median_hours": "28.50",
     "min_hours": "4.20",
-    "max_hours": "168.45"
+    "max_hours": "168.45",
   },
   {
     "final_state": "ARCHIVED",
@@ -40,6 +40,6 @@ GROUP BY state;
     "avg_hours_to_resolve": "24.12",
     "median_hours": "19.67",
     "min_hours": "1.50",
-    "max_hours": "96.30"
-  }
+    "max_hours": "96.30",
+  },
 ]

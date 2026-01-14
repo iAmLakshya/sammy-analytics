@@ -1,14 +1,14 @@
-"use client"
+"use client";
 
 import {
+  IconAlertCircle,
   IconArchive,
   IconCheck,
   IconClock,
   IconFileDescription,
-  IconAlertCircle,
-} from "@tabler/icons-react"
+} from "@tabler/icons-react";
 
-import { Badge } from "@/components/ui/badge"
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardAction,
@@ -16,58 +16,62 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Skeleton } from "@/components/ui/skeleton"
-import { InfoTooltip } from "@/components/ui/info-tooltip"
+} from "@/components/ui/card";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { Skeleton } from "@/components/ui/skeleton";
 
-import { useFetchDailyDiffs } from "../hooks/use-fetch-daily-diffs"
-import { useFetchDiffsOverview } from "../hooks/use-fetch-diffs-overview"
-import { useFetchWeeklyDiffs } from "../hooks/use-fetch-weekly-diffs"
-import { DailyDiffsChart } from "./daily-diffs-chart"
-import { MetricCard } from "./metric-card"
-import { MetricGrid } from "./metric-grid"
-import { ResolutionTimeChart } from "./resolution-time-chart"
-import { StateDistributionChart } from "./state-distribution-chart"
-import { WeeklyTrendsChart } from "./weekly-trends-chart"
+import { MetricCard } from "@/components/metric-card";
+import { MetricGrid } from "@/components/metric-grid";
+import { useFetchDailyDiffs } from "../hooks/use-fetch-daily-diffs";
+import { useFetchDiffsOverview } from "../hooks/use-fetch-diffs-overview";
+import { useFetchWeeklyDiffs } from "../hooks/use-fetch-weekly-diffs";
+
+import { DailyDiffsChart } from "./daily-diffs-chart";
+import { ResolutionTimeChart } from "./resolution-time-chart";
+import { StateDistributionChart } from "./state-distribution-chart";
+import { WeeklyTrendsChart } from "./weekly-trends-chart";
 
 export const DiffsContent = () => {
   const {
     data: overviewData,
     isLoading: isLoadingOverview,
     error: overviewError,
-  } = useFetchDiffsOverview()
+  } = useFetchDiffsOverview();
   const {
     data: dailyData,
     isLoading: isLoadingDaily,
     error: dailyError,
-  } = useFetchDailyDiffs()
+  } = useFetchDailyDiffs();
   const {
     data: weeklyData,
     isLoading: isLoadingWeekly,
     error: weeklyError,
-  } = useFetchWeeklyDiffs()
+  } = useFetchWeeklyDiffs();
 
-  const formatNumber = (num: number) => num.toLocaleString()
+  const formatNumber = (num: number) => num.toLocaleString();
 
   const getStateCard = (state: string) => {
-    if (!overviewData?.stateDistribution) return null
-    return overviewData.stateDistribution.find((s) => s.state === state)
-  }
+    if (!overviewData?.stateDistribution) return null;
+    return overviewData.stateDistribution.find((s) => s.state === state);
+  };
 
   const totalDiffs =
-    overviewData?.stateDistribution.reduce((acc, curr) => acc + curr.count, 0) ??
-    0
+    overviewData?.stateDistribution.reduce(
+      (acc, curr) => acc + curr.count,
+      0
+    ) ?? 0;
 
   // Check if backlog is critical
-  const avgAgeHours = parseFloat(overviewData?.backlog.avg_age_hours ?? "0")
-  const isBacklogCritical = avgAgeHours > 168 // More than 7 days
+  const avgAgeHours = parseFloat(overviewData?.backlog.avg_age_hours ?? "0");
+  const isBacklogCritical = avgAgeHours > 168; // More than 7 days
 
   return (
     <div className="flex flex-col gap-6 p-4 md:p-6">
       <div>
         <h1 className="text-2xl font-semibold">Suggested Edits</h1>
         <p className="text-sm text-muted-foreground">
-          Track AI-suggested changes to your documents and how quickly they get reviewed
+          Track AI-suggested changes to your documents and how quickly they get
+          reviewed
         </p>
       </div>
 
@@ -133,7 +137,9 @@ export const DiffsContent = () => {
       <Card className={isBacklogCritical ? "border-destructive/50" : ""}>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            {isBacklogCritical && <IconAlertCircle className="size-5 text-destructive" />}
+            {isBacklogCritical && (
+              <IconAlertCircle className="size-5 text-destructive" />
+            )}
             Review Backlog
             <InfoTooltip content="Suggestions waiting for your team's review. If wait times get too long, you may need more reviewers or faster turnaround." />
           </CardTitle>
@@ -162,9 +168,7 @@ export const DiffsContent = () => {
               items={[
                 {
                   label: "Waiting for Review",
-                  value: formatNumber(
-                    overviewData?.backlog.pending_diffs ?? 0
-                  ),
+                  value: formatNumber(overviewData?.backlog.pending_diffs ?? 0),
                   highlight: true,
                 },
                 {
@@ -182,7 +186,8 @@ export const DiffsContent = () => {
                 {
                   label: "Avg Wait Time",
                   value: `${overviewData?.backlog.avg_age_hours ?? 0}h`,
-                  subtext: avgAgeHours > 168 ? "⚠ Over 7 days" : "Time in queue",
+                  subtext:
+                    avgAgeHours > 168 ? "⚠ Over 7 days" : "Time in queue",
                 },
               ]}
             />
@@ -202,5 +207,5 @@ export const DiffsContent = () => {
         />
       </div>
     </div>
-  )
-}
+  );
+};

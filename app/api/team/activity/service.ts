@@ -1,7 +1,7 @@
 import { dailyReviewActivity } from "@/features/team/data/mock.team.data";
 import type { ReviewActivityResponse } from "@/features/team/types";
-import { CoreDependencies } from "@/shared/utils/server/wrap-route-handler";
 import { ServiceError } from "@/shared/utils/server/errors";
+import { CoreDependencies } from "@/shared/utils/server/wrap-route-handler";
 
 export const getTeamActivity =
   (dependencies: CoreDependencies) =>

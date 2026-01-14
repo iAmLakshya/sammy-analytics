@@ -21,6 +21,6 @@ WHERE
   {
     "total_user_corrections": 412,
     "unique_correctors": 7,
-    "correction_rate_percentage": "4.45"
-  }
+    "correction_rate_percentage": "4.45",
+  },
 ]

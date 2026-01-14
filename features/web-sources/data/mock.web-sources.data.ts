@@ -1,10 +1,10 @@
 import type {
-  WebWatchOverview,
-  WebPageSyncOverview,
   DailySyncs,
-  SyncCoverage,
   PriorityBreakdown,
-} from "../types"
+  SyncCoverage,
+  WebPageSyncOverview,
+  WebWatchOverview,
+} from "../types";
 
 // From 16_web_watch_overview.jsonc
 export const webWatchOverview: WebWatchOverview = {
@@ -15,7 +15,7 @@ export const webWatchOverview: WebWatchOverview = {
   docs_with_medium_priority: 642,
   docs_with_low_priority: 913,
   avg_conflicts_per_doc: 3.17,
-}
+};
 
 // From 19_web_page_sync_overview.jsonc
 export const webPageSyncOverview: WebPageSyncOverview = {
@@ -25,7 +25,7 @@ export const webPageSyncOverview: WebPageSyncOverview = {
   synced_last_7d: 6521,
   synced_last_30d: 7918,
   avg_hours_since_sync: "18.45",
-}
+};
 
 // From 20_syncs_per_day.jsonc
 export const dailySyncs: DailySyncs[] = [
@@ -38,7 +38,7 @@ export const dailySyncs: DailySyncs[] = [
   { date: "2026-01-06", pages_synced: 3289, pages_with_updates: 1678 },
   { date: "2026-01-05", pages_synced: 1834, pages_with_updates: 945 },
   { date: "2026-01-04", pages_synced: 1612, pages_with_updates: 823 },
-]
+];
 
 // Computed sync coverage breakdown
 export const syncCoverage: SyncCoverage[] = [
@@ -62,7 +62,7 @@ export const syncCoverage: SyncCoverage[] = [
     count: 8242 - 7918,
     percentage: Math.round(((8242 - 7918) / 8242) * 100),
   },
-]
+];
 
 // Priority breakdown for documents with conflicts
 export const priorityBreakdown: PriorityBreakdown[] = [
@@ -81,4 +81,4 @@ export const priorityBreakdown: PriorityBreakdown[] = [
     count: 913,
     percentage: Math.round((913 / 1842) * 100),
   },
-]
+];

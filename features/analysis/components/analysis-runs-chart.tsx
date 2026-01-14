@@ -1,18 +1,17 @@
-"use client"
+"use client";
 
-import { useMemo } from "react"
-import { IconTrendingUp } from "@tabler/icons-react"
+import { IconTrendingUp } from "@tabler/icons-react";
+import { useMemo } from "react";
 import {
   Area,
-  AreaChart,
   CartesianGrid,
-  Line,
   ComposedChart,
+  Line,
   XAxis,
   YAxis,
-} from "recharts"
+} from "recharts";
 
-import { Badge } from "@/components/ui/badge"
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardAction,
@@ -21,7 +20,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartContainer,
   ChartLegend,
@@ -29,10 +28,10 @@ import {
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
-} from "@/components/ui/chart"
-import { Skeleton } from "@/components/ui/skeleton"
+} from "@/components/ui/chart";
+import { Skeleton } from "@/components/ui/skeleton";
 
-import type { DailyAnalysisRuns } from "../types"
+import type { DailyAnalysisRuns } from "../types";
 
 const chartConfig = {
   total_runs: {
@@ -43,11 +42,11 @@ const chartConfig = {
     label: "With Conflicts",
     color: "var(--chart-1)",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
 interface AnalysisRunsChartProps {
-  data: DailyAnalysisRuns[]
-  isLoading?: boolean
+  data: DailyAnalysisRuns[];
+  isLoading?: boolean;
 }
 
 export const AnalysisRunsChart = ({
@@ -55,44 +54,44 @@ export const AnalysisRunsChart = ({
   isLoading,
 }: AnalysisRunsChartProps) => {
   const chartData = useMemo(() => {
-    if (!data.length) return []
+    if (!data.length) return [];
     return [...data].reverse().map((item) => ({
       ...item,
       date: new Date(item.date).toLocaleDateString("en-US", {
         month: "short",
         day: "numeric",
       }),
-    }))
-  }, [data])
+    }));
+  }, [data]);
 
   const totalRuns = useMemo(() => {
-    if (!data.length) return 0
-    return data.reduce((acc, curr) => acc + curr.total_runs, 0)
-  }, [data])
+    if (!data.length) return 0;
+    return data.reduce((acc, curr) => acc + curr.total_runs, 0);
+  }, [data]);
 
   const avgDetectionRate = useMemo(() => {
-    if (!data.length || totalRuns === 0) return "0.0"
+    if (!data.length || totalRuns === 0) return "0.0";
     const totalWithConflicts = data.reduce(
       (acc, curr) => acc + curr.runs_with_conflicts,
       0
-    )
-    return ((totalWithConflicts / totalRuns) * 100).toFixed(1)
-  }, [data, totalRuns])
+    );
+    return ((totalWithConflicts / totalRuns) * 100).toFixed(1);
+  }, [data, totalRuns]);
 
   const trend = useMemo(() => {
-    if (data.length < 2) return 0
-    const current = data[0].total_runs
-    const previous = data[1].total_runs
-    if (previous === 0) return 0
-    return ((current - previous) / previous) * 100
-  }, [data])
+    if (data.length < 2) return 0;
+    const current = data[0].total_runs;
+    const previous = data[1].total_runs;
+    if (previous === 0) return 0;
+    return ((current - previous) / previous) * 100;
+  }, [data]);
 
   if (isLoading) {
-    return <AnalysisRunsChartSkeleton />
+    return <AnalysisRunsChartSkeleton />;
   }
 
   if (!data.length) {
-    return <AnalysisRunsChartSkeleton />
+    return <AnalysisRunsChartSkeleton />;
   }
 
   return (
@@ -162,8 +161,8 @@ export const AnalysisRunsChart = ({
         </div>
       </CardFooter>
     </Card>
-  )
-}
+  );
+};
 
 const AnalysisRunsChartSkeleton = () => {
   return (
@@ -179,5 +178,5 @@ const AnalysisRunsChartSkeleton = () => {
         <Skeleton className="h-10 w-64" />
       </CardFooter>
     </Card>
-  )
-}
+  );
+};

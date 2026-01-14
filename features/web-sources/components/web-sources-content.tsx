@@ -1,13 +1,11 @@
-"use client"
+"use client";
 
 import {
   IconAlertTriangle,
+  IconClock,
   IconCloudDownload,
   IconWorldWww,
-  IconClock,
-  IconCircleCheck,
-  IconClockHour4,
-} from "@tabler/icons-react"
+} from "@tabler/icons-react";
 
 import {
   Card,
@@ -15,22 +13,22 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Skeleton } from "@/components/ui/skeleton"
-import { InfoTooltip } from "@/components/ui/info-tooltip"
-import { cn } from "@/lib/utils"
+} from "@/components/ui/card";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { Skeleton } from "@/components/ui/skeleton";
 
-import { MetricCard } from "@/features/diffs"
+import { MetricCard } from "@/components/metric-card";
 
-import { useFetchWebSourcesOverview } from "../hooks/use-fetch-web-sources-overview"
-import { useFetchDailySyncs } from "../hooks/use-fetch-daily-syncs"
-import { SyncActivityChart } from "./sync-activity-chart"
-import { PriorityDistributionChart } from "./priority-distribution-chart"
-import { SyncCoverageChart } from "./sync-coverage-chart"
+import { useFetchDailySyncs } from "../hooks/use-fetch-daily-syncs";
+import { useFetchWebSourcesOverview } from "../hooks/use-fetch-web-sources-overview";
+import { PriorityDistributionChart } from "./priority-distribution-chart";
+import { SyncActivityChart } from "./sync-activity-chart";
+import { SyncCoverageChart } from "./sync-coverage-chart";
 
 export const WebSourcesContent = () => {
-  const { data: overviewData, isLoading: isOverviewLoading } = useFetchWebSourcesOverview()
-  const { data: dailyData, isLoading: isDailyLoading } = useFetchDailySyncs()
+  const { data: overviewData, isLoading: isOverviewLoading } =
+    useFetchWebSourcesOverview();
+  const { data: dailyData, isLoading: isDailyLoading } = useFetchDailySyncs();
 
   return (
     <div className="flex flex-col gap-6 p-4 md:p-6">
@@ -62,7 +60,9 @@ export const WebSourcesContent = () => {
               label="Documents with Changes"
               value={overviewData.webWatch.total_documents_with_conflicts.toLocaleString()}
               badgeVariant="warning"
-              description={`${overviewData.webWatch.avg_conflicts_per_doc.toFixed(1)} changes per doc`}
+              description={`${overviewData.webWatch.avg_conflicts_per_doc.toFixed(
+                1
+              )} changes per doc`}
             />
             <MetricCard
               label="Urgent"
@@ -74,7 +74,11 @@ export const WebSourcesContent = () => {
             <MetricCard
               label="Checked Today"
               value={overviewData.syncOverview.synced_last_24h.toLocaleString()}
-              badge={`${Math.round((overviewData.syncOverview.synced_last_24h / overviewData.syncOverview.total_web_pages) * 100)}%`}
+              badge={`${Math.round(
+                (overviewData.syncOverview.synced_last_24h /
+                  overviewData.syncOverview.total_web_pages) *
+                  100
+              )}%`}
               description="Pages refreshed in last 24h"
               icon={IconCloudDownload}
             />
@@ -174,7 +178,10 @@ export const WebSourcesContent = () => {
               />
               <SyncHealthCard
                 label="Outdated"
-                value={overviewData.syncOverview.total_web_pages - overviewData.syncOverview.synced_last_30d}
+                value={
+                  overviewData.syncOverview.total_web_pages -
+                  overviewData.syncOverview.synced_last_30d
+                }
                 total={overviewData.syncOverview.total_web_pages}
                 description="Not checked in 30+ days"
                 variant="destructive"
@@ -184,40 +191,51 @@ export const WebSourcesContent = () => {
         </Card>
       ) : null}
     </div>
-  )
-}
+  );
+};
 
 interface SyncHealthCardProps {
-  label: string
-  value: number
-  total?: number
-  description: string
-  variant: "success" | "warning" | "destructive" | "muted"
+  label: string;
+  value: number;
+  total?: number;
+  description: string;
+  variant: "success" | "warning" | "destructive" | "muted";
 }
 
 const variantStyles = {
-  success: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400",
-  warning: "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400",
-  destructive: "bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-400",
+  success:
+    "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400",
+  warning:
+    "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400",
+  destructive:
+    "bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-400",
   muted: "bg-muted text-muted-foreground",
-}
+};
 
-const SyncHealthCard = ({ label, value, total, description, variant }: SyncHealthCardProps) => {
-  const percentage = total ? Math.round((value / total) * 100) : null
+const SyncHealthCard = ({
+  label,
+  value,
+  total,
+  description,
+  variant,
+}: SyncHealthCardProps) => {
+  const percentage = total ? Math.round((value / total) * 100) : null;
 
   return (
     <div className={`rounded-lg p-4 ${variantStyles[variant]}`}>
       <p className="text-sm font-medium opacity-80">{label}</p>
       <div className="mt-1 flex items-baseline gap-2">
-        <p className="text-2xl font-bold tabular-nums">{value.toLocaleString()}</p>
+        <p className="text-2xl font-bold tabular-nums">
+          {value.toLocaleString()}
+        </p>
         {percentage !== null && (
           <span className="text-sm font-medium opacity-70">{percentage}%</span>
         )}
       </div>
       <p className="mt-1 text-xs opacity-70">{description}</p>
     </div>
-  )
-}
+  );
+};
 
 const MetricCardSkeleton = () => {
   return (
@@ -230,5 +248,5 @@ const MetricCardSkeleton = () => {
         <Skeleton className="mt-2 h-3 w-32" />
       </CardContent>
     </Card>
-  )
-}
+  );
+};

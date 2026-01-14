@@ -22,6 +22,6 @@ WHERE
     "avg_duration_seconds": 487.35,
     "median_duration_seconds": 412.18,
     "min_duration_seconds": 52.34,
-    "max_duration_seconds": 1842.67
-  }
+    "max_duration_seconds": 1842.67,
+  },
 ]

@@ -1,13 +1,14 @@
-'use client';
+"use client";
 
-import { Badge } from "@/components/ui/badge"
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
 import {
   Table,
   TableBody,
@@ -15,18 +16,21 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { InfoTooltip } from "@/components/ui/info-tooltip"
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+} from "@/components/ui/table";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type DocumentData = {
-  title: string
-  analysisRuns: number
-  totalConflicts: number
-  pendingConflicts: number
-  acceptedConflicts: number
-  rejectedConflicts: number
-}
+  title: string;
+  analysisRuns: number;
+  totalConflicts: number;
+  pendingConflicts: number;
+  acceptedConflicts: number;
+  rejectedConflicts: number;
+};
 
 const documentsData: DocumentData[] = [
   {
@@ -69,7 +73,7 @@ const documentsData: DocumentData[] = [
     acceptedConflicts: 178,
     rejectedConflicts: 64,
   },
-]
+];
 
 // Resolution progress bar component
 const ResolutionProgress = ({ doc }: { doc: DocumentData }) => {
@@ -102,15 +106,21 @@ const ResolutionProgress = ({ doc }: { doc: DocumentData }) => {
         <div className="text-xs space-y-1">
           <div className="flex justify-between gap-4">
             <span className="text-emerald-500">Approved:</span>
-            <span className="tabular-nums">{doc.acceptedConflicts} ({acceptedPercent.toFixed(1)}%)</span>
+            <span className="tabular-nums">
+              {doc.acceptedConflicts} ({acceptedPercent.toFixed(1)}%)
+            </span>
           </div>
           <div className="flex justify-between gap-4">
             <span className="text-rose-500">Declined:</span>
-            <span className="tabular-nums">{doc.rejectedConflicts} ({rejectedPercent.toFixed(1)}%)</span>
+            <span className="tabular-nums">
+              {doc.rejectedConflicts} ({rejectedPercent.toFixed(1)}%)
+            </span>
           </div>
           <div className="flex justify-between gap-4 border-t pt-1 mt-1">
             <span className="text-amber-500">Still pending:</span>
-            <span className="tabular-nums">{doc.pendingConflicts} ({(100 - resolvedPercent).toFixed(1)}%)</span>
+            <span className="tabular-nums">
+              {doc.pendingConflicts} ({(100 - resolvedPercent).toFixed(1)}%)
+            </span>
           </div>
         </div>
       </TooltipContent>
@@ -143,7 +153,8 @@ export const DocumentsTable = () => {
           </TableHeader>
           <TableBody>
             {documentsData.map((doc) => {
-              const pendingPercent = (doc.pendingConflicts / doc.totalConflicts) * 100;
+              const pendingPercent =
+                (doc.pendingConflicts / doc.totalConflicts) * 100;
               const isHighPending = pendingPercent > 40;
 
               return (
@@ -160,7 +171,7 @@ export const DocumentsTable = () => {
                   <TableCell className="text-right">
                     <Badge
                       variant="outline"
-                      className={`tabular-nums ${isHighPending ? 'text-destructive border-destructive/30' : 'text-warning-foreground'}`}
+                      className={`tabular-nums ${isHighPending ? "text-destructive border-destructive/30" : "text-warning-foreground"}`}
                     >
                       {doc.pendingConflicts}
                     </Badge>
@@ -175,5 +186,5 @@ export const DocumentsTable = () => {
         </Table>
       </CardContent>
     </Card>
-  )
-}
+  );
+};

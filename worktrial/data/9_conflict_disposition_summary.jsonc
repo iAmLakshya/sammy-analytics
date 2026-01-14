@@ -18,16 +18,16 @@ ORDER BY count DESC;
   {
     "disposition": "NEEDS_REVIEW",
     "count": 5840,
-    "percentage": "38.70"
+    "percentage": "38.70",
   },
   {
     "disposition": "ACCEPTED",
     "count": 6950,
-    "percentage": "46.05"
+    "percentage": "46.05",
   },
   {
     "disposition": "REJECTED",
     "count": 2300,
-    "percentage": "15.25"
-  }
+    "percentage": "15.25",
+  },
 ]

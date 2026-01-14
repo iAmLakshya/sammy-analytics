@@ -1,15 +1,9 @@
-"use client"
+"use client";
 
-import { useMemo } from "react"
-import {
-  Area,
-  AreaChart,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-} from "recharts"
+import { useMemo } from "react";
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
-import { Badge } from "@/components/ui/badge"
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardAction,
@@ -17,7 +11,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartContainer,
   ChartLegend,
@@ -25,10 +19,10 @@ import {
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
-} from "@/components/ui/chart"
-import { Skeleton } from "@/components/ui/skeleton"
+} from "@/components/ui/chart";
+import { Skeleton } from "@/components/ui/skeleton";
 
-import type { DailySyncs } from "../types"
+import type { DailySyncs } from "../types";
 
 const chartConfig = {
   pages_synced: {
@@ -39,14 +33,17 @@ const chartConfig = {
     label: "With Updates",
     color: "var(--chart-1)",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
 interface SyncActivityChartProps {
-  data: DailySyncs[]
-  isLoading?: boolean
+  data: DailySyncs[];
+  isLoading?: boolean;
 }
 
-export const SyncActivityChart = ({ data, isLoading }: SyncActivityChartProps) => {
+export const SyncActivityChart = ({
+  data,
+  isLoading,
+}: SyncActivityChartProps) => {
   const chartData = useMemo(() => {
     return [...data].reverse().map((item) => ({
       ...item,
@@ -54,19 +51,22 @@ export const SyncActivityChart = ({ data, isLoading }: SyncActivityChartProps) =
         month: "short",
         day: "numeric",
       }),
-    }))
-  }, [data])
+    }));
+  }, [data]);
 
   const stats = useMemo(() => {
-    const totalSynced = data.reduce((acc, curr) => acc + curr.pages_synced, 0)
-    const totalUpdates = data.reduce((acc, curr) => acc + curr.pages_with_updates, 0)
-    const avgSynced = Math.round(totalSynced / data.length)
-    const updateRate = Math.round((totalUpdates / totalSynced) * 100)
-    return { totalSynced, totalUpdates, avgSynced, updateRate }
-  }, [data])
+    const totalSynced = data.reduce((acc, curr) => acc + curr.pages_synced, 0);
+    const totalUpdates = data.reduce(
+      (acc, curr) => acc + curr.pages_with_updates,
+      0
+    );
+    const avgSynced = Math.round(totalSynced / data.length);
+    const updateRate = Math.round((totalUpdates / totalSynced) * 100);
+    return { totalSynced, totalUpdates, avgSynced, updateRate };
+  }, [data]);
 
   if (isLoading) {
-    return <SyncActivityChartSkeleton />
+    return <SyncActivityChartSkeleton />;
   }
 
   return (
@@ -172,8 +172,8 @@ export const SyncActivityChart = ({ data, isLoading }: SyncActivityChartProps) =
         </div>
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
 const SyncActivityChartSkeleton = () => {
   return (
@@ -194,5 +194,5 @@ const SyncActivityChartSkeleton = () => {
         </div>
       </CardContent>
     </Card>
-  )
-}
+  );
+};

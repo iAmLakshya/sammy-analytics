@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import { useMemo } from "react"
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Cell } from "recharts"
+import { useMemo } from "react";
+import { Bar, BarChart, CartesianGrid, Cell, XAxis, YAxis } from "recharts";
 
-import { Badge } from "@/components/ui/badge"
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardAction,
@@ -11,28 +11,28 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
-} from "@/components/ui/chart"
-import { Skeleton } from "@/components/ui/skeleton"
+} from "@/components/ui/chart";
+import { Skeleton } from "@/components/ui/skeleton";
 
-import type { PerformanceBucket, AnalysisPerformance } from "../types"
+import type { AnalysisPerformance, PerformanceBucket } from "../types";
 
 const chartConfig = {
   count: {
     label: "Runs",
     color: "var(--chart-3)",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
 interface PerformanceDistributionChartProps {
-  data: PerformanceBucket[]
-  performance: AnalysisPerformance
-  isLoading?: boolean
+  data: PerformanceBucket[];
+  performance: AnalysisPerformance;
+  isLoading?: boolean;
 }
 
 export const PerformanceDistributionChart = ({
@@ -41,23 +41,23 @@ export const PerformanceDistributionChart = ({
   isLoading,
 }: PerformanceDistributionChartProps) => {
   const formatDuration = (seconds: number): string => {
-    if (seconds < 60) return `${Math.round(seconds)}s`
-    const mins = Math.floor(seconds / 60)
-    const secs = Math.round(seconds % 60)
-    return secs > 0 ? `${mins}m ${secs}s` : `${mins}m`
-  }
+    if (seconds < 60) return `${Math.round(seconds)}s`;
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.round(seconds % 60);
+    return secs > 0 ? `${mins}m ${secs}s` : `${mins}m`;
+  };
 
   const peakBucket = useMemo(() => {
-    if (!data.length) return { range: "", count: 0, percentage: 0 }
-    return data.reduce((max, curr) => (curr.count > max.count ? curr : max))
-  }, [data])
+    if (!data.length) return { range: "", count: 0, percentage: 0 };
+    return data.reduce((max, curr) => (curr.count > max.count ? curr : max));
+  }, [data]);
 
   if (isLoading) {
-    return <PerformanceDistributionChartSkeleton />
+    return <PerformanceDistributionChartSkeleton />;
   }
 
   if (!data.length) {
-    return <PerformanceDistributionChartSkeleton />
+    return <PerformanceDistributionChartSkeleton />;
   }
 
   return (
@@ -150,8 +150,8 @@ export const PerformanceDistributionChart = ({
         </div>
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
 const PerformanceDistributionChartSkeleton = () => {
   return (
@@ -172,5 +172,5 @@ const PerformanceDistributionChartSkeleton = () => {
         </div>
       </CardContent>
     </Card>
-  )
-}
+  );
+};

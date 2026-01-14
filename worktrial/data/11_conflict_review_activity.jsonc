@@ -24,62 +24,62 @@ ORDER BY date DESC;
     "reviews_completed": 165,
     "accepted": 135,
     "rejected": 30,
-    "unique_reviewers": 6
+    "unique_reviewers": 6,
   },
   {
     "date": "2026-01-11",
     "reviews_completed": 89,
     "accepted": 72,
     "rejected": 17,
-    "unique_reviewers": 5
+    "unique_reviewers": 5,
   },
   {
     "date": "2026-01-10",
     "reviews_completed": 197,
     "accepted": 159,
     "rejected": 38,
-    "unique_reviewers": 7
+    "unique_reviewers": 7,
   },
   {
     "date": "2026-01-09",
     "reviews_completed": 170,
     "accepted": 138,
     "rejected": 32,
-    "unique_reviewers": 6
+    "unique_reviewers": 6,
   },
   {
     "date": "2026-01-08",
     "reviews_completed": 234,
     "accepted": 186,
     "rejected": 48,
-    "unique_reviewers": 8
+    "unique_reviewers": 8,
   },
   {
     "date": "2026-01-07",
     "reviews_completed": 220,
     "accepted": 174,
     "rejected": 46,
-    "unique_reviewers": 7
+    "unique_reviewers": 7,
   },
   {
     "date": "2026-01-06",
     "reviews_completed": 211,
     "accepted": 168,
     "rejected": 43,
-    "unique_reviewers": 7
+    "unique_reviewers": 7,
   },
   {
     "date": "2026-01-05",
     "reviews_completed": 114,
     "accepted": 92,
     "rejected": 22,
-    "unique_reviewers": 4
+    "unique_reviewers": 4,
   },
   {
     "date": "2026-01-04",
     "reviews_completed": 96,
     "accepted": 78,
     "rejected": 18,
-    "unique_reviewers": 4
-  }
+    "unique_reviewers": 4,
+  },
 ]

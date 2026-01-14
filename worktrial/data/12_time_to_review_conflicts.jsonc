@@ -25,7 +25,7 @@ GROUP BY disposition;
     "avg_hours_to_review": "8.45",
     "median_hours": "5.32",
     "min_hours": "0.25",
-    "max_hours": "48.67"
+    "max_hours": "48.67",
   },
   {
     "disposition": "REJECTED",
@@ -33,6 +33,6 @@ GROUP BY disposition;
     "avg_hours_to_review": "12.18",
     "median_hours": "9.15",
     "min_hours": "0.50",
-    "max_hours": "62.34"
-  }
+    "max_hours": "62.34",
+  },
 ]

@@ -1,21 +1,26 @@
 "use client";
 
-import { useState, useMemo, Fragment } from "react";
-import { IconRefresh, IconChevronRight } from "@tabler/icons-react";
-import { motion, AnimatePresence } from "motion/react";
 import { Button } from "@/components/ui/button";
+import { IconChevronRight, IconRefresh } from "@tabler/icons-react";
+import { AnimatePresence, motion } from "motion/react";
+import { Fragment, useMemo, useState } from "react";
 import type { LstaTask, LstaTaskStep } from "../types";
-import { StepPill, StepDetailPanel } from "./step-detail-card";
+import { StepDetailPanel, StepPill } from "./step-detail-card";
 
 const getCurrentStepId = (task: LstaTask): string | null => {
   if (task.status === "processing") {
-    const activeStep = task.steps.find((s) => s.status === "pending" && s.startedAt);
+    const activeStep = task.steps.find(
+      (s) => s.status === "pending" && s.startedAt
+    );
     return activeStep?.step ?? null;
   }
   return null;
 };
 
-const getDefaultSelectedIndex = (steps: LstaTaskStep[], currentStepId: string | null): number => {
+const getDefaultSelectedIndex = (
+  steps: LstaTaskStep[],
+  currentStepId: string | null
+): number => {
   if (currentStepId) {
     const idx = steps.findIndex((s) => s.step === currentStepId);
     if (idx !== -1) return idx;
@@ -88,12 +93,17 @@ export const ExpandableRowContent = ({
                 disabled={isRetrying}
                 className="ml-auto h-7 shrink-0 px-2 text-xs"
               >
-                <IconRefresh className={`mr-1 size-3 ${isRetrying ? "animate-spin" : ""}`} />
+                <IconRefresh
+                  className={`mr-1 size-3 ${isRetrying ? "animate-spin" : ""}`}
+                />
                 {isRetrying ? "Retrying..." : "Retry"}
               </Button>
             )}
           </div>
-          <StepDetailPanel step={selectedStep} isActive={currentStepId === selectedStep.step} />
+          <StepDetailPanel
+            step={selectedStep}
+            isActive={currentStepId === selectedStep.step}
+          />
         </div>
       </motion.div>
     </AnimatePresence>

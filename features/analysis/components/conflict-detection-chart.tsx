@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import { useMemo } from "react"
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Cell } from "recharts"
+import { useMemo } from "react";
+import { Bar, BarChart, CartesianGrid, Cell, XAxis, YAxis } from "recharts";
 
-import { Badge } from "@/components/ui/badge"
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardAction,
@@ -11,27 +11,27 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
-} from "@/components/ui/chart"
-import { Skeleton } from "@/components/ui/skeleton"
+} from "@/components/ui/chart";
+import { Skeleton } from "@/components/ui/skeleton";
 
-import type { DailyAnalysisRuns } from "../types"
+import type { DailyAnalysisRuns } from "../types";
 
 const chartConfig = {
   conflicts_detected: {
     label: "Conflicts Detected",
     color: "var(--chart-2)",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
 interface ConflictDetectionChartProps {
-  data: DailyAnalysisRuns[]
-  isLoading?: boolean
+  data: DailyAnalysisRuns[];
+  isLoading?: boolean;
 }
 
 export const ConflictDetectionChart = ({
@@ -39,7 +39,7 @@ export const ConflictDetectionChart = ({
   isLoading,
 }: ConflictDetectionChartProps) => {
   const chartData = useMemo(() => {
-    if (!data.length) return []
+    if (!data.length) return [];
     return [...data].reverse().map((item) => ({
       ...item,
       date: new Date(item.date).toLocaleDateString("en-US", {
@@ -51,32 +51,32 @@ export const ConflictDetectionChart = ({
         item.total_runs > 0
           ? ((item.runs_with_conflicts / item.total_runs) * 100).toFixed(1)
           : "0.0",
-    }))
-  }, [data])
+    }));
+  }, [data]);
 
   const totalConflicts = useMemo(() => {
-    if (!data.length) return 0
-    return data.reduce((acc, curr) => acc + curr.conflicts_detected, 0)
-  }, [data])
+    if (!data.length) return 0;
+    return data.reduce((acc, curr) => acc + curr.conflicts_detected, 0);
+  }, [data]);
 
   const avgConflictsPerDay = useMemo(() => {
-    if (!data.length) return 0
-    return Math.round(totalConflicts / data.length)
-  }, [totalConflicts, data.length])
+    if (!data.length) return 0;
+    return Math.round(totalConflicts / data.length);
+  }, [totalConflicts, data.length]);
 
   const avgConflictsPerRun = useMemo(() => {
-    if (!data.length) return "0.00"
-    const totalRuns = data.reduce((acc, curr) => acc + curr.total_runs, 0)
-    if (totalRuns === 0) return "0.00"
-    return (totalConflicts / totalRuns).toFixed(2)
-  }, [totalConflicts, data])
+    if (!data.length) return "0.00";
+    const totalRuns = data.reduce((acc, curr) => acc + curr.total_runs, 0);
+    if (totalRuns === 0) return "0.00";
+    return (totalConflicts / totalRuns).toFixed(2);
+  }, [totalConflicts, data]);
 
   if (isLoading) {
-    return <ConflictDetectionChartSkeleton />
+    return <ConflictDetectionChartSkeleton />;
   }
 
   if (!data.length) {
-    return <ConflictDetectionChartSkeleton />
+    return <ConflictDetectionChartSkeleton />;
   }
 
   return (
@@ -149,13 +149,15 @@ export const ConflictDetectionChart = ({
           </div>
           <div className="flex items-center gap-2">
             <span className="text-muted-foreground">Avg/run:</span>
-            <span className="font-medium tabular-nums">{avgConflictsPerRun}</span>
+            <span className="font-medium tabular-nums">
+              {avgConflictsPerRun}
+            </span>
           </div>
         </div>
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
 const ConflictDetectionChartSkeleton = () => {
   return (
@@ -168,5 +170,5 @@ const ConflictDetectionChartSkeleton = () => {
         <Skeleton className="h-[300px] w-full" />
       </CardContent>
     </Card>
-  )
-}
+  );
+};

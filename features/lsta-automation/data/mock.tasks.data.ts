@@ -1,11 +1,24 @@
-import type { LstaTask, CountByStatus, LstaKpiMetrics } from "../types";
+import type { CountByStatus, LstaKpiMetrics, LstaTask } from "../types";
 
-const STEP_DEFINITIONS: Record<string, { title: string; description: string }> = {
-  "payroll-download": { title: "Download LSTA", description: "Download payroll data from LSTA system" },
-  "data-extraction": { title: "Extract & Map", description: "Extract and map data fields" },
-  "tax-submission": { title: "Submit to ELSTER", description: "Submit tax data to ELSTER portal" },
-  "document-upload": { title: "Upload to Personio", description: "Upload documents to Personio system" },
-};
+const STEP_DEFINITIONS: Record<string, { title: string; description: string }> =
+  {
+    "payroll-download": {
+      title: "Download LSTA",
+      description: "Download payroll data from LSTA system",
+    },
+    "data-extraction": {
+      title: "Extract & Map",
+      description: "Extract and map data fields",
+    },
+    "tax-submission": {
+      title: "Submit to ELSTER",
+      description: "Submit tax data to ELSTER portal",
+    },
+    "document-upload": {
+      title: "Upload to Personio",
+      description: "Upload documents to Personio system",
+    },
+  };
 
 const createStep = (
   stepId: string,
@@ -48,7 +61,10 @@ export const mockLstaTasks: LstaTask[] = [
         endedAt: "2026-01-14T08:02:00Z",
       }),
       createStep("data-extraction", "completed", {
-        data: { extractedFields: ["wages", "tax", "deductions"], recordsProcessed: 156 },
+        data: {
+          extractedFields: ["wages", "tax", "deductions"],
+          recordsProcessed: 156,
+        },
         startedAt: "2026-01-14T08:02:00Z",
         endedAt: "2026-01-14T08:04:00Z",
       }),
@@ -84,7 +100,10 @@ export const mockLstaTasks: LstaTask[] = [
         endedAt: "2026-01-14T07:32:00Z",
       }),
       createStep("data-extraction", "completed", {
-        data: { extractedFields: ["wages", "tax", "deductions", "socialSecurity"], recordsProcessed: 89 },
+        data: {
+          extractedFields: ["wages", "tax", "deductions", "socialSecurity"],
+          recordsProcessed: 89,
+        },
         startedAt: "2026-01-14T07:32:00Z",
         endedAt: "2026-01-14T07:34:00Z",
       }),
@@ -120,12 +139,18 @@ export const mockLstaTasks: LstaTask[] = [
         endedAt: "2026-01-13T22:03:00Z",
       }),
       createStep("data-extraction", "completed", {
-        data: { extractedFields: ["wages", "tax", "deductions", "bonuses"], recordsProcessed: 468 },
+        data: {
+          extractedFields: ["wages", "tax", "deductions", "bonuses"],
+          recordsProcessed: 468,
+        },
         startedAt: "2026-01-13T22:03:00Z",
         endedAt: "2026-01-13T22:06:00Z",
       }),
       createStep("tax-submission", "completed", {
-        data: { confirmationNumber: "TAX-2025-Q4-7821", documentId: "DOC-82910" },
+        data: {
+          confirmationNumber: "TAX-2025-Q4-7821",
+          documentId: "DOC-82910",
+        },
         startedAt: "2026-01-13T22:06:00Z",
         endedAt: "2026-01-13T22:12:00Z",
       }),
@@ -156,7 +181,10 @@ export const mockLstaTasks: LstaTask[] = [
         endedAt: "2026-01-14T09:02:00Z",
       }),
       createStep("data-extraction", "completed", {
-        data: { extractedFields: ["wages", "tax", "deductions"], recordsProcessed: 234 },
+        data: {
+          extractedFields: ["wages", "tax", "deductions"],
+          recordsProcessed: 234,
+        },
         startedAt: "2026-01-14T09:02:00Z",
         endedAt: "2026-01-14T09:04:00Z",
       }),
@@ -237,12 +265,19 @@ export const mockLstaTasks: LstaTask[] = [
         endedAt: "2026-01-14T06:02:00Z",
       }),
       createStep("data-extraction", "completed", {
-        data: { extractedFields: ["wages", "tax", "deductions"], recordsProcessed: 112 },
+        data: {
+          extractedFields: ["wages", "tax", "deductions"],
+          recordsProcessed: 112,
+        },
         startedAt: "2026-01-14T06:02:00Z",
         endedAt: "2026-01-14T06:04:00Z",
       }),
       createStep("tax-submission", "failed", {
-        errorReasons: ["ELSTER portal returned error code 503", "Service temporarily unavailable", "Retry limit exceeded"],
+        errorReasons: [
+          "ELSTER portal returned error code 503",
+          "Service temporarily unavailable",
+          "Retry limit exceeded",
+        ],
         startedAt: "2026-01-14T06:04:00Z",
         endedAt: "2026-01-14T06:15:00Z",
       }),
@@ -269,7 +304,11 @@ export const mockLstaTasks: LstaTask[] = [
         endedAt: "2026-01-13T14:03:00Z",
       }),
       createStep("data-extraction", "failed", {
-        errorReasons: ["Legal entity name doesn't match records", "Missing required field: socialSecurityNumber", "Data validation failed for 12 records"],
+        errorReasons: [
+          "Legal entity name doesn't match records",
+          "Missing required field: socialSecurityNumber",
+          "Data validation failed for 12 records",
+        ],
         startedAt: "2026-01-13T14:03:00Z",
         endedAt: "2026-01-13T14:05:00Z",
       }),
@@ -337,7 +376,10 @@ export const mockLstaTasks: LstaTask[] = [
         endedAt: "2026-01-14T05:02:00Z",
       }),
       createStep("data-extraction", "completed", {
-        data: { extractedFields: ["wages", "tax", "deductions"], recordsProcessed: 78 },
+        data: {
+          extractedFields: ["wages", "tax", "deductions"],
+          recordsProcessed: 78,
+        },
         startedAt: "2026-01-14T05:02:00Z",
         endedAt: "2026-01-14T05:04:00Z",
       }),

@@ -1,5 +1,5 @@
-import { useApiQuery } from "@/shared/lib/use-api-query"
-import { API_ENDPOINTS } from "@/shared/lib/api-endpoints"
+import { API_ENDPOINTS } from "@/shared/lib/api-endpoints";
+import { useApiQuery } from "@/shared/lib/use-api-query";
 
 export const useFetchDailyAnalysis = () =>
-  useApiQuery(API_ENDPOINTS.analysis.daily)
+  useApiQuery(API_ENDPOINTS.analysis.daily);

@@ -24,48 +24,48 @@ ORDER BY day_number;
     "day_number": 1,
     "reviews_completed": 1456,
     "unique_reviewers": 8,
-    "avg_review_time_hours": 8.67
+    "avg_review_time_hours": 8.67,
   },
   {
     "day_of_week": "Tuesday",
     "day_number": 2,
     "reviews_completed": 1678,
     "unique_reviewers": 8,
-    "avg_review_time_hours": 7.92
+    "avg_review_time_hours": 7.92,
   },
   {
     "day_of_week": "Wednesday",
     "day_number": 3,
     "reviews_completed": 1842,
     "unique_reviewers": 8,
-    "avg_review_time_hours": 9.15
+    "avg_review_time_hours": 9.15,
   },
   {
     "day_of_week": "Thursday",
     "day_number": 4,
     "reviews_completed": 1723,
     "unique_reviewers": 8,
-    "avg_review_time_hours": 8.34
+    "avg_review_time_hours": 8.34,
   },
   {
     "day_of_week": "Friday",
     "day_number": 5,
     "reviews_completed": 1534,
     "unique_reviewers": 7,
-    "avg_review_time_hours": 10.23
+    "avg_review_time_hours": 10.23,
   },
   {
     "day_of_week": "Saturday",
     "day_number": 6,
     "reviews_completed": 289,
     "unique_reviewers": 3,
-    "avg_review_time_hours": 15.67
+    "avg_review_time_hours": 15.67,
   },
   {
     "day_of_week": "Sunday",
     "day_number": 0,
     "reviews_completed": 228,
     "unique_reviewers": 2,
-    "avg_review_time_hours": 18.45
-  }
+    "avg_review_time_hours": 18.45,
+  },
 ]

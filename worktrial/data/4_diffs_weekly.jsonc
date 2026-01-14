@@ -24,7 +24,7 @@ ORDER BY week DESC;
     "drafts": 689,
     "preview": 198,
     "applied": 268,
-    "archived": 50
+    "archived": 50,
   },
   {
     "week": "2025-12-29 00:00:00+00",
@@ -32,7 +32,7 @@ ORDER BY week DESC;
     "drafts": 612,
     "preview": 178,
     "applied": 243,
-    "archived": 56
+    "archived": 56,
   },
   {
     "week": "2025-12-22 00:00:00+00",
@@ -40,7 +40,7 @@ ORDER BY week DESC;
     "drafts": 768,
     "preview": 215,
     "applied": 301,
-    "archived": 58
+    "archived": 58,
   },
   {
     "week": "2025-12-15 00:00:00+00",
@@ -48,7 +48,7 @@ ORDER BY week DESC;
     "drafts": 641,
     "preview": 189,
     "applied": 271,
-    "archived": 55
+    "archived": 55,
   },
   {
     "week": "2025-12-08 00:00:00+00",
@@ -56,7 +56,7 @@ ORDER BY week DESC;
     "drafts": 558,
     "preview": 152,
     "applied": 218,
-    "archived": 50
+    "archived": 50,
   },
   {
     "week": "2025-12-01 00:00:00+00",
@@ -64,7 +64,7 @@ ORDER BY week DESC;
     "drafts": 501,
     "preview": 142,
     "applied": 204,
-    "archived": 45
+    "archived": 45,
   },
   {
     "week": "2025-11-24 00:00:00+00",
@@ -72,7 +72,7 @@ ORDER BY week DESC;
     "drafts": 418,
     "preview": 118,
     "applied": 168,
-    "archived": 30
+    "archived": 30,
   },
   {
     "week": "2025-11-17 00:00:00+00",
@@ -80,6 +80,6 @@ ORDER BY week DESC;
     "drafts": 467,
     "preview": 128,
     "applied": 184,
-    "archived": 33
-  }
+    "archived": 33,
+  },
 ]

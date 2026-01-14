@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   IconCalendar,
@@ -6,35 +6,35 @@ import {
   IconEdit,
   IconTrophy,
   IconUsers,
-} from "@tabler/icons-react"
+} from "@tabler/icons-react";
 
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Skeleton } from "@/components/ui/skeleton"
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
-import { MetricCard } from "@/features/diffs"
+import { MetricCard } from "@/components/metric-card";
 
-import { useFetchTeamOverview } from "../hooks/use-fetch-team-overview"
-import { useFetchReviewActivity } from "../hooks/use-fetch-review-activity"
-import { ReviewerLeaderboardChart } from "./reviewer-leaderboard-chart"
-import { WeekdayActivityChart } from "./weekday-activity-chart"
-import { ReviewTrendsChart } from "./review-trends-chart"
-import { DocumentsAttentionTable } from "./documents-attention-table"
+import { useFetchReviewActivity } from "../hooks/use-fetch-review-activity";
+import { useFetchTeamOverview } from "../hooks/use-fetch-team-overview";
+import { DocumentsAttentionTable } from "./documents-attention-table";
+import { ReviewTrendsChart } from "./review-trends-chart";
+import { ReviewerLeaderboardChart } from "./reviewer-leaderboard-chart";
+import { WeekdayActivityChart } from "./weekday-activity-chart";
 
 export const TeamContent = () => {
   const {
     data: overviewData,
     isLoading: isLoadingOverview,
     error: overviewError,
-  } = useFetchTeamOverview()
+  } = useFetchTeamOverview();
 
   const {
     data: activityData,
     isLoading: isLoadingActivity,
     error: activityError,
-  } = useFetchReviewActivity()
+  } = useFetchReviewActivity();
 
-  const formatNumber = (num: number) => num.toLocaleString()
+  const formatNumber = (num: number) => num.toLocaleString();
 
   return (
     <div className="flex flex-col gap-6 p-4 md:p-6">
@@ -131,7 +131,8 @@ export const TeamContent = () => {
               </p>
             </div>
             <Badge variant="outline">
-              {overviewData?.corrections.correction_rate_percentage ?? 0}% of reviews
+              {overviewData?.corrections.correction_rate_percentage ?? 0}% of
+              reviews
             </Badge>
           </div>
         </CardHeader>
@@ -174,10 +175,11 @@ export const TeamContent = () => {
             </div>
           )}
           <p className="mt-4 text-sm text-muted-foreground">
-            Manual fixes help train the AI to be more accurate over time. Teams that provide corrections help improve suggestions for everyone.
+            Manual fixes help train the AI to be more accurate over time. Teams
+            that provide corrections help improve suggestions for everyone.
           </p>
         </CardContent>
       </Card>
     </div>
-  )
-}
+  );
+};

@@ -1,15 +1,15 @@
 "use client";
 
-import { useState } from "react";
 import { IconLoader2 } from "@tabler/icons-react";
+import { useState } from "react";
+import { mockBatches } from "../data/mock.batches.data";
+import { useFetchLstaTasks } from "../hooks/use-fetch-lsta-tasks";
+import { useRetryLstaTask } from "../hooks/use-retry-lsta-task";
+import type { Batch } from "../types";
+import { AddBatchDialog } from "./add-batch-dialog";
 import { AutomationKpiCards } from "./automation-kpi-cards";
 import { AutomationTable } from "./automation-table";
 import { BatchTabs } from "./batch-tabs";
-import { AddBatchDialog } from "./add-batch-dialog";
-import { useFetchLstaTasks } from "../hooks/use-fetch-lsta-tasks";
-import { useRetryLstaTask } from "../hooks/use-retry-lsta-task";
-import { mockBatches } from "../data/mock.batches.data";
-import type { Batch } from "../types";
 
 export const LstaAutomationContent = () => {
   const [batches, setBatches] = useState<Batch[]>(mockBatches);
@@ -23,9 +23,15 @@ export const LstaAutomationContent = () => {
     size: 20,
   });
 
-  const { mutate: retryTask, isPending: isRetrying, variables: retryingTaskId } = useRetryLstaTask();
+  const {
+    mutate: retryTask,
+    isPending: isRetrying,
+    variables: retryingTaskId,
+  } = useRetryLstaTask();
 
-  const handleAddBatch = (batchData: Omit<Batch, "id" | "createdAt" | "submissionCount">) => {
+  const handleAddBatch = (
+    batchData: Omit<Batch, "id" | "createdAt" | "submissionCount">
+  ) => {
     const newBatch: Batch = {
       ...batchData,
       id: `batch-${Date.now()}`,

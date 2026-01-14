@@ -1,5 +1,8 @@
+import {
+  RouteContext,
+  wrapRouteHandler,
+} from "@/shared/utils/server/wrap-route-handler";
 import { NextRequest, NextResponse } from "next/server";
-import { wrapRouteHandler, RouteContext } from "@/shared/utils/server/wrap-route-handler";
 import { getLstaTaskList } from "./service";
 
 export const GET = async (request: NextRequest, context: RouteContext) => {

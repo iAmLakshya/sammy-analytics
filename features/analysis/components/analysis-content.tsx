@@ -1,74 +1,75 @@
-"use client"
+"use client";
 
-import { useMemo } from "react"
 import {
   IconActivity,
+  IconAlertCircle,
   IconBrain,
+  IconChartBar,
   IconClock,
   IconTarget,
-  IconChartBar,
-  IconAlertCircle,
-} from "@tabler/icons-react"
+} from "@tabler/icons-react";
+import { useMemo } from "react";
 
-import { Badge } from "@/components/ui/badge"
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Skeleton } from "@/components/ui/skeleton"
+} from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
-import { MetricCard } from "@/features/diffs"
-import { useFetchAnalysisOverview } from "../hooks/use-fetch-analysis-overview"
-import { useFetchDailyAnalysis } from "../hooks/use-fetch-daily-analysis"
-import { AnalysisRunsTable } from "./analysis-runs-table"
-import { AnalysisRunsChart } from "./analysis-runs-chart"
-import { ConflictDetectionChart } from "./conflict-detection-chart"
-import { PerformanceDistributionChart } from "./performance-distribution-chart"
+import { MetricCard } from "@/components/metric-card";
+
+import { useFetchAnalysisOverview } from "../hooks/use-fetch-analysis-overview";
+import { useFetchDailyAnalysis } from "../hooks/use-fetch-daily-analysis";
+import { AnalysisRunsChart } from "./analysis-runs-chart";
+import { AnalysisRunsTable } from "./analysis-runs-table";
+import { ConflictDetectionChart } from "./conflict-detection-chart";
+import { PerformanceDistributionChart } from "./performance-distribution-chart";
 
 export const AnalysisContent = () => {
   const {
     data: overview,
     isLoading: isOverviewLoading,
     error: overviewError,
-  } = useFetchAnalysisOverview()
+  } = useFetchAnalysisOverview();
 
   const {
     data: dailyData,
     isLoading: isDailyLoading,
     error: dailyError,
-  } = useFetchDailyAnalysis()
+  } = useFetchDailyAnalysis();
 
   const formatDuration = (seconds: number): string => {
-    const mins = Math.floor(seconds / 60)
-    const secs = Math.round(seconds % 60)
-    if (mins === 0) return `${secs}s`
-    return secs > 0 ? `${mins}m ${secs}s` : `${mins}m`
-  }
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.round(seconds % 60);
+    if (mins === 0) return `${secs}s`;
+    return secs > 0 ? `${mins}m ${secs}s` : `${mins}m`;
+  };
 
   // Calculate detection rate from daily data
   const detectionRate = useMemo(() => {
-    if (!dailyData?.data?.length) return null
-    const totalRuns = dailyData.data.reduce((acc, d) => acc + d.total_runs, 0)
+    if (!dailyData?.data?.length) return null;
+    const totalRuns = dailyData.data.reduce((acc, d) => acc + d.total_runs, 0);
     const runsWithConflicts = dailyData.data.reduce(
       (acc, d) => acc + d.runs_with_conflicts,
       0
-    )
-    return ((runsWithConflicts / totalRuns) * 100).toFixed(1)
-  }, [dailyData])
+    );
+    return ((runsWithConflicts / totalRuns) * 100).toFixed(1);
+  }, [dailyData]);
 
   // Calculate today's stats
   const todayStats = useMemo(() => {
-    if (!dailyData?.data?.length) return null
-    const today = dailyData.data[0]
+    if (!dailyData?.data?.length) return null;
+    const today = dailyData.data[0];
     return {
       runs: today.total_runs,
       conflicts: today.conflicts_detected,
       rate: ((today.runs_with_conflicts / today.total_runs) * 100).toFixed(1),
-    }
-  }, [dailyData])
+    };
+  }, [dailyData]);
 
   if (overviewError || dailyError) {
     return (
@@ -76,7 +77,7 @@ export const AnalysisContent = () => {
         <IconAlertCircle className="h-12 w-12 text-muted-foreground" />
         <p className="text-muted-foreground">Failed to load analysis data</p>
       </div>
-    )
+    );
   }
 
   return (
@@ -114,7 +115,9 @@ export const AnalysisContent = () => {
             <MetricCard
               label="Issue Detection"
               value={detectionRate ? `${detectionRate}%` : "—"}
-              badge={detectionRate && Number(detectionRate) > 70 ? "High" : undefined}
+              badge={
+                detectionRate && Number(detectionRate) > 70 ? "High" : undefined
+              }
               badgeVariant={
                 detectionRate && Number(detectionRate) > 70
                   ? "success"
@@ -219,8 +222,8 @@ export const AnalysisContent = () => {
         </CardContent>
       </Card>
     </div>
-  )
-}
+  );
+};
 
 // Helper component for insight cards
 const InsightCard = ({
@@ -229,10 +232,10 @@ const InsightCard = ({
   status,
   description,
 }: {
-  title: string
-  value: string
-  status: "good" | "warning" | "critical"
-  description: string
+  title: string;
+  value: string;
+  status: "good" | "warning" | "critical";
+  description: string;
 }) => {
   const statusColors = {
     good: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400",
@@ -240,21 +243,25 @@ const InsightCard = ({
       "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400",
     critical:
       "bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-400",
-  }
+  };
 
   return (
     <div className="rounded-lg border p-4">
       <div className="flex items-center justify-between">
         <span className="text-sm font-medium">{title}</span>
         <Badge className={statusColors[status]}>
-          {status === "good" ? "Healthy" : status === "warning" ? "Monitor" : "Action"}
+          {status === "good"
+            ? "Healthy"
+            : status === "warning"
+              ? "Monitor"
+              : "Action"}
         </Badge>
       </div>
       <div className="mt-2 text-2xl font-semibold tabular-nums">{value}</div>
       <p className="mt-1 text-xs text-muted-foreground">{description}</p>
     </div>
-  )
-}
+  );
+};
 
 const MetricCardSkeleton = () => {
   return (
@@ -265,5 +272,5 @@ const MetricCardSkeleton = () => {
         <Skeleton className="mt-2 h-3 w-32" />
       </CardContent>
     </Card>
-  )
-}
+  );
+};

@@ -19,46 +19,46 @@ ORDER BY date DESC;
   {
     "date": "2026-01-12",
     "pages_synced": 2847,
-    "pages_with_updates": 1456
+    "pages_with_updates": 1456,
   },
   {
     "date": "2026-01-11",
     "pages_synced": 1623,
-    "pages_with_updates": 834
+    "pages_with_updates": 834,
   },
   {
     "date": "2026-01-10",
     "pages_synced": 3142,
-    "pages_with_updates": 1687
+    "pages_with_updates": 1687,
   },
   {
     "date": "2026-01-09",
     "pages_synced": 2891,
-    "pages_with_updates": 1523
+    "pages_with_updates": 1523,
   },
   {
     "date": "2026-01-08",
     "pages_synced": 3568,
-    "pages_with_updates": 1892
+    "pages_with_updates": 1892,
   },
   {
     "date": "2026-01-07",
     "pages_synced": 3421,
-    "pages_with_updates": 1745
+    "pages_with_updates": 1745,
   },
   {
     "date": "2026-01-06",
     "pages_synced": 3289,
-    "pages_with_updates": 1678
+    "pages_with_updates": 1678,
   },
   {
     "date": "2026-01-05",
     "pages_synced": 1834,
-    "pages_with_updates": 945
+    "pages_with_updates": 945,
   },
   {
     "date": "2026-01-04",
     "pages_synced": 1612,
-    "pages_with_updates": 823
-  }
+    "pages_with_updates": 823,
+  },
 ]

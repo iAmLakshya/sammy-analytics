@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { useMemo } from "react"
-import { IconTrendingUp } from "@tabler/icons-react"
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
+import { IconTrendingUp } from "@tabler/icons-react";
+import { useMemo } from "react";
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
-import { Badge } from "@/components/ui/badge"
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardAction,
@@ -13,7 +13,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartContainer,
   ChartLegend,
@@ -21,10 +21,10 @@ import {
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
-} from "@/components/ui/chart"
-import { Skeleton } from "@/components/ui/skeleton"
+} from "@/components/ui/chart";
+import { Skeleton } from "@/components/ui/skeleton";
 
-import type { WeeklyDiffs } from "../types"
+import type { WeeklyDiffs } from "../types";
 
 const chartConfig = {
   drafts: {
@@ -43,11 +43,11 @@ const chartConfig = {
     label: "Archived",
     color: "var(--chart-4)",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
 interface WeeklyTrendsChartProps {
-  data: WeeklyDiffs[]
-  isLoading?: boolean
+  data: WeeklyDiffs[];
+  isLoading?: boolean;
 }
 
 export const WeeklyTrendsChart = ({
@@ -56,26 +56,26 @@ export const WeeklyTrendsChart = ({
 }: WeeklyTrendsChartProps) => {
   const chartData = useMemo(() => {
     return [...data].reverse().map((item) => {
-      const weekDate = new Date(item.week)
+      const weekDate = new Date(item.week);
       return {
         ...item,
         week: weekDate.toLocaleDateString("en-US", {
           month: "short",
           day: "numeric",
         }),
-      }
-    })
-  }, [data])
+      };
+    });
+  }, [data]);
 
   const trend = useMemo(() => {
-    if (data.length < 2) return 0
-    const current = data[0].diffs_created
-    const previous = data[1].diffs_created
-    return ((current - previous) / previous) * 100
-  }, [data])
+    if (data.length < 2) return 0;
+    const current = data[0].diffs_created;
+    const previous = data[1].diffs_created;
+    return ((current - previous) / previous) * 100;
+  }, [data]);
 
   if (isLoading) {
-    return <WeeklyTrendsChartSkeleton />
+    return <WeeklyTrendsChartSkeleton />;
   }
 
   return (
@@ -161,8 +161,8 @@ export const WeeklyTrendsChart = ({
         </div>
       </CardFooter>
     </Card>
-  )
-}
+  );
+};
 
 const WeeklyTrendsChartSkeleton = () => {
   return (
@@ -178,5 +178,5 @@ const WeeklyTrendsChartSkeleton = () => {
         <Skeleton className="h-10 w-64" />
       </CardFooter>
     </Card>
-  )
-}
+  );
+};

@@ -1,16 +1,7 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import {
-  IconCheck,
-  IconChevronDown,
-  IconFilter,
-  IconSearch,
-  IconX,
-} from "@tabler/icons-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Command,
   CommandEmpty,
@@ -18,6 +9,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
+import { Input } from "@/components/ui/input";
 import {
   Popover,
   PopoverContent,
@@ -30,33 +22,50 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  IconCheck,
+  IconChevronDown,
+  IconFilter,
+  IconSearch,
+  IconX,
+} from "@tabler/icons-react";
+import { useEffect, useRef, useState } from "react";
 import type { SubmissionFilters, SubmissionStatus } from "../../types";
 
-const STATUS_OPTIONS: { value: SubmissionStatus; label: string; className: string }[] = [
+const STATUS_OPTIONS: {
+  value: SubmissionStatus;
+  label: string;
+  className: string;
+}[] = [
   {
     value: "queued",
     label: "Queued",
-    className: "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400",
+    className:
+      "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400",
   },
   {
     value: "processing",
     label: "Processing",
-    className: "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400",
+    className:
+      "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400",
   },
   {
     value: "completed",
     label: "Completed",
-    className: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400",
+    className:
+      "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400",
   },
   {
     value: "needs-review",
     label: "Needs Review",
-    className: "bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-400",
+    className:
+      "bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-400",
   },
   {
     value: "retrying",
     label: "Retrying",
-    className: "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400",
+    className:
+      "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400",
   },
 ];
 
@@ -196,8 +205,15 @@ export const SubmissionFilterBar = ({
         </PopoverContent>
       </Popover>
 
-      <Select value={getSpecialCaseValue()} onValueChange={handleSpecialCaseChange}>
-        <SelectTrigger size="sm" className="h-8 w-[100px]" aria-label="Filter by submission type">
+      <Select
+        value={getSpecialCaseValue()}
+        onValueChange={handleSpecialCaseChange}
+      >
+        <SelectTrigger
+          size="sm"
+          className="h-8 w-[100px]"
+          aria-label="Filter by submission type"
+        >
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
@@ -242,8 +258,9 @@ export const SubmissionFilterBar = ({
       <div className="ml-auto text-sm text-muted-foreground">
         {isFiltered ? (
           <span>
-            Showing <span className="font-medium text-foreground">{filteredCount}</span> of{" "}
-            {totalCount}
+            Showing{" "}
+            <span className="font-medium text-foreground">{filteredCount}</span>{" "}
+            of {totalCount}
           </span>
         ) : (
           <span>{totalCount} submissions</span>

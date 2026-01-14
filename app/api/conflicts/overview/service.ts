@@ -1,13 +1,13 @@
 import {
   dispositionSummary,
+  pendingAging,
+  priorityBreakdown,
   timeToReview,
   userCorrections,
-  priorityBreakdown,
-  pendingAging,
 } from "@/features/conflicts/data/mock.conflicts.data";
 import type { ConflictsOverviewResponse } from "@/features/conflicts/types";
-import { CoreDependencies } from "@/shared/utils/server/wrap-route-handler";
 import { ServiceError } from "@/shared/utils/server/errors";
+import { CoreDependencies } from "@/shared/utils/server/wrap-route-handler";
 
 export const getConflictsOverview =
   (dependencies: CoreDependencies) =>

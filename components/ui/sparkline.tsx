@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useMemo } from 'react';
-import { Area, AreaChart, ResponsiveContainer } from 'recharts';
+import { useMemo } from "react";
+import { Area, AreaChart, ResponsiveContainer } from "recharts";
 
 interface SparklineProps {
   data: number[];
@@ -13,7 +13,7 @@ interface SparklineProps {
 
 export const Sparkline = ({
   data,
-  color = 'var(--chart-1)',
+  color = "var(--chart-1)",
   height = 24,
   className,
   showArea = true,
@@ -24,19 +24,19 @@ export const Sparkline = ({
   );
 
   const trend = useMemo(() => {
-    if (data.length < 2) return 'neutral';
+    if (data.length < 2) return "neutral";
     const first = data[0];
     const last = data[data.length - 1];
-    if (last > first * 1.05) return 'up';
-    if (last < first * 0.95) return 'down';
-    return 'neutral';
+    if (last > first * 1.05) return "up";
+    if (last < first * 0.95) return "down";
+    return "neutral";
   }, [data]);
 
   const strokeColor = useMemo(() => {
-    if (color !== 'auto') return color;
-    if (trend === 'up') return 'var(--color-success)';
-    if (trend === 'down') return 'var(--color-destructive)';
-    return 'var(--chart-1)';
+    if (color !== "auto") return color;
+    if (trend === "up") return "var(--color-success)";
+    if (trend === "down") return "var(--color-destructive)";
+    return "var(--chart-1)";
   }, [color, trend]);
 
   return (
@@ -47,7 +47,13 @@ export const Sparkline = ({
           margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
         >
           <defs>
-            <linearGradient id={`sparkline-gradient-${color}`} x1="0" y1="0" x2="0" y2="1">
+            <linearGradient
+              id={`sparkline-gradient-${color}`}
+              x1="0"
+              y1="0"
+              x2="0"
+              y2="1"
+            >
               <stop offset="0%" stopColor={strokeColor} stopOpacity={0.3} />
               <stop offset="100%" stopColor={strokeColor} stopOpacity={0} />
             </linearGradient>
@@ -57,7 +63,9 @@ export const Sparkline = ({
             dataKey="value"
             stroke={strokeColor}
             strokeWidth={1.5}
-            fill={showArea ? `url(#sparkline-gradient-${color})` : 'transparent'}
+            fill={
+              showArea ? `url(#sparkline-gradient-${color})` : "transparent"
+            }
             isAnimationActive={false}
           />
         </AreaChart>
@@ -78,10 +86,10 @@ export const MiniSparkline = ({
   data,
   width = 48,
   height = 16,
-  color = 'currentColor',
+  color = "currentColor",
 }: MiniSparklineProps) => {
   const points = useMemo(() => {
-    if (data.length < 2) return '';
+    if (data.length < 2) return "";
     const max = Math.max(...data);
     const min = Math.min(...data);
     const range = max - min || 1;
@@ -92,7 +100,7 @@ export const MiniSparkline = ({
         const y = height - ((value - min) / range) * height;
         return `${x},${y}`;
       })
-      .join(' ');
+      .join(" ");
   }, [data, width, height]);
 
   if (data.length < 2) return null;

@@ -1,17 +1,16 @@
-"use client"
+"use client";
 
-import { useMemo } from "react"
+import { useMemo } from "react";
 import {
   Area,
-  AreaChart,
   CartesianGrid,
+  ComposedChart,
+  Line,
   XAxis,
   YAxis,
-  Line,
-  ComposedChart,
-} from "recharts"
+} from "recharts";
 
-import { Badge } from "@/components/ui/badge"
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardAction,
@@ -19,7 +18,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartContainer,
   ChartLegend,
@@ -27,10 +26,10 @@ import {
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
-} from "@/components/ui/chart"
-import { Skeleton } from "@/components/ui/skeleton"
+} from "@/components/ui/chart";
+import { Skeleton } from "@/components/ui/skeleton";
 
-import type { DailyReviewActivity } from "../types"
+import type { DailyReviewActivity } from "../types";
 
 const chartConfig = {
   accepted: {
@@ -45,11 +44,11 @@ const chartConfig = {
     label: "Active Reviewers",
     color: "hsl(var(--chart-2))",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
 interface ReviewTrendsChartProps {
-  data: DailyReviewActivity[]
-  isLoading?: boolean
+  data: DailyReviewActivity[];
+  isLoading?: boolean;
 }
 
 export const ReviewTrendsChart = ({
@@ -63,31 +62,33 @@ export const ReviewTrendsChart = ({
         month: "short",
         day: "numeric",
       }),
-    }))
-  }, [data])
+    }));
+  }, [data]);
 
   const totalReviews = useMemo(() => {
-    return data.reduce((acc, d) => acc + d.reviews_completed, 0)
-  }, [data])
+    return data.reduce((acc, d) => acc + d.reviews_completed, 0);
+  }, [data]);
 
   const avgDaily = useMemo(() => {
-    return Math.round(totalReviews / data.length)
-  }, [totalReviews, data.length])
+    return Math.round(totalReviews / data.length);
+  }, [totalReviews, data.length]);
 
   const acceptanceRate = useMemo(() => {
-    const totalAccepted = data.reduce((acc, d) => acc + d.accepted, 0)
-    return Math.round((totalAccepted / totalReviews) * 100)
-  }, [data, totalReviews])
+    const totalAccepted = data.reduce((acc, d) => acc + d.accepted, 0);
+    return Math.round((totalAccepted / totalReviews) * 100);
+  }, [data, totalReviews]);
 
   const trend = useMemo(() => {
-    if (data.length < 2) return 0
-    const recent = data.slice(0, 3).reduce((acc, d) => acc + d.reviews_completed, 0) / 3
-    const earlier = data.slice(-3).reduce((acc, d) => acc + d.reviews_completed, 0) / 3
-    return Math.round(((recent - earlier) / earlier) * 100)
-  }, [data])
+    if (data.length < 2) return 0;
+    const recent =
+      data.slice(0, 3).reduce((acc, d) => acc + d.reviews_completed, 0) / 3;
+    const earlier =
+      data.slice(-3).reduce((acc, d) => acc + d.reviews_completed, 0) / 3;
+    return Math.round(((recent - earlier) / earlier) * 100);
+  }, [data]);
 
   if (isLoading) {
-    return <ReviewTrendsChartSkeleton />
+    return <ReviewTrendsChartSkeleton />;
   }
 
   return (
@@ -95,7 +96,8 @@ export const ReviewTrendsChart = ({
       <CardHeader>
         <CardTitle>Review Activity Trends</CardTitle>
         <CardDescription>
-          Daily reviews with acceptance/rejection breakdown and active reviewer count
+          Daily reviews with acceptance/rejection breakdown and active reviewer
+          count
         </CardDescription>
         <CardAction>
           <Badge variant="outline">
@@ -164,7 +166,7 @@ export const ReviewTrendsChart = ({
                 <ChartTooltipContent
                   indicator="dot"
                   formatter={(value, name, item) => {
-                    const payload = item.payload
+                    const payload = item.payload;
                     if (name === "accepted") {
                       return (
                         <div className="flex flex-col gap-1">
@@ -205,9 +207,9 @@ export const ReviewTrendsChart = ({
                             </span>
                           </div>
                         </div>
-                      )
+                      );
                     }
-                    return null
+                    return null;
                   }}
                 />
               }
@@ -255,15 +257,13 @@ export const ReviewTrendsChart = ({
           </div>
           <div className="flex items-center gap-2">
             <span className="text-muted-foreground">Acceptance Rate:</span>
-            <span className="font-medium tabular-nums">
-              {acceptanceRate}%
-            </span>
+            <span className="font-medium tabular-nums">{acceptanceRate}%</span>
           </div>
         </div>
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
 const ReviewTrendsChartSkeleton = () => {
   return (
@@ -276,5 +276,5 @@ const ReviewTrendsChartSkeleton = () => {
         <Skeleton className="h-[300px] w-full" />
       </CardContent>
     </Card>
-  )
-}
+  );
+};

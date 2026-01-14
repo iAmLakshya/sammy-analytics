@@ -1,13 +1,16 @@
-import { NextRequest, NextResponse } from "next/server"
-import { wrapRouteHandler, RouteContext } from "@/shared/utils/server/wrap-route-handler"
-import { getConflictsOverview } from "./service"
+import {
+  RouteContext,
+  wrapRouteHandler,
+} from "@/shared/utils/server/wrap-route-handler";
+import { NextRequest, NextResponse } from "next/server";
+import { getConflictsOverview } from "./service";
 
 export const GET = async (request: NextRequest, context: RouteContext) => {
   return wrapRouteHandler(request, context, (deps) => async (req, ctx) => {
-    const result = await getConflictsOverview(deps)()
+    const result = await getConflictsOverview(deps)();
     if ("statusCode" in result) {
-        throw result
+      throw result;
     }
-    return NextResponse.json(result)
-  })
-}
+    return NextResponse.json(result);
+  });
+};

@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   IconAlertTriangle,
@@ -7,9 +7,9 @@ import {
   IconFileDescription,
   IconTrendingDown,
   IconTrendingUp,
-} from "@tabler/icons-react"
+} from "@tabler/icons-react";
 
-import { Badge } from "@/components/ui/badge"
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardAction,
@@ -17,9 +17,9 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { InfoTooltip } from "@/components/ui/info-tooltip"
-import { MiniSparkline } from "@/components/ui/sparkline"
+} from "@/components/ui/card";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { MiniSparkline } from "@/components/ui/sparkline";
 
 // Mock trend data for sparklines
 const pendingDiffsTrend = [9800, 10200, 10100, 10400, 10300, 10500, 10600];
@@ -28,12 +28,12 @@ const resolvedConflictsTrend = [8100, 8400, 8600, 8800, 9000, 9100, 9250];
 const reviewTimeTrend = [9.2, 8.9, 8.7, 8.6, 8.5, 8.4, 8.45];
 
 const getTrendDirection = (data: number[]) => {
-  if (data.length < 2) return 'neutral';
+  if (data.length < 2) return "neutral";
   const first = data[0];
   const last = data[data.length - 1];
-  if (last > first * 1.02) return 'up';
-  if (last < first * 0.98) return 'down';
-  return 'neutral';
+  if (last > first * 1.02) return "up";
+  if (last < first * 0.98) return "down";
+  return "neutral";
 };
 
 export const SectionCards = () => {
@@ -68,9 +68,9 @@ export const SectionCards = () => {
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex items-center gap-2 font-medium">
-            {diffsTrend === 'up' ? (
+            {diffsTrend === "up" ? (
               <IconTrendingUp className="size-3.5 text-chart-1" />
-            ) : diffsTrend === 'down' ? (
+            ) : diffsTrend === "down" ? (
               <IconTrendingDown className="size-3.5 text-chart-3" />
             ) : null}
             8,420 being prepared, 2,180 ready for review
@@ -105,16 +105,14 @@ export const SectionCards = () => {
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex items-center gap-2 font-medium">
-            {conflictsTrend === 'down' ? (
+            {conflictsTrend === "down" ? (
               <IconTrendingDown className="size-3.5 text-chart-3" />
-            ) : conflictsTrend === 'up' ? (
+            ) : conflictsTrend === "up" ? (
               <IconTrendingUp className="size-3.5 text-chart-1" />
             ) : null}
             1,240 are urgent
           </div>
-          <div className="text-muted-foreground">
-            Affecting 1,842 documents
-          </div>
+          <div className="text-muted-foreground">Affecting 1,842 documents</div>
         </CardFooter>
       </Card>
 
@@ -142,14 +140,12 @@ export const SectionCards = () => {
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex items-center gap-2 font-medium">
-            {resolvedTrend === 'up' && (
+            {resolvedTrend === "up" && (
               <IconTrendingUp className="size-3.5 text-chart-3" />
             )}
             6,950 approved, 2,300 declined
           </div>
-          <div className="text-muted-foreground">
-            75.1% approval rate
-          </div>
+          <div className="text-muted-foreground">75.1% approval rate</div>
         </CardFooter>
       </Card>
 
@@ -177,18 +173,16 @@ export const SectionCards = () => {
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex items-center gap-2 font-medium">
-            {reviewTrend === 'down' ? (
+            {reviewTrend === "down" ? (
               <IconTrendingDown className="size-3.5 text-chart-3" />
-            ) : reviewTrend === 'up' ? (
+            ) : reviewTrend === "up" ? (
               <IconTrendingUp className="size-3.5 text-chart-1" />
             ) : null}
             8 team members reviewing
           </div>
-          <div className="text-muted-foreground">
-            1,496 reviews this week
-          </div>
+          <div className="text-muted-foreground">1,496 reviews this week</div>
         </CardFooter>
       </Card>
     </div>
-  )
-}
+  );
+};

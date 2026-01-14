@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import { useMemo } from "react"
 import {
-  IconArrowRight,
-  IconFileDescription,
-  IconEye,
-  IconCheck,
   IconArchive,
-} from "@tabler/icons-react"
+  IconArrowRight,
+  IconCheck,
+  IconEye,
+  IconFileDescription,
+} from "@tabler/icons-react";
+import { useMemo } from "react";
 
 import {
   Card,
@@ -15,13 +15,13 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Skeleton } from "@/components/ui/skeleton"
-import { InfoTooltip } from "@/components/ui/info-tooltip"
-import { SegmentedBar } from "@/components/ui/funnel"
-import { ProgressRing } from "@/components/ui/gauge"
+} from "@/components/ui/card";
+import { SegmentedBar } from "@/components/ui/funnel";
+import { ProgressRing } from "@/components/ui/gauge";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { Skeleton } from "@/components/ui/skeleton";
 
-import type { DiffStateDistribution } from "../types"
+import type { DiffStateDistribution } from "../types";
 
 const stateConfig = {
   DRAFT: {
@@ -48,11 +48,11 @@ const stateConfig = {
     icon: IconArchive,
     description: "Skipped",
   },
-}
+};
 
 interface StateDistributionChartProps {
-  data: DiffStateDistribution[]
-  isLoading?: boolean
+  data: DiffStateDistribution[];
+  isLoading?: boolean;
 }
 
 export const StateDistributionChart = ({
@@ -60,23 +60,23 @@ export const StateDistributionChart = ({
   isLoading,
 }: StateDistributionChartProps) => {
   const { segments, totalDiffs, stateData } = useMemo(() => {
-    const total = data.reduce((acc, curr) => acc + curr.count, 0)
+    const total = data.reduce((acc, curr) => acc + curr.count, 0);
     const segs = data.map((item) => ({
       label: stateConfig[item.state]?.label || item.state,
       value: item.count,
       color: stateConfig[item.state]?.color || "var(--chart-1)",
-    }))
-    const stateMap = Object.fromEntries(data.map((d) => [d.state, d]))
-    return { segments: segs, totalDiffs: total, stateData: stateMap }
-  }, [data])
+    }));
+    const stateMap = Object.fromEntries(data.map((d) => [d.state, d]));
+    return { segments: segs, totalDiffs: total, stateData: stateMap };
+  }, [data]);
 
   if (isLoading) {
-    return <StateDistributionChartSkeleton />
+    return <StateDistributionChartSkeleton />;
   }
 
   // Calculate completion rate (applied / total)
-  const appliedCount = stateData["APPLIED"]?.count || 0
-  const completionRate = totalDiffs > 0 ? (appliedCount / totalDiffs) * 100 : 0
+  const appliedCount = stateData["APPLIED"]?.count || 0;
+  const completionRate = totalDiffs > 0 ? (appliedCount / totalDiffs) * 100 : 0;
 
   return (
     <Card className="flex flex-col">
@@ -94,49 +94,53 @@ export const StateDistributionChart = ({
         <div className="space-y-3">
           <div className="flex items-center justify-between text-sm">
             <span className="text-muted-foreground">Pipeline Flow</span>
-            <span className="font-medium tabular-nums">{totalDiffs.toLocaleString()} total</span>
+            <span className="font-medium tabular-nums">
+              {totalDiffs.toLocaleString()} total
+            </span>
           </div>
           <SegmentedBar segments={segments} height={24} showLegend={false} />
         </div>
 
         {/* State cards with flow indicators */}
         <div className="grid grid-cols-4 gap-2">
-          {(["DRAFT", "PREVIEW", "APPLIED", "ARCHIVED"] as const).map((state, index) => {
-            const config = stateConfig[state]
-            const Icon = config.icon
-            const stateItem = stateData[state]
-            const count = stateItem?.count || 0
-            const percentage = stateItem?.percentage || "0"
+          {(["DRAFT", "PREVIEW", "APPLIED", "ARCHIVED"] as const).map(
+            (state, index) => {
+              const config = stateConfig[state];
+              const Icon = config.icon;
+              const stateItem = stateData[state];
+              const count = stateItem?.count || 0;
+              const percentage = stateItem?.percentage || "0";
 
-            return (
-              <div key={state} className="relative">
-                <div
-                  className="rounded-lg border p-3 text-center"
-                  style={{ borderColor: `${config.color}30` }}
-                >
-                  <Icon
-                    className="mx-auto size-5 mb-1"
-                    style={{ color: config.color }}
-                  />
-                  <div className="text-lg font-semibold tabular-nums">
-                    {count.toLocaleString()}
-                  </div>
-                  <div className="text-[10px] text-muted-foreground">
-                    {config.label}
-                  </div>
+              return (
+                <div key={state} className="relative">
                   <div
-                    className="text-xs font-medium tabular-nums mt-0.5"
-                    style={{ color: config.color }}
+                    className="rounded-lg border p-3 text-center"
+                    style={{ borderColor: `${config.color}30` }}
                   >
-                    {percentage}%
+                    <Icon
+                      className="mx-auto size-5 mb-1"
+                      style={{ color: config.color }}
+                    />
+                    <div className="text-lg font-semibold tabular-nums">
+                      {count.toLocaleString()}
+                    </div>
+                    <div className="text-[10px] text-muted-foreground">
+                      {config.label}
+                    </div>
+                    <div
+                      className="text-xs font-medium tabular-nums mt-0.5"
+                      style={{ color: config.color }}
+                    >
+                      {percentage}%
+                    </div>
                   </div>
+                  {index < 3 && (
+                    <IconArrowRight className="absolute -right-2 top-1/2 -translate-y-1/2 size-3 text-muted-foreground/40" />
+                  )}
                 </div>
-                {index < 3 && (
-                  <IconArrowRight className="absolute -right-2 top-1/2 -translate-y-1/2 size-3 text-muted-foreground/40" />
-                )}
-              </div>
-            )
-          })}
+              );
+            }
+          )}
         </div>
 
         {/* Completion metric */}
@@ -158,8 +162,8 @@ export const StateDistributionChart = ({
         </div>
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
 const StateDistributionChartSkeleton = () => {
   return (
@@ -178,5 +182,5 @@ const StateDistributionChartSkeleton = () => {
         <Skeleton className="h-16 w-full" />
       </CardContent>
     </Card>
-  )
-}
+  );
+};

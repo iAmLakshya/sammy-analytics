@@ -1,20 +1,20 @@
 // Components
-export { WebSourcesContent } from "./components/web-sources-content"
-export { SyncActivityChart } from "./components/sync-activity-chart"
-export { PriorityDistributionChart } from "./components/priority-distribution-chart"
-export { SyncCoverageChart } from "./components/sync-coverage-chart"
+export { PriorityDistributionChart } from "./components/priority-distribution-chart";
+export { SyncActivityChart } from "./components/sync-activity-chart";
+export { SyncCoverageChart } from "./components/sync-coverage-chart";
+export { WebSourcesContent } from "./components/web-sources-content";
 
 // Hooks
-export { useFetchWebSourcesOverview } from "./hooks/use-fetch-web-sources-overview"
-export { useFetchDailySyncs } from "./hooks/use-fetch-daily-syncs"
+export { useFetchDailySyncs } from "./hooks/use-fetch-daily-syncs";
+export { useFetchWebSourcesOverview } from "./hooks/use-fetch-web-sources-overview";
 
 // Types
 export type {
-  WebWatchOverview,
-  WebPageSyncOverview,
   DailySyncs,
-  SyncCoverage,
-  PriorityBreakdown,
-  WebSourcesOverviewResponse,
   DailySyncsResponse,
-} from "./types"
+  PriorityBreakdown,
+  SyncCoverage,
+  WebPageSyncOverview,
+  WebSourcesOverviewResponse,
+  WebWatchOverview,
+} from "./types";

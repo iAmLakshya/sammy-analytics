@@ -1,31 +1,31 @@
-'use client';
+"use client";
 
-import { useMemo } from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from "@/lib/utils";
+import { useMemo } from "react";
 
 interface GaugeProps {
   value: number;
   max?: number;
   target?: number;
   label?: string;
-  size?: 'sm' | 'md' | 'lg';
-  color?: 'default' | 'success' | 'warning' | 'danger' | 'auto';
+  size?: "sm" | "md" | "lg";
+  color?: "default" | "success" | "warning" | "danger" | "auto";
   showValue?: boolean;
   valueFormatter?: (value: number) => string;
   className?: string;
 }
 
 const sizes = {
-  sm: { width: 80, stroke: 6, fontSize: 'text-sm', labelSize: 'text-[10px]' },
-  md: { width: 120, stroke: 8, fontSize: 'text-xl', labelSize: 'text-xs' },
-  lg: { width: 160, stroke: 10, fontSize: 'text-3xl', labelSize: 'text-sm' },
+  sm: { width: 80, stroke: 6, fontSize: "text-sm", labelSize: "text-[10px]" },
+  md: { width: 120, stroke: 8, fontSize: "text-xl", labelSize: "text-xs" },
+  lg: { width: 160, stroke: 10, fontSize: "text-3xl", labelSize: "text-sm" },
 };
 
 const colorClasses = {
-  default: 'stroke-chart-1',
-  success: 'stroke-emerald-500 dark:stroke-emerald-400',
-  warning: 'stroke-amber-500 dark:stroke-amber-400',
-  danger: 'stroke-rose-500 dark:stroke-rose-400',
+  default: "stroke-chart-1",
+  success: "stroke-emerald-500 dark:stroke-emerald-400",
+  warning: "stroke-amber-500 dark:stroke-amber-400",
+  danger: "stroke-rose-500 dark:stroke-rose-400",
 };
 
 export const Gauge = ({
@@ -33,8 +33,8 @@ export const Gauge = ({
   max = 100,
   target,
   label,
-  size = 'md',
-  color = 'default',
+  size = "md",
+  color = "default",
   showValue = true,
   valueFormatter = (v) => `${Math.round(v)}%`,
   className,
@@ -46,7 +46,7 @@ export const Gauge = ({
   const percentage = useMemo(() => Math.min(value / max, 1), [value, max]);
 
   const strokeColor = useMemo(() => {
-    if (color !== 'auto') return colorClasses[color];
+    if (color !== "auto") return colorClasses[color];
     if (target) {
       const ratio = value / target;
       if (ratio >= 1) return colorClasses.success;
@@ -65,7 +65,7 @@ export const Gauge = ({
   }, [target, max]);
 
   return (
-    <div className={cn('flex flex-col items-center', className)}>
+    <div className={cn("flex flex-col items-center", className)}>
       <svg
         width={width}
         height={width / 2 + stroke}
@@ -90,12 +90,14 @@ export const Gauge = ({
           strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={circumference * (1 - percentage)}
-          style={{ transition: 'stroke-dashoffset 0.5s ease-out' }}
+          style={{ transition: "stroke-dashoffset 0.5s ease-out" }}
         />
 
         {/* Target marker */}
         {target && targetAngle !== null && (
-          <g transform={`translate(${width / 2}, ${width / 2}) rotate(${targetAngle})`}>
+          <g
+            transform={`translate(${width / 2}, ${width / 2}) rotate(${targetAngle})`}
+          >
             <line
               x1={radius - stroke / 2 - 2}
               y1="0"
@@ -114,7 +116,10 @@ export const Gauge = ({
             x={width / 2}
             y={width / 2 - 4}
             textAnchor="middle"
-            className={cn('fill-foreground font-semibold tabular-nums', fontSize)}
+            className={cn(
+              "fill-foreground font-semibold tabular-nums",
+              fontSize
+            )}
           >
             {valueFormatter(value)}
           </text>
@@ -126,7 +131,7 @@ export const Gauge = ({
             x={width / 2}
             y={width / 2 + 12}
             textAnchor="middle"
-            className={cn('fill-muted-foreground', labelSize)}
+            className={cn("fill-muted-foreground", labelSize)}
           >
             {label}
           </text>
@@ -153,7 +158,7 @@ export const ProgressRing = ({
   max = 100,
   size = 64,
   strokeWidth = 6,
-  color = 'var(--chart-1)',
+  color = "var(--chart-1)",
   label,
   showPercentage = true,
   className,
@@ -163,7 +168,12 @@ export const ProgressRing = ({
   const percentage = Math.min(value / max, 1);
 
   return (
-    <div className={cn('relative inline-flex items-center justify-center', className)}>
+    <div
+      className={cn(
+        "relative inline-flex items-center justify-center",
+        className
+      )}
+    >
       <svg width={size} height={size} className="-rotate-90">
         {/* Background circle */}
         <circle
@@ -185,7 +195,7 @@ export const ProgressRing = ({
           strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={circumference * (1 - percentage)}
-          style={{ transition: 'stroke-dashoffset 0.5s ease-out' }}
+          style={{ transition: "stroke-dashoffset 0.5s ease-out" }}
         />
       </svg>
       {/* Center content */}
@@ -224,7 +234,10 @@ export const StackedRings = ({
   const gap = 4;
 
   return (
-    <div className={cn('relative', className)} style={{ width: size, height: size }}>
+    <div
+      className={cn("relative", className)}
+      style={{ width: size, height: size }}
+    >
       {rings.map((ring, index) => {
         const ringSize = size - index * (strokeWidth + gap) * 2;
         const offset = index * (strokeWidth + gap);
@@ -255,7 +268,9 @@ export const StackedRings = ({
               style={{ backgroundColor: ring.color }}
             />
             <span className="text-muted-foreground">{ring.label}</span>
-            <span className="font-medium">{Math.round((ring.value / ring.max) * 100)}%</span>
+            <span className="font-medium">
+              {Math.round((ring.value / ring.max) * 100)}%
+            </span>
           </div>
         ))}
       </div>

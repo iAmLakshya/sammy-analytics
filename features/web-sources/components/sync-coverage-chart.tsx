@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { useMemo } from "react"
-import { Label, PolarRadiusAxis, RadialBar, RadialBarChart } from "recharts"
+import { useMemo } from "react";
+import { Label, PolarRadiusAxis, RadialBar, RadialBarChart } from "recharts";
 
 import {
   Card,
@@ -9,16 +9,16 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
-} from "@/components/ui/chart"
-import { Skeleton } from "@/components/ui/skeleton"
+} from "@/components/ui/chart";
+import { Skeleton } from "@/components/ui/skeleton";
 
-import type { WebPageSyncOverview } from "../types"
+import type { WebPageSyncOverview } from "../types";
 
 const chartConfig = {
   synced_last_24h: {
@@ -33,14 +33,17 @@ const chartConfig = {
     label: "Last 30 days",
     color: "var(--chart-1)",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
 interface SyncCoverageChartProps {
-  data: WebPageSyncOverview
-  isLoading?: boolean
+  data: WebPageSyncOverview;
+  isLoading?: boolean;
 }
 
-export const SyncCoverageChart = ({ data, isLoading }: SyncCoverageChartProps) => {
+export const SyncCoverageChart = ({
+  data,
+  isLoading,
+}: SyncCoverageChartProps) => {
   const chartData = useMemo(() => {
     return [
       {
@@ -49,19 +52,19 @@ export const SyncCoverageChart = ({ data, isLoading }: SyncCoverageChartProps) =
         synced_last_7d: data.synced_last_7d - data.synced_last_24h,
         synced_last_30d: data.synced_last_30d - data.synced_last_7d,
       },
-    ]
-  }, [data])
+    ];
+  }, [data]);
 
   const coveragePercent = useMemo(() => {
-    return Math.round((data.synced_last_7d / data.total_web_pages) * 100)
-  }, [data])
+    return Math.round((data.synced_last_7d / data.total_web_pages) * 100);
+  }, [data]);
 
   const stalePages = useMemo(() => {
-    return data.total_web_pages - data.synced_last_30d
-  }, [data])
+    return data.total_web_pages - data.synced_last_30d;
+  }, [data]);
 
   if (isLoading) {
-    return <SyncCoverageChartSkeleton />
+    return <SyncCoverageChartSkeleton />;
   }
 
   return (
@@ -106,7 +109,7 @@ export const SyncCoverageChart = ({ data, isLoading }: SyncCoverageChartProps) =
                           Fresh (7d)
                         </tspan>
                       </text>
-                    )
+                    );
                   }
                 }}
               />
@@ -158,7 +161,9 @@ export const SyncCoverageChart = ({ data, isLoading }: SyncCoverageChartProps) =
           <div className="flex items-center justify-between rounded-lg border border-dashed p-3">
             <div className="flex items-center gap-2">
               <div className="size-2 rounded-full bg-muted-foreground" />
-              <span className="text-sm text-muted-foreground">Stale (&gt;30d)</span>
+              <span className="text-sm text-muted-foreground">
+                Stale (&gt;30d)
+              </span>
             </div>
             <span className="font-bold tabular-nums text-muted-foreground">
               {stalePages.toLocaleString()}
@@ -175,8 +180,8 @@ export const SyncCoverageChart = ({ data, isLoading }: SyncCoverageChartProps) =
         </div>
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
 const SyncCoverageChartSkeleton = () => {
   return (
@@ -201,5 +206,5 @@ const SyncCoverageChartSkeleton = () => {
         </div>
       </CardContent>
     </Card>
-  )
-}
+  );
+};

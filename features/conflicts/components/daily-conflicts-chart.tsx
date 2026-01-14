@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import { useMemo } from "react"
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
+import { useMemo } from "react";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
-import { Badge } from "@/components/ui/badge"
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardAction,
@@ -11,7 +11,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartContainer,
   ChartLegend,
@@ -19,10 +19,10 @@ import {
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
-} from "@/components/ui/chart"
-import { Skeleton } from "@/components/ui/skeleton"
+} from "@/components/ui/chart";
+import { Skeleton } from "@/components/ui/skeleton";
 
-import type { DailyConflicts } from "../types"
+import type { DailyConflicts } from "../types";
 
 const chartConfig = {
   needs_review: {
@@ -37,14 +37,17 @@ const chartConfig = {
     label: "Rejected",
     color: "var(--chart-4)",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
 interface DailyConflictsChartProps {
-  data: DailyConflicts[]
-  isLoading?: boolean
+  data: DailyConflicts[];
+  isLoading?: boolean;
 }
 
-export const DailyConflictsChart = ({ data, isLoading }: DailyConflictsChartProps) => {
+export const DailyConflictsChart = ({
+  data,
+  isLoading,
+}: DailyConflictsChartProps) => {
   const chartData = useMemo(() => {
     return [...data].reverse().map((item) => ({
       ...item,
@@ -52,19 +55,19 @@ export const DailyConflictsChart = ({ data, isLoading }: DailyConflictsChartProp
         month: "short",
         day: "numeric",
       }),
-    }))
-  }, [data])
+    }));
+  }, [data]);
 
   const totalConflicts = useMemo(() => {
-    return data.reduce((acc, curr) => acc + curr.conflicts_created, 0)
-  }, [data])
+    return data.reduce((acc, curr) => acc + curr.conflicts_created, 0);
+  }, [data]);
 
   const avgDaily = useMemo(() => {
-    return Math.round(totalConflicts / data.length)
-  }, [totalConflicts, data.length])
+    return Math.round(totalConflicts / data.length);
+  }, [totalConflicts, data.length]);
 
   if (isLoading) {
-    return <DailyConflictsChartSkeleton />
+    return <DailyConflictsChartSkeleton />;
   }
 
   return (
@@ -134,8 +137,8 @@ export const DailyConflictsChart = ({ data, isLoading }: DailyConflictsChartProp
         </div>
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
 const DailyConflictsChartSkeleton = () => {
   return (
@@ -148,5 +151,5 @@ const DailyConflictsChartSkeleton = () => {
         <Skeleton className="h-[300px] w-full" />
       </CardContent>
     </Card>
-  )
-}
+  );
+};

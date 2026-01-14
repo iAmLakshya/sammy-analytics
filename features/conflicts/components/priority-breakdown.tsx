@@ -4,15 +4,15 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 
 type PriorityLevel = {
-  name: string
-  count: number
-  pending: number
-  colorClass: string
-  percentage: number
-}
+  name: string;
+  count: number;
+  pending: number;
+  colorClass: string;
+  percentage: number;
+};
 
 const priorities: PriorityLevel[] = [
   {
@@ -36,7 +36,7 @@ const priorities: PriorityLevel[] = [
     colorClass: "bg-info",
     percentage: 39,
   },
-]
+];
 
 export const PriorityBreakdown = () => {
   return (
@@ -53,11 +53,14 @@ export const PriorityBreakdown = () => {
             <div key={priority.name}>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className={`size-3 rounded-full ${priority.colorClass}`} />
+                  <div
+                    className={`size-3 rounded-full ${priority.colorClass}`}
+                  />
                   <span className="text-sm font-medium">{priority.name}</span>
                 </div>
                 <span className="text-sm tabular-nums text-muted-foreground">
-                  {priority.count.toLocaleString()} ({priority.pending.toLocaleString()} pending)
+                  {priority.count.toLocaleString()} (
+                  {priority.pending.toLocaleString()} pending)
                 </span>
               </div>
               <div className="mt-1 h-2 overflow-hidden rounded-full bg-muted">
@@ -71,5 +74,5 @@ export const PriorityBreakdown = () => {
         </div>
       </CardContent>
     </Card>
-  )
-}
+  );
+};

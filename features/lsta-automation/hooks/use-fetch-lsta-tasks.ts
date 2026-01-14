@@ -1,6 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
 import { fetchApi } from "@/shared/lib/api-client";
 import { API_ENDPOINTS } from "@/shared/lib/api-endpoints";
+import { useQuery } from "@tanstack/react-query";
 import type { LstaTaskListResponse } from "../types";
 
 interface UseFetchLstaTasksParams {

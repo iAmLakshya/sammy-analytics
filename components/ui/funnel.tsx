@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useMemo } from 'react';
-import { cn } from '@/lib/utils';
-import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip';
+import { cn } from "@/lib/utils";
+import { useMemo } from "react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
 
 interface FunnelStage {
   label: string;
@@ -19,11 +19,11 @@ interface HorizontalFunnelProps {
 }
 
 const defaultColors = [
-  'var(--chart-1)',
-  'var(--chart-2)',
-  'var(--chart-3)',
-  'var(--chart-4)',
-  'var(--chart-5)',
+  "var(--chart-1)",
+  "var(--chart-2)",
+  "var(--chart-3)",
+  "var(--chart-4)",
+  "var(--chart-5)",
 ];
 
 export const HorizontalFunnel = ({
@@ -41,7 +41,7 @@ export const HorizontalFunnel = ({
   if (total === 0) return null;
 
   return (
-    <div className={cn('w-full', className)}>
+    <div className={cn("w-full", className)}>
       {/* Funnel bar */}
       <div
         className="flex w-full overflow-hidden rounded-md"
@@ -49,7 +49,8 @@ export const HorizontalFunnel = ({
       >
         {stages.map((stage, index) => {
           const percentage = (stage.value / total) * 100;
-          const color = stage.color || defaultColors[index % defaultColors.length];
+          const color =
+            stage.color || defaultColors[index % defaultColors.length];
 
           return (
             <Tooltip key={index}>
@@ -59,7 +60,7 @@ export const HorizontalFunnel = ({
                   style={{
                     width: `${percentage}%`,
                     backgroundColor: color,
-                    minWidth: percentage > 0 ? '20px' : 0,
+                    minWidth: percentage > 0 ? "20px" : 0,
                   }}
                 >
                   {showValues && percentage >= 8 && (
@@ -86,7 +87,8 @@ export const HorizontalFunnel = ({
       {showLabels && (
         <div className="flex mt-2 gap-4 flex-wrap">
           {stages.map((stage, index) => {
-            const color = stage.color || defaultColors[index % defaultColors.length];
+            const color =
+              stage.color || defaultColors[index % defaultColors.length];
             const percentage = (stage.value / total) * 100;
 
             return (
@@ -96,7 +98,9 @@ export const HorizontalFunnel = ({
                   style={{ backgroundColor: color }}
                 />
                 <span className="text-muted-foreground">{stage.label}</span>
-                <span className="font-medium tabular-nums">{percentage.toFixed(1)}%</span>
+                <span className="font-medium tabular-nums">
+                  {percentage.toFixed(1)}%
+                </span>
               </div>
             );
           })}
@@ -119,10 +123,11 @@ export const VerticalFunnel = ({ stages, className }: VerticalFunnelProps) => {
   );
 
   return (
-    <div className={cn('flex flex-col gap-2', className)}>
+    <div className={cn("flex flex-col gap-2", className)}>
       {stages.map((stage, index) => {
         const widthPercent = (stage.value / maxValue) * 100;
-        const color = stage.color || defaultColors[index % defaultColors.length];
+        const color =
+          stage.color || defaultColors[index % defaultColors.length];
         const conversionRate =
           index > 0
             ? ((stage.value / stages[index - 1].value) * 100).toFixed(1)
@@ -148,7 +153,7 @@ export const VerticalFunnel = ({ stages, className }: VerticalFunnelProps) => {
                       style={{
                         width: `${widthPercent}%`,
                         backgroundColor: color,
-                        minWidth: stage.value > 0 ? '40px' : 0,
+                        minWidth: stage.value > 0 ? "40px" : 0,
                       }}
                     >
                       <span className="text-xs font-medium text-white drop-shadow-sm">
@@ -161,7 +166,8 @@ export const VerticalFunnel = ({ stages, className }: VerticalFunnelProps) => {
                       <div className="font-medium">{stage.label}</div>
                       <div className="text-muted-foreground">
                         {stage.value.toLocaleString()} items
-                        {conversionRate && ` (${conversionRate}% from previous)`}
+                        {conversionRate &&
+                          ` (${conversionRate}% from previous)`}
                       </div>
                     </div>
                   </TooltipContent>
@@ -204,7 +210,7 @@ export const SegmentedBar = ({
   if (total === 0) return null;
 
   return (
-    <div className={cn('w-full', className)}>
+    <div className={cn("w-full", className)}>
       <div
         className="flex w-full overflow-hidden rounded-full"
         style={{ height }}
@@ -220,7 +226,7 @@ export const SegmentedBar = ({
                   style={{
                     width: `${percentage}%`,
                     backgroundColor: segment.color,
-                    minWidth: percentage > 0 ? '2px' : 0,
+                    minWidth: percentage > 0 ? "2px" : 0,
                   }}
                 />
               </TooltipTrigger>
@@ -249,7 +255,9 @@ export const SegmentedBar = ({
                   style={{ backgroundColor: segment.color }}
                 />
                 <span className="text-muted-foreground">{segment.label}</span>
-                <span className="font-medium tabular-nums">{percentage.toFixed(1)}%</span>
+                <span className="font-medium tabular-nums">
+                  {percentage.toFixed(1)}%
+                </span>
               </div>
             );
           })}

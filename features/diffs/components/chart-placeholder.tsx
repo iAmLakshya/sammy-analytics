@@ -1,12 +1,12 @@
-import { IconChartLine, type Icon } from "@tabler/icons-react"
+import { IconChartLine, type Icon } from "@tabler/icons-react";
 
-import { Skeleton } from "@/components/ui/skeleton"
+import { Skeleton } from "@/components/ui/skeleton";
 
 type ChartPlaceholderProps = {
-  icon?: Icon
-  title: string
-  subtitle?: string
-}
+  icon?: Icon;
+  title: string;
+  subtitle?: string;
+};
 
 export const ChartPlaceholder = ({
   icon: Icon = IconChartLine,
@@ -25,5 +25,5 @@ export const ChartPlaceholder = ({
         {subtitle && <p className="text-xs">{subtitle}</p>}
       </div>
     </div>
-  )
-}
+  );
+};

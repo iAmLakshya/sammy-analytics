@@ -26,6 +26,7 @@ Review this pull request against the dashboard coding standards, Unix design phi
 ### 3. React & API Patterns
 
 #### Queries & Mutations
+
 - [ ] All API calls use `useQuery` or `useMutation` from TanStack Query
 - [ ] Proper destructuring with renamed variables (e.g., `{ mutate: addMemory, isPending: isAddingMemory }`)
 - [ ] Use of `onSuccess`, `onError`, `onSettled` callbacks
@@ -33,11 +34,13 @@ Review this pull request against the dashboard coding standards, Unix design phi
 - [ ] No API definitions wrapped inside other function calls
 
 #### Components
+
 - [ ] Standard UI components from `@/shared/components/ui` are used
 - [ ] Component variations used for styling, not inline styles
 - [ ] Forms use `react-hook-form` with `Controller` and `useForm` (except TipTap editor)
 
 #### Code Style
+
 - [ ] Arrow functions preferred over function declarations
 - [ ] `const` used over `let` where possible
 - [ ] Semantic color variables from `global.css` used instead of Tailwind color classes
@@ -77,6 +80,7 @@ Review this pull request against the dashboard coding standards, Unix design phi
 ### 8. Web Interface Guidelines
 
 #### Accessibility
+
 - [ ] Full keyboard support implemented
 - [ ] Visible focus rings using `:focus-visible`
 - [ ] Hit targets ≥24px (mobile ≥44px)
@@ -86,6 +90,7 @@ Review this pull request against the dashboard coding standards, Unix design phi
 - [ ] No color-only status indicators (redundant cues present)
 
 #### Forms & Inputs
+
 - [ ] Enter key submits text inputs (Ctrl/Cmd+Enter for textareas)
 - [ ] Paste not blocked in inputs
 - [ ] Loading buttons show spinner and keep label
@@ -95,6 +100,7 @@ Review this pull request against the dashboard coding standards, Unix design phi
 - [ ] Warning on unsaved changes before navigation
 
 #### Performance
+
 - [ ] Re-renders minimized and tracked
 - [ ] Large lists virtualized
 - [ ] Images have explicit dimensions to prevent CLS
@@ -102,12 +108,14 @@ Review this pull request against the dashboard coding standards, Unix design phi
 - [ ] Uncontrolled inputs preferred where possible
 
 #### Animation
+
 - [ ] `prefers-reduced-motion` honored
 - [ ] Compositor-friendly props used (`transform`, `opacity`)
 - [ ] Correct `transform-origin` set
 - [ ] Animations are interruptible
 
 #### Layout & UX
+
 - [ ] URL reflects state (filters/tabs/pagination)
 - [ ] Back/Forward restores scroll
 - [ ] Links use `<a>` or `<Link>` (not `onClick`)
@@ -124,24 +132,29 @@ Review this pull request against the dashboard coding standards, Unix design phi
 Provide feedback in this structure:
 
 ### ✅ Strengths
+
 - List what was done well
 - Highlight good patterns followed
 
 ### ⚠️ Issues Found
 
 #### Critical
+
 - Items that MUST be fixed before merge
 - Include file path, line number, and specific issue
 
 #### Suggestions
+
 - Nice-to-have improvements
 - Best practice recommendations
 
 #### Questions
+
 - Unclear code that needs explanation
 - Potential issues that need clarification
 
 ### 📝 Summary
+
 - Overall assessment
 - Approve/Request Changes/Comment
 - Key action items

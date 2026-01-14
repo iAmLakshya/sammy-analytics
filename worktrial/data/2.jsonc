@@ -6,34 +6,34 @@
 [
   {
     "date": "2026-01-12",
-    "diffs_created": 23
+    "diffs_created": 23,
   },
   {
     "date": "2026-01-11",
-    "diffs_created": 44
+    "diffs_created": 44,
   },
   {
     "date": "2026-01-07",
-    "diffs_created": 24
+    "diffs_created": 24,
   },
   {
     "date": "2026-01-01",
-    "diffs_created": 101
+    "diffs_created": 101,
   },
   {
     "date": "2025-12-29",
-    "diffs_created": 3365
+    "diffs_created": 3365,
   },
   {
     "date": "2025-12-28",
-    "diffs_created": 8535
+    "diffs_created": 8535,
   },
   {
     "date": "2025-12-27",
-    "diffs_created": 7079
+    "diffs_created": 7079,
   },
   {
     "date": "2025-12-26",
-    "diffs_created": 7
-  }
+    "diffs_created": 7,
+  },
 ]
