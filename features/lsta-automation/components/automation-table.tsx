@@ -1,9 +1,13 @@
 "use client";
 
-import { IconEye } from "@tabler/icons-react";
-
+import { IconEye, IconRefresh } from "@tabler/icons-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import {
   Table,
   TableBody,
@@ -12,114 +16,157 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
+import type { Submission, SubmissionStatus } from "../types";
 import { mockSubmissions } from "../data/mock.submissions.data";
-import type { PipelineStep, SubmissionStatus } from "../types";
+import { StepProgressIndicator } from "./step-progress-indicator";
 
-const statusConfig: Record<SubmissionStatus, { label: string; className: string }> = {
+const statusConfig: Record<
+  SubmissionStatus,
+  { label: string; className: string }
+> = {
   queued: {
     label: "Queued",
-    className: "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400",
+    className:
+      "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400",
   },
   processing: {
     label: "Processing",
-    className: "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400",
+    className:
+      "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400 animate-pulse",
   },
   completed: {
     label: "Completed",
-    className: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400",
+    className:
+      "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400",
   },
   "needs-review": {
     label: "Needs Review",
-    className: "bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-400",
+    className:
+      "bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-400",
   },
   retrying: {
     label: "Retrying",
-    className: "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400",
+    className:
+      "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400",
   },
 };
 
-const stepLabels: Record<PipelineStep, string> = {
-  "payroll-download": "Payroll Download",
-  "data-extraction": "Data Extraction",
-  "tax-submission": "Tax Submission",
-  "document-upload": "Document Upload",
+const periodTypeLabels: Record<string, string> = {
+  monthly: "Monthly",
+  quarterly: "Quarterly",
+  yearly: "Yearly",
 };
 
-const formatDuration = (startedAt: string, completedAt: string | null): string => {
-  const start = new Date(startedAt);
-  const end = completedAt ? new Date(completedAt) : new Date();
-  const diffMs = end.getTime() - start.getTime();
-  const diffSec = Math.floor(diffMs / 1000);
-
-  if (diffSec < 60) return `${diffSec}s`;
-  const mins = Math.floor(diffSec / 60);
-  const secs = diffSec % 60;
-  return `${mins}m ${secs}s`;
+const sortSubmissions = (submissions: Submission[]): Submission[] => {
+  const priority: Record<SubmissionStatus, number> = {
+    "needs-review": 0,
+    processing: 1,
+    retrying: 2,
+    queued: 3,
+    completed: 4,
+  };
+  return [...submissions].sort(
+    (a, b) => priority[a.status] - priority[b.status]
+  );
 };
 
-const formatTime = (isoString: string): string => {
+const formatRelativeTime = (isoString: string): string => {
   const date = new Date(isoString);
-  return date.toLocaleTimeString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
-  });
+  const now = new Date();
+  const diffMs = date.getTime() - now.getTime();
+  const diffHours = Math.round(diffMs / (1000 * 60 * 60));
+
+  if (diffHours < 0) return "overdue";
+  if (diffHours < 24) return `in ${diffHours}h`;
+  const diffDays = Math.round(diffHours / 24);
+  return `in ${diffDays}d`;
 };
 
 export const AutomationTable = () => {
+  const sortedSubmissions = sortSubmissions(mockSubmissions);
+
   return (
     <div className="space-y-4">
       <div className="rounded-lg border">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Company</TableHead>
+              <TableHead>Company / Entity</TableHead>
               <TableHead>Period</TableHead>
+              <TableHead>Progress</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead>Current Step</TableHead>
-              <TableHead>Started</TableHead>
-              <TableHead>Duration</TableHead>
-              <TableHead className="w-[100px]">Actions</TableHead>
+              <TableHead className="w-[140px]">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {mockSubmissions.map((submission) => {
+            {sortedSubmissions.map((submission) => {
               const status = statusConfig[submission.status];
-              const completedSteps = submission.steps.filter(s => s.status === "completed").length;
+              const isNeedsReview = submission.status === "needs-review";
+              const isRetrying = submission.status === "retrying";
+
               return (
-                <TableRow key={submission.id}>
+                <TableRow
+                  key={submission.id}
+                  className={
+                    isNeedsReview ? "bg-rose-50/50 dark:bg-rose-950/20" : ""
+                  }
+                >
                   <TableCell>
                     <div className="font-medium">{submission.companyName}</div>
-                    <div className="text-sm text-muted-foreground">{submission.legalEntityName}</div>
+                    <div className="text-sm text-muted-foreground">
+                      {submission.legalEntityName}
+                    </div>
                   </TableCell>
                   <TableCell>
-                    <div>{submission.period}</div>
-                    <div className="text-sm text-muted-foreground capitalize">{submission.periodType}</div>
+                    <div className="flex items-center gap-2">
+                      <span>{submission.period}</span>
+                      <Badge variant="outline" className="text-xs">
+                        {periodTypeLabels[submission.periodType]}
+                      </Badge>
+                    </div>
                   </TableCell>
                   <TableCell>
-                    <Badge className={status.className}>{status.label}</Badge>
+                    <StepProgressIndicator
+                      steps={submission.steps}
+                      currentStep={submission.currentStep}
+                    />
                   </TableCell>
                   <TableCell>
-                    {submission.currentStep ? (
-                      <span className="text-sm">{stepLabels[submission.currentStep]}</span>
+                    {isRetrying && submission.nextRetryAt ? (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Badge className={status.className}>
+                            {status.label}
+                          </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>
+                            Next retry:{" "}
+                            {formatRelativeTime(submission.nextRetryAt)}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {new Date(
+                              submission.nextRetryAt
+                            ).toLocaleString()}
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
                     ) : (
-                      <span className="text-sm text-muted-foreground tabular-nums">
-                        {completedSteps}/4 steps
-                      </span>
+                      <Badge className={status.className}>{status.label}</Badge>
                     )}
                   </TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {formatTime(submission.startedAt)}
-                  </TableCell>
-                  <TableCell className="tabular-nums">
-                    {formatDuration(submission.startedAt, submission.completedAt)}
-                  </TableCell>
                   <TableCell>
-                    <Button variant="ghost" size="sm">
-                      <IconEye className="size-4" />
-                      View
-                    </Button>
+                    <div className="flex items-center gap-1">
+                      <Button variant="ghost" size="sm">
+                        <IconEye className="size-4" />
+                        View
+                      </Button>
+                      {isNeedsReview && (
+                        <Button variant="ghost" size="sm">
+                          <IconRefresh className="size-4" />
+                        </Button>
+                      )}
+                    </div>
                   </TableCell>
                 </TableRow>
               );
@@ -129,7 +176,7 @@ export const AutomationTable = () => {
       </div>
       <div className="flex items-center justify-between px-2">
         <p className="text-sm text-muted-foreground">
-          Showing 6 of 847 submissions
+          Showing {sortedSubmissions.length} of 847 submissions
         </p>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" disabled>
