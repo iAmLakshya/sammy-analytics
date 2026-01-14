@@ -1,6 +1,13 @@
 "use client";
 
-import { IconEye, IconRefresh } from "@tabler/icons-react";
+import { useState } from "react";
+import {
+  IconChevronRight,
+  IconCheck,
+  IconX,
+  IconRefresh,
+} from "@tabler/icons-react";
+import { motion, AnimatePresence } from "motion/react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,6 +26,7 @@ import {
 import type { Submission, SubmissionStatus } from "../types";
 import { mockSubmissions } from "../data/mock.submissions.data";
 import { StepProgressIndicator } from "./step-progress-indicator";
+import { ExpandableRowContent } from "./expandable-row-content";
 
 const statusConfig: Record<
   SubmissionStatus,
@@ -51,11 +59,6 @@ const statusConfig: Record<
   },
 };
 
-const periodTypeLabels: Record<string, string> = {
-  monthly: "Monthly",
-  quarterly: "Quarterly",
-  yearly: "Yearly",
-};
 
 const sortSubmissions = (submissions: Submission[]): Submission[] => {
   const priority: Record<SubmissionStatus, number> = {
@@ -90,18 +93,41 @@ export const AutomationTable = ({
   submissions = mockSubmissions,
 }: AutomationTableProps) => {
   const sortedSubmissions = sortSubmissions(submissions);
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
+
+  const toggleExpand = (id: string) => {
+    setExpandedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  };
+
+  const handleRetry = (id: string, companyId: string) => {
+    console.log(`Retry initiated for submission ${id} (${companyId})`);
+  };
 
   return (
     <div className="space-y-4">
-      <div className="rounded-lg border">
+      <div className="overflow-x-auto rounded-lg border">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Company / Entity</TableHead>
-              <TableHead>Period</TableHead>
-              <TableHead>Progress</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="w-[140px]">Actions</TableHead>
+              <TableHead className="w-[40px]" />
+              <TableHead className="w-[100px]">Company ID</TableHead>
+              <TableHead className="w-[80px]">LE ID</TableHead>
+              <TableHead className="hidden md:table-cell">Certificate</TableHead>
+              <TableHead className="hidden w-[100px] text-center md:table-cell">
+                Special Case
+              </TableHead>
+              <TableHead className="w-[90px] text-center">Submitted</TableHead>
+              <TableHead className="w-[140px]">Progress</TableHead>
+              <TableHead className="w-[100px]">Status</TableHead>
+              <TableHead className="w-[80px]">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -109,72 +135,119 @@ export const AutomationTable = ({
               const status = statusConfig[submission.status];
               const isNeedsReview = submission.status === "needs-review";
               const isRetrying = submission.status === "retrying";
+              const isExpanded = expandedIds.has(submission.id);
 
               return (
-                <TableRow
-                  key={submission.id}
-                  className={
-                    isNeedsReview ? "bg-rose-50/50 dark:bg-rose-950/20" : ""
-                  }
-                >
-                  <TableCell>
-                    <div className="font-medium">{submission.companyName}</div>
-                    <div className="text-sm text-muted-foreground">
-                      {submission.legalEntityName}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <span>{submission.period}</span>
-                      <Badge variant="outline" className="text-xs">
-                        {periodTypeLabels[submission.periodType]}
-                      </Badge>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <StepProgressIndicator
-                      steps={submission.steps}
-                      currentStep={submission.currentStep}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    {isRetrying && submission.nextRetryAt ? (
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Badge className={status.className}>
-                            {status.label}
-                          </Badge>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>
-                            Next retry:{" "}
-                            {formatRelativeTime(submission.nextRetryAt)}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            {new Date(
-                              submission.nextRetryAt
-                            ).toLocaleString()}
-                          </p>
-                        </TooltipContent>
-                      </Tooltip>
-                    ) : (
-                      <Badge className={status.className}>{status.label}</Badge>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-1">
-                      <Button variant="ghost" size="sm">
-                        <IconEye className="size-4" />
-                        View
-                      </Button>
-                      {isNeedsReview && (
-                        <Button variant="ghost" size="sm">
+                <AnimatePresence key={submission.id} initial={false}>
+                  <TableRow
+                    onClick={() => toggleExpand(submission.id)}
+                    className={`cursor-pointer transition-colors hover:bg-muted/50 ${
+                      isNeedsReview ? "bg-rose-50/50 dark:bg-rose-950/20" : ""
+                    } ${isExpanded ? "bg-muted/30" : ""}`}
+                  >
+                    <TableCell className="w-[40px] pr-0">
+                      <IconChevronRight
+                        className={`size-4 text-muted-foreground transition-transform duration-200 ${
+                          isExpanded ? "rotate-90" : ""
+                        }`}
+                      />
+                    </TableCell>
+                    <TableCell className="font-mono text-sm">
+                      {submission.companyId}
+                    </TableCell>
+                    <TableCell className="font-mono text-sm">
+                      {submission.legalEntityId}
+                    </TableCell>
+                    <TableCell className="hidden md:table-cell">
+                      {submission.certificate ? (
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span className="block max-w-[150px] truncate">
+                              {submission.certificate}
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent>{submission.certificate}</TooltipContent>
+                        </Tooltip>
+                      ) : (
+                        <span className="text-muted-foreground">-</span>
+                      )}
+                    </TableCell>
+                    <TableCell className="hidden text-center md:table-cell">
+                      {submission.isSpecialCase ? (
+                        <Badge className="bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400">
+                          Special
+                        </Badge>
+                      ) : (
+                        <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400">
+                          Sammy
+                        </Badge>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {submission.isSubmittedAndUploaded ? (
+                        <IconCheck className="mx-auto size-4 text-emerald-600 dark:text-emerald-400" />
+                      ) : (
+                        <IconX className="mx-auto size-4 text-muted-foreground" />
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <StepProgressIndicator
+                        steps={submission.steps}
+                        currentStep={submission.currentStep}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      {isRetrying && submission.nextRetryAt ? (
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Badge className={status.className}>{status.label}</Badge>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Next retry: {formatRelativeTime(submission.nextRetryAt)}</p>
+                            <p className="text-xs text-muted-foreground">
+                              {new Date(submission.nextRetryAt).toLocaleString()}
+                            </p>
+                          </TooltipContent>
+                        </Tooltip>
+                      ) : (
+                        <Badge className={status.className}>{status.label}</Badge>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {(isNeedsReview || isRetrying) && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleRetry(submission.id, submission.companyId);
+                          }}
+                        >
                           <IconRefresh className="size-4" />
                         </Button>
                       )}
-                    </div>
-                  </TableCell>
-                </TableRow>
+                    </TableCell>
+                  </TableRow>
+                  {isExpanded && (
+                    <tr>
+                      <td colSpan={9} className="border-0 p-0">
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.2, ease: "easeOut" }}
+                          style={{ willChange: "height, opacity" }}
+                          className="overflow-hidden"
+                        >
+                          <ExpandableRowContent
+                            submission={submission}
+                            onRetry={() => handleRetry(submission.id, submission.companyId)}
+                          />
+                        </motion.div>
+                      </td>
+                    </tr>
+                  )}
+                </AnimatePresence>
               );
             })}
           </TableBody>
