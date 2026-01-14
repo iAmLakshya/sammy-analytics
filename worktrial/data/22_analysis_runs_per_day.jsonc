@@ -1,0 +1,83 @@
+/*
+Query 5.2: Analysis Runs Per Day (Last 30 Days)
+Shows daily analysis activity with conflict detection metrics
+Use for: Line chart showing analysis trends
+
+SELECT
+    DATE(created_at) AS date,
+    COUNT(*) AS total_runs,
+    COUNT(*) FILTER (WHERE conflict_count > 0) AS runs_with_conflicts,
+    SUM(conflict_count) AS conflicts_detected,
+    ROUND(AVG(conflict_count), 2) AS avg_conflicts_per_run
+FROM analysis_runs
+WHERE
+    organisation_id = '1cc88f77-f29c-4716-8cf4-e045c79024a9'
+    AND created_at >= NOW() - INTERVAL '30 days'
+GROUP BY DATE(created_at)
+ORDER BY date DESC;
+*/
+[
+  {
+    "date": "2026-01-12",
+    "total_runs": 412,
+    "runs_with_conflicts": 298,
+    "conflicts_detected": 289,
+    "avg_conflicts_per_run": 0.97
+  },
+  {
+    "date": "2026-01-11",
+    "total_runs": 234,
+    "runs_with_conflicts": 167,
+    "conflicts_detected": 156,
+    "avg_conflicts_per_run": 0.93
+  },
+  {
+    "date": "2026-01-10",
+    "total_runs": 478,
+    "runs_with_conflicts": 356,
+    "conflicts_detected": 342,
+    "avg_conflicts_per_run": 0.96
+  },
+  {
+    "date": "2026-01-09",
+    "total_runs": 423,
+    "runs_with_conflicts": 312,
+    "conflicts_detected": 298,
+    "avg_conflicts_per_run": 0.95
+  },
+  {
+    "date": "2026-01-08",
+    "total_runs": 567,
+    "runs_with_conflicts": 428,
+    "conflicts_detected": 412,
+    "avg_conflicts_per_run": 0.96
+  },
+  {
+    "date": "2026-01-07",
+    "total_runs": 542,
+    "runs_with_conflicts": 401,
+    "conflicts_detected": 385,
+    "avg_conflicts_per_run": 0.96
+  },
+  {
+    "date": "2026-01-06",
+    "total_runs": 512,
+    "runs_with_conflicts": 382,
+    "conflicts_detected": 367,
+    "avg_conflicts_per_run": 0.96
+  },
+  {
+    "date": "2026-01-05",
+    "total_runs": 289,
+    "runs_with_conflicts": 211,
+    "conflicts_detected": 198,
+    "avg_conflicts_per_run": 0.94
+  },
+  {
+    "date": "2026-01-04",
+    "total_runs": 245,
+    "runs_with_conflicts": 178,
+    "conflicts_detected": 167,
+    "avg_conflicts_per_run": 0.94
+  }
+]

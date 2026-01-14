@@ -1,0 +1,25 @@
+/*
+-- Shows current state distribution of all diffs
+*/
+[
+  {
+    "state": "DRAFT",
+    "count": 8420,
+    "percentage": "58.30"
+  },
+  {
+    "state": "PREVIEW",
+    "count": 2180,
+    "percentage": "15.10"
+  },
+  {
+    "state": "APPLIED",
+    "count": 2950,
+    "percentage": "20.40"
+  },
+  {
+    "state": "ARCHIVED",
+    "count": 900,
+    "percentage": "6.20"
+  }
+]

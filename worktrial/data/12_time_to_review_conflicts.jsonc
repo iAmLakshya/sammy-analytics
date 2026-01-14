@@ -1,0 +1,38 @@
+/*
+Query 2.4: Average Time to Review Conflicts
+Shows how long conflicts sit before being reviewed
+Use for: Metric cards + histogram showing review time by disposition
+
+SELECT
+    disposition,
+    COUNT(*) AS count,
+    ROUND(AVG(EXTRACT(EPOCH FROM (reviewed_at - created_at)) / 3600), 2) AS avg_hours_to_review,
+    ROUND(CAST(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY EXTRACT(EPOCH FROM (reviewed_at - created_at)) / 3600) AS NUMERIC), 2) AS median_hours,
+    ROUND(MIN(EXTRACT(EPOCH FROM (reviewed_at - created_at)) / 3600), 2) AS min_hours,
+    ROUND(MAX(EXTRACT(EPOCH FROM (reviewed_at - created_at)) / 3600), 2) AS max_hours
+FROM analysis_conflicts
+WHERE
+    organisation_id = '1cc88f77-f29c-4716-8cf4-e045c79024a9'
+    AND is_active = TRUE
+    AND reviewed_at IS NOT NULL
+    AND disposition IN ('ACCEPTED', 'REJECTED')
+GROUP BY disposition;
+*/
+[
+  {
+    "disposition": "ACCEPTED",
+    "count": 6950,
+    "avg_hours_to_review": "8.45",
+    "median_hours": "5.32",
+    "min_hours": "0.25",
+    "max_hours": "48.67"
+  },
+  {
+    "disposition": "REJECTED",
+    "count": 2300,
+    "avg_hours_to_review": "12.18",
+    "median_hours": "9.15",
+    "min_hours": "0.50",
+    "max_hours": "62.34"
+  }
+]

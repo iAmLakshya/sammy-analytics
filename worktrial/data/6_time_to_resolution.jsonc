@@ -1,0 +1,45 @@
+/*
+Query 1.5: Average Time to Resolution
+Shows how long diffs take to move from DRAFT/PREVIEW to final state (APPLIED/ARCHIVED)
+Use for: Metric cards + histogram showing resolution time distribution
+
+SELECT
+    state AS final_state,
+    COUNT(*) AS count,
+    ROUND(AVG(EXTRACT(EPOCH FROM (updated_at - created_at)) / 3600), 2) AS avg_hours_to_resolve,
+    ROUND(CAST(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY EXTRACT(EPOCH FROM (updated_at - created_at)) / 3600) AS NUMERIC), 2) AS median_hours,
+    ROUND(MIN(EXTRACT(EPOCH FROM (updated_at - created_at)) / 3600), 2) AS min_hours,
+    ROUND(MAX(EXTRACT(EPOCH FROM (updated_at - created_at)) / 3600), 2) AS max_hours
+FROM source_flow_versions_diff
+WHERE
+    organisation_id = '1cc88f77-f29c-4716-8cf4-e045c79024a9'
+    AND state IN ('PREVIEW', 'APPLIED', 'ARCHIVED')
+    AND created_at < updated_at -- Only resolved diffs
+GROUP BY state;
+*/
+[
+  {
+    "final_state": "PREVIEW",
+    "count": 2180,
+    "avg_hours_to_resolve": "18.45",
+    "median_hours": "14.32",
+    "min_hours": "2.15",
+    "max_hours": "72.80"
+  },
+  {
+    "final_state": "APPLIED",
+    "count": 2950,
+    "avg_hours_to_resolve": "36.78",
+    "median_hours": "28.50",
+    "min_hours": "4.20",
+    "max_hours": "168.45"
+  },
+  {
+    "final_state": "ARCHIVED",
+    "count": 900,
+    "avg_hours_to_resolve": "24.12",
+    "median_hours": "19.67",
+    "min_hours": "1.50",
+    "max_hours": "96.30"
+  }
+]

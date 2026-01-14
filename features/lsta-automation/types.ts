@@ -31,6 +31,18 @@ export interface Submission {
   completedAt: string | null;
   nextRetryAt: string | null;
   retryCount: number;
+  batchId: string | null;
+}
+
+export interface Batch {
+  id: string;
+  name: string;
+  dateRange: {
+    start: string;
+    end: string;
+  };
+  createdAt: string;
+  submissionCount: number;
 }
 
 export interface LstaKpiMetrics {

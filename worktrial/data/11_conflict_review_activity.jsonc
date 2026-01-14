@@ -1,0 +1,85 @@
+/*
+Query 2.3: Conflict Review Activity (Last 30 Days)
+Shows when users are reviewing conflicts
+Use for: Line chart showing review activity and unique reviewers per day
+
+SELECT
+    DATE(reviewed_at) AS date,
+    COUNT(*) AS reviews_completed,
+    COUNT(*) FILTER (WHERE disposition = 'ACCEPTED') AS accepted,
+    COUNT(*) FILTER (WHERE disposition = 'REJECTED') AS rejected,
+    COUNT(DISTINCT reviewed_by_user_id) AS unique_reviewers
+FROM analysis_conflicts
+WHERE
+    organisation_id = '1cc88f77-f29c-4716-8cf4-e045c79024a9'
+    AND is_active = TRUE
+    AND reviewed_at IS NOT NULL
+    AND reviewed_at >= NOW() - INTERVAL '30 days'
+GROUP BY DATE(reviewed_at)
+ORDER BY date DESC;
+*/
+[
+  {
+    "date": "2026-01-12",
+    "reviews_completed": 165,
+    "accepted": 135,
+    "rejected": 30,
+    "unique_reviewers": 6
+  },
+  {
+    "date": "2026-01-11",
+    "reviews_completed": 89,
+    "accepted": 72,
+    "rejected": 17,
+    "unique_reviewers": 5
+  },
+  {
+    "date": "2026-01-10",
+    "reviews_completed": 197,
+    "accepted": 159,
+    "rejected": 38,
+    "unique_reviewers": 7
+  },
+  {
+    "date": "2026-01-09",
+    "reviews_completed": 170,
+    "accepted": 138,
+    "rejected": 32,
+    "unique_reviewers": 6
+  },
+  {
+    "date": "2026-01-08",
+    "reviews_completed": 234,
+    "accepted": 186,
+    "rejected": 48,
+    "unique_reviewers": 8
+  },
+  {
+    "date": "2026-01-07",
+    "reviews_completed": 220,
+    "accepted": 174,
+    "rejected": 46,
+    "unique_reviewers": 7
+  },
+  {
+    "date": "2026-01-06",
+    "reviews_completed": 211,
+    "accepted": 168,
+    "rejected": 43,
+    "unique_reviewers": 7
+  },
+  {
+    "date": "2026-01-05",
+    "reviews_completed": 114,
+    "accepted": 92,
+    "rejected": 22,
+    "unique_reviewers": 4
+  },
+  {
+    "date": "2026-01-04",
+    "reviews_completed": 96,
+    "accepted": 78,
+    "rejected": 18,
+    "unique_reviewers": 4
+  }
+]

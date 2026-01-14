@@ -19,6 +19,7 @@ export const mockSubmissions: Submission[] = [
     completedAt: null,
     nextRetryAt: null,
     retryCount: 0,
+    batchId: "batch-001",
   },
   {
     id: "sub-002",
@@ -38,6 +39,7 @@ export const mockSubmissions: Submission[] = [
     completedAt: "2026-01-14T08:36:00Z",
     nextRetryAt: null,
     retryCount: 0,
+    batchId: "batch-001",
   },
   {
     id: "sub-003",
@@ -57,6 +59,7 @@ export const mockSubmissions: Submission[] = [
     completedAt: null,
     nextRetryAt: null,
     retryCount: 2,
+    batchId: "batch-001",
   },
   {
     id: "sub-004",
@@ -76,25 +79,27 @@ export const mockSubmissions: Submission[] = [
     completedAt: null,
     nextRetryAt: "2026-01-15T06:00:00Z",
     retryCount: 1,
+    batchId: "batch-001",
   },
   {
     id: "sub-005",
     companyName: "Innovate UG",
     legalEntityName: "Innovate Stuttgart",
-    period: "December 2025",
+    period: "November 2025",
     periodType: "monthly",
-    status: "queued",
+    status: "completed",
     currentStep: null,
     steps: [
-      { step: "payroll-download", status: "pending", completedAt: null, errorMessage: null },
-      { step: "data-extraction", status: "pending", completedAt: null, errorMessage: null },
-      { step: "tax-submission", status: "pending", completedAt: null, errorMessage: null },
-      { step: "document-upload", status: "pending", completedAt: null, errorMessage: null },
+      { step: "payroll-download", status: "completed", completedAt: "2025-12-14T10:00:00Z", errorMessage: null },
+      { step: "data-extraction", status: "completed", completedAt: "2025-12-14T10:02:00Z", errorMessage: null },
+      { step: "tax-submission", status: "completed", completedAt: "2025-12-14T10:05:00Z", errorMessage: null },
+      { step: "document-upload", status: "completed", completedAt: "2025-12-14T10:06:00Z", errorMessage: null },
     ],
-    startedAt: "2026-01-14T10:00:00Z",
-    completedAt: null,
+    startedAt: "2025-12-14T10:00:00Z",
+    completedAt: "2025-12-14T10:06:00Z",
     nextRetryAt: null,
     retryCount: 0,
+    batchId: "batch-003",
   },
   {
     id: "sub-006",
@@ -114,6 +119,7 @@ export const mockSubmissions: Submission[] = [
     completedAt: "2026-01-13T22:09:00Z",
     nextRetryAt: null,
     retryCount: 0,
+    batchId: "batch-002",
   },
 ];
 

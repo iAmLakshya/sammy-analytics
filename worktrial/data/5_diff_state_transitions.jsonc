@@ -1,0 +1,18 @@
+/*
+Query 1.4: Diff State Transitions Over Time
+Shows how many diffs moved to each state per day
+Use for: Stacked area chart showing state changes
+
+SELECT
+    state,
+    DATE(updated_at) AS date,
+    COUNT(*) AS transitions
+FROM source_flow_versions_diff
+WHERE
+    organisation_id = '1cc88f77-f29c-4716-8cf4-e045c79024a9'
+    AND updated_at >= NOW() - INTERVAL '30 days'
+    AND created_at < updated_at -- Only count actual updates
+GROUP BY DATE(updated_at), state
+ORDER BY date DESC, state ASC;
+*/
+[]

@@ -1,0 +1,26 @@
+/*
+Query 2.5: User Corrections (Reject + Correct)
+Shows how often users provide their own corrections vs just rejecting
+Use for: Metric cards showing correction rate and unique correctors
+
+SELECT
+    COUNT(*) AS total_user_corrections,
+    COUNT(DISTINCT reviewed_by_user_id) AS unique_correctors,
+    ROUND(COUNT(*) * 100.0 /
+        (SELECT COUNT(*) FROM analysis_conflicts
+         WHERE organisation_id = '1cc88f77-f29c-4716-8cf4-e045c79024a9'
+         AND is_active = TRUE
+         AND reviewed_at IS NOT NULL), 2) AS correction_rate_percentage
+FROM analysis_conflicts
+WHERE
+    organisation_id = '1cc88f77-f29c-4716-8cf4-e045c79024a9'
+    AND is_active = TRUE
+    AND corrected_from_conflict_id IS NOT NULL;
+*/
+[
+  {
+    "total_user_corrections": 412,
+    "unique_correctors": 7,
+    "correction_rate_percentage": "4.45"
+  }
+]

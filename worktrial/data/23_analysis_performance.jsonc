@@ -1,0 +1,27 @@
+/*
+Query 5.3: Analysis Performance Metrics
+Shows how long analysis runs take to complete
+Use for: Metric cards + histogram showing execution time distribution
+
+SELECT
+    COUNT(*) AS completed_runs,
+    ROUND(AVG(EXTRACT(EPOCH FROM (updated_at - created_at))), 2) AS avg_duration_seconds,
+    ROUND(CAST(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY EXTRACT(EPOCH FROM (updated_at - created_at))) AS NUMERIC), 2) AS median_duration_seconds,
+    ROUND(MIN(EXTRACT(EPOCH FROM (updated_at - created_at))), 2) AS min_duration_seconds,
+    ROUND(MAX(EXTRACT(EPOCH FROM (updated_at - created_at))), 2) AS max_duration_seconds
+FROM analysis_runs
+WHERE
+    organisation_id = '1cc88f77-f29c-4716-8cf4-e045c79024a9'
+    AND disposition = 'ANALYZED'
+    AND created_at >= NOW() - INTERVAL '30 days'
+    AND updated_at > created_at;
+*/
+[
+  {
+    "completed_runs": 3702,
+    "avg_duration_seconds": 487.35,
+    "median_duration_seconds": 412.18,
+    "min_duration_seconds": 52.34,
+    "max_duration_seconds": 1842.67
+  }
+]

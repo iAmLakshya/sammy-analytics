@@ -1,0 +1,263 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+
+description:
+globs:
+alwaysApply: true
+
+---
+
+# :compass: Dashboard Style Guide
+
+## This guide outlines best practices for building and maintaining scalable, readable, and maintainable features within the dashboard codebase.
+
+## :repeat: General Coding Principles
+
+- **Return early** from conditionals to reduce nesting and improve clarity.
+- **Avoid wrapping complex logic** inside `if/else` blocks.
+- **Use `assertNever`** in `switch` statements to enforce exhaustive checks on enums.
+- **Never use `any`** — prefer strict types.
+- **Avoid type casting** (`as`) unless absolutely necessary.
+- **Never leave async functions unawaited** — no fire-and-forgets.
+- **Do not nest custom React components** inline. Extract them to their own file if conditionally rendered.
+- **Be cautious with `overflow` styles** — require a sanity check and a "Are you sure?" discussion before merging.
+
+---
+
+## :sparkles: Async API Queries and Mutations
+
+- All asynchronous API calls should be handled through the useQuery and useMutation hooks by tanstack
+- For queries, destructure and appropriately rename { data, isLoading, error }
+- For mutations, destructure and appropriately rename { mutate, isPending, error }
+  - (example): const { mutate: addMemory, isPending: isAddingMemory, error: addMemoryError } = useMutation(...)
+- Make use of the `onSuccess`, `onError` and `onSettled` arguments to handle state updates and secondary actions
+- API related hooks should ONLY contain API calls and their related state. UI state and secondary function calls should be handled in a different hook that consume this one
+- Do NOT wrap API definitions inside of other function calls. Define first, then use later
+
+## UI Components
+
+- **Always** use our component library for standard components (e.g buttons, input, badge)
+- When using standard components, use the variations for styling. Not inline styling.
+- ## If no variations are appropriate, create a new variation that can be re-used
+
+## UI Components
+
+- **Always** use our component library for standard components (e.g buttons, input, badge)
+- When using standard components, use the variations for styling. Not inline styling.
+- ## If no variations are appropriate, create a new variation that can be re-used
+
+## 📋 Forms
+
+We are using `react-hook-form` and `{ Controller, useForm }` to managae forms
+They should be used for all forms EXCEPT for the live tip tap editor
+
+---
+
+## :sparkles: Code Consistency
+
+1. Prefer **arrow functions** over function declarations.
+2. Prefer **`const`** over `let` whenever possible.
+3. Prefer use of `@/shared/components/ui` for standard html components like Button and Input
+
+---
+
+## :art: Colours
+
+- :x: Do **not** use Tailwind inline utility color classes like `text-gray-600` or `bg-blue-100`.
+- :white_check_mark: Instead, use semantic variables defined in `global.css` combined with Tailwind `\xx` opacity modifiers for variations.
+
+---
+
+## :motorway: Pages Convention
+
+- `page.tsx` files should remain minimal.
+- They define **route structure only** and delegate all logic to internal feature components.
+
+---
+
+## :page_facing_up: Maintaining Docs
+
+- If any new features are introduced, or existing functionality has changed. Have the docs been updated?
+- If in doubt, leave a comment asking the user to update the docs
+
+---
+
+## :brain: State Management Strategy
+
+State can be managed at four levels, increasing in complexity. Choose the simplest option that works, and scale only when necessary.
+| Case | Pattern |
+|---------------------------------|---------------------------------|
+| Small, self-contained logic | Component-level state |
+| Growing complexity | `useX` hook in `/hooks/` |
+| Shared across many components | Context Provider in `/context/` |
+| Shared globally, persists across| Redux Store /shared/state/ |
+| routes, used by many features | |
+⸻
+:beverage_box: When to Use Redux
+:white_check_mark: Use Redux when:
+• The state spans multiple features or routes.
+• You need to persist and rehydrate state across page loads (e.g., onboarding flows, auth tokens).
+• Complex logic benefits from action-based updates and centralized debugging (e.g., Redux DevTools).
+• There’s clear benefit from selectors, memoization, or middleware (e.g., logging, async queues).
+:no_entry_sign: Avoid Redux when:
+• You’re managing isolated local state that doesn’t need to persist across navigation.
+• A useState or Context would suffice — don’t reach for Redux too early.
+:brain: Default to simpler patterns. Elevate to Redux only when the state demands cross-feature coordination, persistence, or middleware.
+⸻
+:arrows_counterclockwise: Bridging Redux with Feature Structure
+• When a Redux slice only supports a single feature, co-locate it within that feature (e.g. /features/onboarding/state/onboardingSlice.ts).
+• If shared across the app, place it in /shared/state/slices/.
+
+> :white_check_mark: Leave comments or suggestions if a pattern feels misused.
+
+---
+
+## :package: File Structure & Boundaries
+
+### 1. **Feature-Oriented Foldering**
+
+Each feature lives in its own folder:
+/features/
+components/
+modals/
+hooks/
+context/
+utils/
+index.ts ← Public API
+
+> Keep all logic encapsulated unless intentionally shared.
+
+---
+
+### 2. **Import Boundaries**
+
+Use `index.ts` for public exports. Avoid deep imports.
+:white_check_mark: Correct:
+
+```ts
+import { OnboardingModal } from '@/features/onboarding'
+:x: Incorrect:
+import { OnboardingModal } from '@/features/onboarding/modals/OnboardingModal'
+⸻
+### 3. Component Structure
+For large components, split into a dedicated folder:
+/components/FlowWizard/
+  index.tsx
+  StepOne.tsx
+  StepTwo.tsx
+  useFlowLogic.ts
+  types.ts
+  utils.ts
+Only expose index.tsx to the outside world.
+⸻
+### 4. Custom Hooks
+	•	Scoped to one feature → /features/<x>/hooks/useThing.ts
+	•	Shared globally → /shared/hooks/useThing.ts
+:white_check_mark: Use clear naming: useX, useXState, useXEffect, etc.
+⸻
+### 5. Context Providers
+	•	Local to feature → /features/<x>/context/
+	•	App-wide → /shared/context/ or /app/providers.tsx
+Wrap global providers in an <AppProviders> root.
+⸻
+### 6. When to Create a Folder
+Criteria	Create Folder
+More than 1 component	components/
+More than 1 modal	modals/
+More than 1 custom hook	hooks/
+Local shared context needed	context/
+Helpers reused internally	utils/
+⸻
+### 7. Component Size Guidelines
+Condition	Action
+> 300 lines	Split logic/view
+Complex children	Create subcomponent folder
+Potential reuse	Move to /shared/components/
+⸻
+### 8. Naming Conventions
+	•	:file_folder: Folders/Files → kebab-case
+	•	:jigsaw: Components/Types → PascalCase
+	•	:brain: Variables/functions → camelCase
+Always match file name with exported component.
+⸻
+# API Styles and Guide
+:gear: API Routes Convention
+1. Handler Wrapping
+All route functions should use the shared wrapper for consistency and dependency injection.
+import { CoreDependencies, RouteContext, wrapRouteHandler } from '@/shared/utils/server/wrap-route-handler';
+export const POST = async (request: NextRequest, context: RouteContext) => {
+  return wrapRouteHandler(request, context, handle{{DescriptiveFunctionName}});
+};
+const handle{{DescriptiveFunctionName}} =
+  (dependencies: CoreDependencies) =>
+  async (request: NextRequest, context: RouteContext): Promise<NextResponse | ServiceError> => {
+    const { supabase, organisationId, profile, user } = dependencies;
+    // your logic here
+  }
+⸻
+2. Standard Error Handling
+Use shared errors instead of raw HTTP responses:
+import {
+  BadRequestError,
+  ServiceError,
+  UnknownServerError,
+} from '@/shared/utils/server/errors';
+if (!content) return new BadRequestError({ message: 'Missing content' });
+if (errorFromApi) return new UnknownServerError({ message: error });
+
+⸻
+
+3. Route Folder Structure
+
+Each route should follow this structure:
+/api/feature-name/
+  route.ts      → high-level orchestration
+  service.ts    → business logic
+  supabase.ts   → typed Supabase calls (no DB logic in route or service)
+  types.ts      → route-specific shared types (if many)
+
+Conditional logic should be handled in the service file not the supabase file.
+Supabase file is exclusively handling the DB interaction.
+Only bother with a types file if there > 3 types. Otherwise define them where they are first used
+
+⸻
+
+4. Database Types
+
+All supabase interactions should be single function calls.
+EVERY single call must include: `.eq('organisation_id', organisationId)`
+They should always return the Database typed version.
+
+Eg
+If the call looks like this:
+```
+
+const { data } = await supabase
+.from('flow_versions')
+.select('content, created_at, flow_id, flow_version_id')
+
+```
+Then the type looks like this:
+```
+
+export type FlowVersionRow = Pick<
+Database['public']['Tables']['flow_versions']['Row'],
+| 'content'
+| 'created_at'
+| 'flow_id'
+| 'flow_version_id'
+
+> ;
+
+```
+Define the type ONCE and reuse in frontend and API. Don't redefine the same type multiple times
+
+⸻
+🚫 Avoid
+	•	Deep-importing other features’ internals.
+	•	Over-abstracting too early.
+	•	Mixing logic and view in one monolithic file.
+```

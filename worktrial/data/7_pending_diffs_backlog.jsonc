@@ -1,0 +1,31 @@
+/*
+Query 1.6: Diffs Pending Review
+Shows current backlog of unresolved diffs (DRAFT and PREVIEW states)
+Use for: Metric cards showing backlog size, age, and affected documents
+
+SELECT
+    COUNT(*) AS pending_diffs,
+    COUNT(*) FILTER (WHERE state = 'DRAFT') AS draft_count,
+    COUNT(*) FILTER (WHERE state = 'PREVIEW') AS preview_count,
+    COUNT(DISTINCT base_flow_version_id) AS affected_documents,
+    COUNT(DISTINCT analysis_run_id) AS from_analysis_runs,
+    MIN(created_at) AS oldest_diff,
+    MAX(created_at) AS newest_diff,
+    ROUND(AVG(EXTRACT(EPOCH FROM (NOW() - created_at)) / 3600), 2) AS avg_age_hours
+FROM source_flow_versions_diff
+WHERE
+    organisation_id = '1cc88f77-f29c-4716-8cf4-e045c79024a9'
+    AND state IN ('DRAFT', 'PREVIEW');
+*/
+[
+  {
+    "pending_diffs": 10600,
+    "draft_count": 8420,
+    "preview_count": 2180,
+    "affected_documents": 1842,
+    "from_analysis_runs": 4521,
+    "oldest_diff": "2025-12-18 08:24:15.422392+00",
+    "newest_diff": "2026-01-12 16:42:33.277746+00",
+    "avg_age_hours": "142.35"
+  }
+]

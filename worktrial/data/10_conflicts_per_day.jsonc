@@ -1,0 +1,84 @@
+/*
+Query 2.2: Conflicts Created Per Day (Last 30 Days)
+Shows daily conflict detection rate with breakdown by disposition
+Use for: Line chart showing conflict creation trends
+
+SELECT
+    DATE(created_at) AS date,
+    COUNT(*) AS conflicts_created,
+    COUNT(*) FILTER (WHERE disposition = 'NEEDS_REVIEW') AS needs_review,
+    COUNT(*) FILTER (WHERE disposition = 'ACCEPTED') AS accepted,
+    COUNT(*) FILTER (WHERE disposition = 'REJECTED') AS rejected
+FROM analysis_conflicts
+WHERE
+    organisation_id = '1cc88f77-f29c-4716-8cf4-e045c79024a9'
+    AND is_active = TRUE
+    AND created_at >= NOW() - INTERVAL '30 days'
+GROUP BY DATE(created_at)
+ORDER BY date DESC;
+*/
+[
+  {
+    "date": "2026-01-12",
+    "conflicts_created": 289,
+    "needs_review": 124,
+    "accepted": 135,
+    "rejected": 30
+  },
+  {
+    "date": "2026-01-11",
+    "conflicts_created": 156,
+    "needs_review": 67,
+    "accepted": 72,
+    "rejected": 17
+  },
+  {
+    "date": "2026-01-10",
+    "conflicts_created": 342,
+    "needs_review": 145,
+    "accepted": 159,
+    "rejected": 38
+  },
+  {
+    "date": "2026-01-09",
+    "conflicts_created": 298,
+    "needs_review": 128,
+    "accepted": 138,
+    "rejected": 32
+  },
+  {
+    "date": "2026-01-08",
+    "conflicts_created": 412,
+    "needs_review": 178,
+    "accepted": 186,
+    "rejected": 48
+  },
+  {
+    "date": "2026-01-07",
+    "conflicts_created": 385,
+    "needs_review": 165,
+    "accepted": 174,
+    "rejected": 46
+  },
+  {
+    "date": "2026-01-06",
+    "conflicts_created": 367,
+    "needs_review": 156,
+    "accepted": 168,
+    "rejected": 43
+  },
+  {
+    "date": "2026-01-05",
+    "conflicts_created": 198,
+    "needs_review": 84,
+    "accepted": 92,
+    "rejected": 22
+  },
+  {
+    "date": "2026-01-04",
+    "conflicts_created": 167,
+    "needs_review": 71,
+    "accepted": 78,
+    "rejected": 18
+  }
+]

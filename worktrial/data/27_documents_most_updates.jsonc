@@ -1,0 +1,228 @@
+/*
+Query 7.1: Documents Receiving Most Updates (Last 30 Days)
+Shows which documents are changing most frequently based on analysis activity
+Use for: Table showing top 20 documents by total conflicts
+
+SELECT
+    f.flow_id,
+    f.title AS document_title,
+    COUNT(DISTINCT ar.analysis_run_id) AS analysis_runs,
+    COUNT(DISTINCT ac.conflict_id) AS total_conflicts,
+    COUNT(DISTINCT ac.conflict_id) FILTER (WHERE ac.disposition = 'NEEDS_REVIEW') AS pending_conflicts,
+    COUNT(DISTINCT ac.conflict_id) FILTER (WHERE ac.disposition = 'ACCEPTED') AS accepted_conflicts,
+    COUNT(DISTINCT ac.conflict_id) FILTER (WHERE ac.disposition = 'REJECTED') AS rejected_conflicts,
+    MAX(ar.created_at) AS latest_analysis
+FROM flows f
+    JOIN flow_versions fv ON fv.flow_id = f.flow_id
+    JOIN analysis_conflicts ac ON ac.flow_version_id = fv.flow_version_id
+    JOIN analysis_runs ar ON ar.analysis_run_id = ac.analysis_run_id
+WHERE
+    f.organisation_id = '1cc88f77-f29c-4716-8cf4-e045c79024a9'
+    AND ac.is_active = TRUE
+    AND ar.created_at >= NOW() - INTERVAL '30 days'
+GROUP BY f.flow_id, f.title
+ORDER BY total_conflicts DESC
+LIMIT 20;
+*/
+[
+  {
+    "flow_id": "f2852d86-6c28-47dd-8474-fa0c24aaeb3b",
+    "document_title": "End of year: Important dates and EOY guidance",
+    "analysis_runs": 378,
+    "total_conflicts": 921,
+    "pending_conflicts": 356,
+    "accepted_conflicts": 423,
+    "rejected_conflicts": 142,
+    "latest_analysis": "2026-01-12 01:31:08.748034+00"
+  },
+  {
+    "flow_id": "85a0c2df-5701-4390-abba-05ddfcf55174",
+    "document_title": "Check your company's Secretary of State status",
+    "analysis_runs": 102,
+    "total_conflicts": 618,
+    "pending_conflicts": 234,
+    "accepted_conflicts": 289,
+    "rejected_conflicts": 95,
+    "latest_analysis": "2026-01-12 00:55:51.466303+00"
+  },
+  {
+    "flow_id": "92307e50-9446-4d46-b9c9-168270ef6d20",
+    "document_title": "Dismiss and rehire US employees (for admins)",
+    "analysis_runs": 182,
+    "total_conflicts": 540,
+    "pending_conflicts": 198,
+    "accepted_conflicts": 256,
+    "rejected_conflicts": 86,
+    "latest_analysis": "2026-01-01 00:07:53.539386+00"
+  },
+  {
+    "flow_id": "79a00de6-ca2c-4d03-a09b-c288c614e649",
+    "document_title": "Dismiss and rehire employees",
+    "analysis_runs": 122,
+    "total_conflicts": 400,
+    "pending_conflicts": 145,
+    "accepted_conflicts": 189,
+    "rejected_conflicts": 66,
+    "latest_analysis": "2026-01-11 01:44:53.687488+00"
+  },
+  {
+    "flow_id": "06cdf8ce-6aea-40c8-955b-40a81d54418f",
+    "document_title": "Run a dismissal payroll",
+    "analysis_runs": 112,
+    "total_conflicts": 384,
+    "pending_conflicts": 142,
+    "accepted_conflicts": 178,
+    "rejected_conflicts": 64,
+    "latest_analysis": "2026-01-11 01:44:53.687488+00"
+  },
+  {
+    "flow_id": "1065525c-55d0-4d50-8910-d3366c350f60",
+    "document_title": "Run a dismissal payroll (for admins)",
+    "analysis_runs": 154,
+    "total_conflicts": 206,
+    "pending_conflicts": 76,
+    "accepted_conflicts": 98,
+    "rejected_conflicts": 32,
+    "latest_analysis": "2026-01-11 01:44:53.687488+00"
+  },
+  {
+    "flow_id": "76adcb8f-f95a-4e5d-b3d2-6c34d237a2fa",
+    "document_title": "State unemployment insurance (SUI) tax (for admins)",
+    "analysis_runs": 96,
+    "total_conflicts": 131,
+    "pending_conflicts": 48,
+    "accepted_conflicts": 62,
+    "rejected_conflicts": 21,
+    "latest_analysis": "2026-01-01 00:33:26.213034+00"
+  },
+  {
+    "flow_id": "76efaacd-c371-4876-94b3-19f31a0a18d5",
+    "document_title": "Set up and manage tax exemptions",
+    "analysis_runs": 72,
+    "total_conflicts": 111,
+    "pending_conflicts": 42,
+    "accepted_conflicts": 51,
+    "rejected_conflicts": 18,
+    "latest_analysis": "2025-12-29 08:32:19.399453+00"
+  },
+  {
+    "flow_id": "def6c278-b986-48cc-9e7b-dfa726c04bd1",
+    "document_title": "Federal Form W-4 information",
+    "analysis_runs": 85,
+    "total_conflicts": 109,
+    "pending_conflicts": 39,
+    "accepted_conflicts": 52,
+    "rejected_conflicts": 18,
+    "latest_analysis": "2026-01-11 01:26:38.729494+00"
+  },
+  {
+    "flow_id": "d186ab4c-ebe0-46b5-bd20-5338779f336a",
+    "document_title": "TaxOps: IRS 940",
+    "analysis_runs": 62,
+    "total_conflicts": 103,
+    "pending_conflicts": 37,
+    "accepted_conflicts": 49,
+    "rejected_conflicts": 17,
+    "latest_analysis": "2025-12-29 08:08:39.255793+00"
+  },
+  {
+    "flow_id": "1c3b12f6-adef-4e8c-822b-47cff0c800e2",
+    "document_title": "Distribute 1099-NEC forms for your contractors",
+    "analysis_runs": 53,
+    "total_conflicts": 101,
+    "pending_conflicts": 36,
+    "accepted_conflicts": 48,
+    "rejected_conflicts": 17,
+    "latest_analysis": "2025-12-29 07:57:06.647+00"
+  },
+  {
+    "flow_id": "f1b04524-0351-43e1-b985-a7e1a099131f",
+    "document_title": "TaxRes: IRS agency and portal info",
+    "analysis_runs": 58,
+    "total_conflicts": 88,
+    "pending_conflicts": 32,
+    "accepted_conflicts": 42,
+    "rejected_conflicts": 14,
+    "latest_analysis": "2025-12-29 08:33:55.00186+00"
+  },
+  {
+    "flow_id": "2f253c6b-4167-47ab-ac9a-65ae9905e999",
+    "document_title": "State unemployment insurance (SUI) tax",
+    "analysis_runs": 68,
+    "total_conflicts": 83,
+    "pending_conflicts": 29,
+    "accepted_conflicts": 40,
+    "rejected_conflicts": 14,
+    "latest_analysis": "2025-12-29 08:32:42.701216+00"
+  },
+  {
+    "flow_id": "c14d7013-0b8c-4ee2-8a49-5b1af3412e16",
+    "document_title": "Level-funded health plans",
+    "analysis_runs": 33,
+    "total_conflicts": 74,
+    "pending_conflicts": 27,
+    "accepted_conflicts": 35,
+    "rejected_conflicts": 12,
+    "latest_analysis": "2025-12-29 07:59:16.886211+00"
+  },
+  {
+    "flow_id": "232ffd32-492f-4459-bf5c-fe34e6aaf985",
+    "document_title": "Quarterly tax filings process and 2025 filing calendar",
+    "analysis_runs": 53,
+    "total_conflicts": 74,
+    "pending_conflicts": 26,
+    "accepted_conflicts": 36,
+    "rejected_conflicts": 12,
+    "latest_analysis": "2025-12-29 08:39:14.626536+00"
+  },
+  {
+    "flow_id": "a7944ab4-612a-48ed-b262-5065b56f9266",
+    "document_title": "Overtime hours and pay",
+    "analysis_runs": 48,
+    "total_conflicts": 70,
+    "pending_conflicts": 24,
+    "accepted_conflicts": 34,
+    "rejected_conflicts": 12,
+    "latest_analysis": "2025-12-29 07:58:15.733339+00"
+  },
+  {
+    "flow_id": "f694796d-1061-41dc-8a5a-aa6cb5f8414c",
+    "document_title": "Internal Revenue Service (IRS)",
+    "analysis_runs": 42,
+    "total_conflicts": 66,
+    "pending_conflicts": 23,
+    "accepted_conflicts": 32,
+    "rejected_conflicts": 11,
+    "latest_analysis": "2026-01-01 00:07:53.688222+00"
+  },
+  {
+    "flow_id": "a96d2ca9-550f-4c38-b18f-5ed0c97d0a5a",
+    "document_title": "View and download reports",
+    "analysis_runs": 33,
+    "total_conflicts": 65,
+    "pending_conflicts": 22,
+    "accepted_conflicts": 32,
+    "rejected_conflicts": 11,
+    "latest_analysis": "2025-12-29 06:11:51.385933+00"
+  },
+  {
+    "flow_id": "5e087cea-3ee3-4d26-a7bd-c139a541821c",
+    "document_title": "TaxOps: New York BBBD",
+    "analysis_runs": 16,
+    "total_conflicts": 64,
+    "pending_conflicts": 21,
+    "accepted_conflicts": 31,
+    "rejected_conflicts": 12,
+    "latest_analysis": "2025-12-28 23:41:45.44261+00"
+  },
+  {
+    "flow_id": "ad817856-0e29-45bf-8167-2f66bda46939",
+    "document_title": "Colorado registration and tax info",
+    "analysis_runs": 37,
+    "total_conflicts": 63,
+    "pending_conflicts": 20,
+    "accepted_conflicts": 31,
+    "rejected_conflicts": 12,
+    "latest_analysis": "2026-01-01 00:07:53.688222+00"
+  }
+]

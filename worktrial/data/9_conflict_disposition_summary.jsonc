@@ -1,0 +1,33 @@
+/*
+Query 2.1: Conflict Disposition Summary
+Shows how conflicts are being resolved (NEEDS_REVIEW/ACCEPTED/REJECTED)
+Use for: Pie chart showing conflict resolution breakdown
+
+SELECT
+    disposition,
+    COUNT(*) AS count,
+    ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (), 2) AS percentage
+FROM analysis_conflicts
+WHERE
+    organisation_id = '1cc88f77-f29c-4716-8cf4-e045c79024a9'
+    AND is_active = TRUE
+GROUP BY disposition
+ORDER BY count DESC;
+*/
+[
+  {
+    "disposition": "NEEDS_REVIEW",
+    "count": 5840,
+    "percentage": "38.70"
+  },
+  {
+    "disposition": "ACCEPTED",
+    "count": 6950,
+    "percentage": "46.05"
+  },
+  {
+    "disposition": "REJECTED",
+    "count": 2300,
+    "percentage": "15.25"
+  }
+]

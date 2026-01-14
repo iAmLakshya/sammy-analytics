@@ -1,0 +1,26 @@
+/*
+Query 3.1: Web Watch Documents Overview
+Shows current state of Web Watch dashboard
+Use for: Metric cards showing total docs, conflicts, and priority breakdown
+
+SELECT
+    COUNT(*) AS total_documents_with_conflicts,
+    SUM(pending_conflicts) AS total_pending_conflicts,
+    SUM(rejected_conflicts) AS total_rejected_conflicts,
+    COUNT(*) FILTER (WHERE has_high_conflicts) AS docs_with_high_priority,
+    COUNT(*) FILTER (WHERE has_medium_conflicts) AS docs_with_medium_priority,
+    COUNT(*) FILTER (WHERE has_low_conflicts) AS docs_with_low_priority,
+    AVG(pending_conflicts) AS avg_conflicts_per_doc
+FROM v_web_watch_documents;
+*/
+[
+  {
+    "total_documents_with_conflicts": 1842,
+    "total_pending_conflicts": 5840,
+    "total_rejected_conflicts": 2300,
+    "docs_with_high_priority": 287,
+    "docs_with_medium_priority": 642,
+    "docs_with_low_priority": 913,
+    "avg_conflicts_per_doc": 3.17
+  }
+]

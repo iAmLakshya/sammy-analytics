@@ -1,0 +1,41 @@
+---
+alwaysApply: true
+---
+# Unix Design Philosophy
+
+## Summary
+This rule enforces the Unix design philosophy in all code contributions. Code should embody simplicity, composability, and clarity. Every function, class, or module should be designed to **do one thing well**, avoid unnecessary complexity, and enable composition with other tools.
+
+## Rules
+- **Do One Thing Well**  
+  - Each program, function, or module should have a single responsibility.  
+  - Split responsibilities into separate functions or files if they diverge.  
+
+- **Write for Composition**  
+  - Design outputs so they can be easily consumed by other parts of the system.  
+  - Prefer return values, streams, or simple data structures over side effects.  
+
+- **Clarity over Cleverness**  
+  - Prioritize readable and maintainable code.  
+  - Avoid unnecessary abstractions or "magic."  
+
+- **Small, Focused Interfaces**  
+  - Expose minimal, clear APIs.  
+  - Prefer a few small, predictable functions over large, sprawling ones.  
+
+- **Text as a Universal Interface**  
+  - Favor plain text or widely supported formats (JSON, CSV, YAML) for data exchange.  
+  - Avoid proprietary formats unless absolutely necessary.  
+
+- **Silence is Golden**  
+  - Functions should not log or print unless explicitly required.  
+  - Errors and warnings should be meaningful and actionable.  
+
+- **Build from Simple Tools**  
+  - Prefer combining simple building blocks over writing monolithic code.  
+  - Encourage reusability across different contexts.  
+
+## When in Doubt
+- Ask: *“Does this do one thing well?”*  
+- If not, refactor into smaller parts.  
+- If still uncertain, lean toward simplicity and clarity.  

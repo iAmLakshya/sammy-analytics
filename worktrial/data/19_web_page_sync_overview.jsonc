@@ -1,0 +1,27 @@
+/*
+Query 4.1: Web Page Sync Frequency Overview
+Shows how often web pages are being synced (overall stats)
+Use for: Metric cards showing sync activity across different time periods
+
+SELECT
+    COUNT(*) AS total_web_pages,
+    COUNT(*) FILTER (WHERE last_synced_at IS NOT NULL) AS ever_synced,
+    COUNT(*) FILTER (WHERE last_synced_at > NOW() - INTERVAL '24 hours') AS synced_last_24h,
+    COUNT(*) FILTER (WHERE last_synced_at > NOW() - INTERVAL '7 days') AS synced_last_7d,
+    COUNT(*) FILTER (WHERE last_synced_at > NOW() - INTERVAL '30 days') AS synced_last_30d,
+    ROUND(AVG(EXTRACT(EPOCH FROM (NOW() - last_synced_at)) / 3600), 2) AS avg_hours_since_sync
+FROM source_web_pages
+WHERE
+    organisation_id = '1cc88f77-f29c-4716-8cf4-e045c79024a9'
+    AND is_active = TRUE;
+*/
+[
+  {
+    "total_web_pages": 8242,
+    "ever_synced": 8242,
+    "synced_last_24h": 2847,
+    "synced_last_7d": 6521,
+    "synced_last_30d": 7918,
+    "avg_hours_since_sync": "18.45"
+  }
+]

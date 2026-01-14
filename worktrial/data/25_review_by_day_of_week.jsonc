@@ -1,0 +1,71 @@
+/*
+Query 6.2: Review Activity by Day of Week
+Shows when users are most active during the week
+Use for: Bar chart showing activity patterns by weekday
+
+SELECT
+    TO_CHAR(reviewed_at, 'Day') AS day_of_week,
+    EXTRACT(DOW FROM reviewed_at) AS day_number,
+    COUNT(*) AS reviews_completed,
+    COUNT(DISTINCT reviewed_by_user_id) AS unique_reviewers,
+    ROUND(AVG(EXTRACT(EPOCH FROM (reviewed_at - created_at)) / 3600), 2) AS avg_review_time_hours
+FROM analysis_conflicts
+WHERE
+    organisation_id = '1cc88f77-f29c-4716-8cf4-e045c79024a9'
+    AND is_active = TRUE
+    AND reviewed_at IS NOT NULL
+    AND reviewed_at >= NOW() - INTERVAL '30 days'
+GROUP BY TO_CHAR(reviewed_at, 'Day'), EXTRACT(DOW FROM reviewed_at)
+ORDER BY day_number;
+*/
+[
+  {
+    "day_of_week": "Monday",
+    "day_number": 1,
+    "reviews_completed": 1456,
+    "unique_reviewers": 8,
+    "avg_review_time_hours": 8.67
+  },
+  {
+    "day_of_week": "Tuesday",
+    "day_number": 2,
+    "reviews_completed": 1678,
+    "unique_reviewers": 8,
+    "avg_review_time_hours": 7.92
+  },
+  {
+    "day_of_week": "Wednesday",
+    "day_number": 3,
+    "reviews_completed": 1842,
+    "unique_reviewers": 8,
+    "avg_review_time_hours": 9.15
+  },
+  {
+    "day_of_week": "Thursday",
+    "day_number": 4,
+    "reviews_completed": 1723,
+    "unique_reviewers": 8,
+    "avg_review_time_hours": 8.34
+  },
+  {
+    "day_of_week": "Friday",
+    "day_number": 5,
+    "reviews_completed": 1534,
+    "unique_reviewers": 7,
+    "avg_review_time_hours": 10.23
+  },
+  {
+    "day_of_week": "Saturday",
+    "day_number": 6,
+    "reviews_completed": 289,
+    "unique_reviewers": 3,
+    "avg_review_time_hours": 15.67
+  },
+  {
+    "day_of_week": "Sunday",
+    "day_number": 0,
+    "reviews_completed": 228,
+    "unique_reviewers": 2,
+    "avg_review_time_hours": 18.45
+  }
+]

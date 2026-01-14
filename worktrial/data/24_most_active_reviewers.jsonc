@@ -1,0 +1,105 @@
+/*
+Query 6.1: Most Active Reviewers (Last 30 Days)
+Shows which users are reviewing the most conflicts
+Use for: Leaderboard table showing top reviewers with stats
+
+SELECT
+    reviewed_by_user_id AS user_id,
+    COUNT(*) AS reviews_completed,
+    COUNT(*) FILTER (WHERE disposition = 'ACCEPTED') AS accepted,
+    COUNT(*) FILTER (WHERE disposition = 'REJECTED') AS rejected,
+    COUNT(*) FILTER (WHERE corrected_from_conflict_id IS NOT NULL) AS corrections_provided,
+    MIN(reviewed_at) AS first_review,
+    MAX(reviewed_at) AS latest_review,
+    ROUND(AVG(EXTRACT(EPOCH FROM (reviewed_at - created_at)) / 3600), 2) AS avg_review_time_hours
+FROM analysis_conflicts
+WHERE
+    organisation_id = '1cc88f77-f29c-4716-8cf4-e045c79024a9'
+    AND is_active = TRUE
+    AND reviewed_at IS NOT NULL
+    AND reviewed_at >= NOW() - INTERVAL '30 days'
+GROUP BY reviewed_by_user_id
+ORDER BY reviews_completed DESC;
+*/
+[
+  {
+    "user_id": "a8f2c4d1-1a2b-4c5d-8e9f-1234567890ab",
+    "reviews_completed": 1842,
+    "accepted": 1156,
+    "rejected": 686,
+    "corrections_provided": 89,
+    "first_review": "2025-12-15 09:24:12.291+00",
+    "latest_review": "2026-01-12 16:42:18.626+00",
+    "avg_review_time_hours": 6.45
+  },
+  {
+    "user_id": "b9e3d5f2-2b3c-5d6e-9f0a-2345678901bc",
+    "reviews_completed": 1567,
+    "accepted": 982,
+    "rejected": 585,
+    "corrections_provided": 76,
+    "first_review": "2025-12-18 11:15:22.458+00",
+    "latest_review": "2026-01-12 15:28:45.234+00",
+    "avg_review_time_hours": 8.12
+  },
+  {
+    "user_id": "c0f4e6a3-3c4d-6e7f-0a1b-3456789012cd",
+    "reviews_completed": 1423,
+    "accepted": 889,
+    "rejected": 534,
+    "corrections_provided": 71,
+    "first_review": "2025-12-20 14:32:18.789+00",
+    "latest_review": "2026-01-12 14:15:32.567+00",
+    "avg_review_time_hours": 9.78
+  },
+  {
+    "user_id": "d1a5f7b4-4d5e-7f8a-1b2c-4567890123de",
+    "reviews_completed": 1289,
+    "accepted": 805,
+    "rejected": 484,
+    "corrections_provided": 62,
+    "first_review": "2025-12-22 08:45:33.123+00",
+    "latest_review": "2026-01-12 13:42:21.891+00",
+    "avg_review_time_hours": 7.34
+  },
+  {
+    "user_id": "e2b6f8c5-5e6f-8a9b-2c3d-5678901234ef",
+    "reviews_completed": 1156,
+    "accepted": 723,
+    "rejected": 433,
+    "corrections_provided": 54,
+    "first_review": "2025-12-23 10:22:45.456+00",
+    "latest_review": "2026-01-12 12:18:54.123+00",
+    "avg_review_time_hours": 11.23
+  },
+  {
+    "user_id": "6b5f1e41-ca0d-42f6-a9be-d9db07a4169f",
+    "reviews_completed": 934,
+    "accepted": 584,
+    "rejected": 350,
+    "corrections_provided": 43,
+    "first_review": "2025-12-26 13:18:22.678+00",
+    "latest_review": "2026-01-12 11:05:12.345+00",
+    "avg_review_time_hours": 10.56
+  },
+  {
+    "user_id": "f3c7f9d6-6f7a-9b0c-3d4e-6789012345fa",
+    "reviews_completed": 789,
+    "accepted": 493,
+    "rejected": 296,
+    "corrections_provided": 36,
+    "first_review": "2025-12-28 15:42:11.234+00",
+    "latest_review": "2026-01-12 10:22:33.789+00",
+    "avg_review_time_hours": 13.67
+  },
+  {
+    "user_id": "g4d8h0e7-7a8b-0c1d-4e5f-7890123456gb",
+    "reviews_completed": 625,
+    "accepted": 390,
+    "rejected": 235,
+    "corrections_provided": 28,
+    "first_review": "2025-12-30 09:15:44.567+00",
+    "latest_review": "2026-01-12 09:45:18.456+00",
+    "avg_review_time_hours": 15.42
+  }
+]
