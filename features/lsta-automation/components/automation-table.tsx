@@ -150,10 +150,10 @@ export const AutomationTable = ({
                         }`}
                       />
                     </TableCell>
-                    <TableCell className="font-mono text-sm">
+                    <TableCell className="font-mono">
                       {submission.companyId}
                     </TableCell>
-                    <TableCell className="font-mono text-sm">
+                    <TableCell className="font-mono">
                       {submission.legalEntityId}
                     </TableCell>
                     <TableCell className="hidden md:table-cell">
