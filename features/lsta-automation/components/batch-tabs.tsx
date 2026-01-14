@@ -121,7 +121,6 @@ export const BatchTabs = ({
 
   return (
     <div className="flex items-center gap-1 border-b">
-      {/* Left scroll button */}
       {canScrollLeft && (
         <Button
           variant="ghost"
@@ -133,7 +132,6 @@ export const BatchTabs = ({
         </Button>
       )}
 
-      {/* Scrollable tabs container */}
       <div
         ref={scrollRef}
         className="flex flex-1 items-center overflow-x-auto scrollbar-none"
@@ -155,7 +153,6 @@ export const BatchTabs = ({
         ))}
       </div>
 
-      {/* Right scroll button */}
       {canScrollRight && (
         <Button
           variant="ghost"
@@ -167,7 +164,6 @@ export const BatchTabs = ({
         </Button>
       )}
 
-      {/* Search dropdown */}
       <Popover open={searchOpen} onOpenChange={setSearchOpen}>
         <PopoverTrigger asChild>
           <Button
@@ -210,7 +206,6 @@ export const BatchTabs = ({
         </PopoverContent>
       </Popover>
 
-      {/* Add batch button */}
       <Button
         variant="ghost"
         size="sm"

@@ -31,10 +31,6 @@ export const LstaAutomationContent = () => {
     setBatches((prev) => [...prev, newBatch]);
   };
 
-  const activeBatchName = activeBatchId
-    ? (batches.find((b) => b.id === activeBatchId)?.name ?? null)
-    : null;
-
   return (
     <div className="flex flex-col gap-6 py-4">
       <div className="flex flex-col gap-4 px-4 lg:px-6">
@@ -45,10 +41,7 @@ export const LstaAutomationContent = () => {
           onBatchChange={setActiveBatchId}
           onAddBatch={() => setShowAddDialog(true)}
         />
-        <AutomationKpiCards
-          submissions={filteredSubmissions}
-          batchName={activeBatchName}
-        />
+        <AutomationKpiCards submissions={filteredSubmissions} />
       </div>
       <div className="space-y-4 px-4 lg:px-6">
         <AutomationTable submissions={filteredSubmissions} />
