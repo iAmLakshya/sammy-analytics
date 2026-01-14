@@ -6,6 +6,7 @@ import {
   IconChartBar,
   IconHelp,
   IconLayoutDashboard,
+  IconRobot,
   IconSearch,
   IconSettings,
 } from "@tabler/icons-react"
@@ -37,6 +38,11 @@ const data = {
       title: "Analytics",
       url: "/dashboard",
       icon: IconLayoutDashboard,
+    },
+    {
+      title: "LSTA Automation",
+      url: "/lsta-automation",
+      icon: IconRobot,
     },
   ],
   navSecondary: [
