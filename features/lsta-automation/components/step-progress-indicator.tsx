@@ -9,10 +9,10 @@ import {
 import type { StepResult, PipelineStep } from "../types";
 
 const stepLabels: Record<PipelineStep, string> = {
-  "payroll-download": "Payroll Download",
-  "data-extraction": "Data Extraction",
-  "tax-submission": "Tax Submission",
-  "document-upload": "Document Upload",
+  "payroll-download": "Download LSTA",
+  "data-extraction": "Extract & Map",
+  "tax-submission": "Submit to ELSTER",
+  "document-upload": "Upload to Personio",
 };
 
 interface StepProgressIndicatorProps {
