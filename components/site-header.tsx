@@ -3,8 +3,6 @@
 import { Suspense, useState } from "react"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
-import { Separator } from "@/components/ui/separator"
-import { SidebarTrigger } from "@/components/ui/sidebar"
 import { Skeleton } from "@/components/ui/skeleton"
 import { DASHBOARD_TABS, type TabId } from "@/lib/constants"
 import { useTabState } from "@/hooks/use-tab-state"
@@ -17,7 +15,7 @@ const DATE_RANGES = [
   { value: "90d", label: "90D" },
 ]
 
-const HeaderContent = () => {
+const DashboardHeaderContent = () => {
   const { activeTab, setActiveTab } = useTabState()
   const [dateRange, setDateRange] = useState("30d")
 
@@ -70,7 +68,7 @@ const HeaderContent = () => {
   )
 }
 
-const HeaderFallback = () => (
+const DashboardHeaderFallback = () => (
   <>
     <Skeleton className="h-9 w-[400px]" />
     <div className="ml-auto">
@@ -79,19 +77,10 @@ const HeaderFallback = () => (
   </>
 )
 
-export function SiteHeader() {
+export const DashboardHeader = () => {
   return (
-    <header className="flex h-(--header-height) shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
-      <div className="flex w-full items-center gap-2 px-4 lg:px-6">
-        <SidebarTrigger className="-ml-1" />
-        <Separator
-          orientation="vertical"
-          className="mx-2 data-[orientation=vertical]:h-4"
-        />
-        <Suspense fallback={<HeaderFallback />}>
-          <HeaderContent />
-        </Suspense>
-      </div>
-    </header>
+    <Suspense fallback={<DashboardHeaderFallback />}>
+      <DashboardHeaderContent />
+    </Suspense>
   )
 }
