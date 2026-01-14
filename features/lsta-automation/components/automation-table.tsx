@@ -161,15 +161,20 @@ export const AutomationTable = ({
                       )}
                     </TableCell>
                     <TableCell className="hidden whitespace-nowrap text-center md:table-cell">
-                      {submission.isSpecialCase ? (
-                        <Badge className="bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400">
-                          Special
-                        </Badge>
-                      ) : (
-                        <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400">
-                          Sammy
-                        </Badge>
-                      )}
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span className="inline-flex">
+                            {submission.isSpecialCase ? (
+                              <IconCheck className="mx-auto size-4 text-amber-600 dark:text-amber-400" />
+                            ) : (
+                              <IconX className="mx-auto size-4 text-muted-foreground" />
+                            )}
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          {submission.isSpecialCase ? "Special case" : "Sammy submitted"}
+                        </TooltipContent>
+                      </Tooltip>
                     </TableCell>
                     <TableCell className="whitespace-nowrap text-center">
                       {submission.isSubmittedAndUploaded ? (

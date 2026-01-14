@@ -30,12 +30,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Toggle } from "@/components/ui/toggle";
-import type {
-  SubmissionFilters,
-  SubmissionStatus,
-  PeriodType,
-} from "../../types";
+import type { SubmissionFilters, SubmissionStatus } from "../../types";
 
 const STATUS_OPTIONS: { value: SubmissionStatus; label: string; className: string }[] = [
   {
@@ -63,13 +58,6 @@ const STATUS_OPTIONS: { value: SubmissionStatus; label: string; className: strin
     label: "Retrying",
     className: "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400",
   },
-];
-
-const PERIOD_TYPE_OPTIONS: { value: PeriodType | "all"; label: string }[] = [
-  { value: "all", label: "All Periods" },
-  { value: "monthly", label: "Monthly" },
-  { value: "quarterly", label: "Quarterly" },
-  { value: "yearly", label: "Yearly" },
 ];
 
 interface SubmissionFilterBarProps {
@@ -113,16 +101,19 @@ export const SubmissionFilterBar = ({
     onFiltersChange({ ...filters, statuses: newStatuses });
   };
 
-  const handlePeriodTypeChange = (value: string) => {
+  const handleSpecialCaseChange = (value: string) => {
     if (value === "all") {
-      onFiltersChange({ ...filters, periodTypes: [] });
+      onFiltersChange({ ...filters, isSpecialCase: null });
+    } else if (value === "special") {
+      onFiltersChange({ ...filters, isSpecialCase: true });
     } else {
-      onFiltersChange({ ...filters, periodTypes: [value as PeriodType] });
+      onFiltersChange({ ...filters, isSpecialCase: false });
     }
   };
 
-  const handleSpecialCaseToggle = (pressed: boolean) => {
-    onFiltersChange({ ...filters, isSpecialCase: pressed ? true : null });
+  const getSpecialCaseValue = () => {
+    if (filters.isSpecialCase === null) return "all";
+    return filters.isSpecialCase ? "special" : "sammy";
   };
 
   const handleClearSearch = () => {
@@ -142,7 +133,6 @@ export const SubmissionFilterBar = ({
 
   const hasActiveFilters =
     filters.statuses.length > 0 ||
-    filters.periodTypes.length > 0 ||
     filters.isSpecialCase !== null ||
     filters.searchQuery.trim() !== "";
 
@@ -206,32 +196,16 @@ export const SubmissionFilterBar = ({
         </PopoverContent>
       </Popover>
 
-      <Select
-        value={filters.periodTypes[0] || "all"}
-        onValueChange={handlePeriodTypeChange}
-      >
-        <SelectTrigger size="sm" className="h-8 w-[130px]" aria-label="Filter by period type">
-          <SelectValue placeholder="All Periods" />
+      <Select value={getSpecialCaseValue()} onValueChange={handleSpecialCaseChange}>
+        <SelectTrigger size="sm" className="h-8 w-[100px]" aria-label="Filter by submission type">
+          <SelectValue />
         </SelectTrigger>
         <SelectContent>
-          {PERIOD_TYPE_OPTIONS.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
-              {option.label}
-            </SelectItem>
-          ))}
+          <SelectItem value="all">All</SelectItem>
+          <SelectItem value="special">Special</SelectItem>
+          <SelectItem value="sammy">Sammy</SelectItem>
         </SelectContent>
       </Select>
-
-      <Toggle
-        variant="outline"
-        size="sm"
-        pressed={filters.isSpecialCase === true}
-        onPressedChange={handleSpecialCaseToggle}
-        className="h-8 px-3"
-        aria-label="Show only special cases"
-      >
-        Special Only
-      </Toggle>
 
       <div className="relative">
         <IconSearch className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />

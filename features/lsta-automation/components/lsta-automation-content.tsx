@@ -5,6 +5,8 @@ import { AutomationKpiCards } from "./automation-kpi-cards";
 import { AutomationTable } from "./automation-table";
 import { BatchTabs } from "./batch-tabs";
 import { AddBatchDialog } from "./add-batch-dialog";
+import { SubmissionFilterBar } from "./submission-filter-bar";
+import { useSubmissionFilters } from "../hooks/use-submission-filters";
 import { mockBatches } from "../data/mock.batches.data";
 import { mockSubmissions } from "../data/mock.submissions.data";
 import type { Batch } from "../types";
@@ -13,11 +15,17 @@ export const LstaAutomationContent = () => {
   const [batches, setBatches] = useState<Batch[]>(mockBatches);
   const [activeBatchId, setActiveBatchId] = useState<string | null>(null);
   const [showAddDialog, setShowAddDialog] = useState(false);
+  const { filters, setFilters, filterSubmissions } = useSubmissionFilters();
 
-  const filteredSubmissions = useMemo(() => {
+  const batchFilteredSubmissions = useMemo(() => {
     if (!activeBatchId) return mockSubmissions;
     return mockSubmissions.filter((s) => s.batchId === activeBatchId);
   }, [activeBatchId]);
+
+  const filteredSubmissions = useMemo(
+    () => filterSubmissions(batchFilteredSubmissions),
+    [filterSubmissions, batchFilteredSubmissions]
+  );
 
   const handleAddBatch = (
     batchData: Omit<Batch, "id" | "createdAt" | "submissionCount">
@@ -41,9 +49,15 @@ export const LstaAutomationContent = () => {
           onBatchChange={setActiveBatchId}
           onAddBatch={() => setShowAddDialog(true)}
         />
-        <AutomationKpiCards submissions={filteredSubmissions} />
+        <AutomationKpiCards submissions={batchFilteredSubmissions} />
       </div>
       <div className="space-y-4 px-4 lg:px-6">
+        <SubmissionFilterBar
+          filters={filters}
+          onFiltersChange={setFilters}
+          totalCount={batchFilteredSubmissions.length}
+          filteredCount={filteredSubmissions.length}
+        />
         <AutomationTable submissions={filteredSubmissions} />
       </div>
       <AddBatchDialog
