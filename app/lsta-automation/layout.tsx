@@ -5,5 +5,5 @@ export default function LstaAutomationLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <AppLayout>{children}</AppLayout>;
+  return <AppLayout headerContent={"LSTA Automation"}>{children}</AppLayout>;
 }

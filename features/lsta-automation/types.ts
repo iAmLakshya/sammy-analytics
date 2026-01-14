@@ -87,3 +87,12 @@ export interface LstaKpiMetrics {
     failed: number;
   }[];
 }
+
+export type PeriodType = "monthly" | "quarterly" | "yearly";
+
+export interface SubmissionFilters {
+  statuses: SubmissionStatus[];
+  periodTypes: PeriodType[];
+  isSpecialCase: boolean | null;
+  searchQuery: string;
+}
