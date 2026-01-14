@@ -214,7 +214,7 @@ export const AutomationTable = ({
                       )}
                     </TableCell>
                     <TableCell>
-                      {(isNeedsReview || isRetrying) && (
+                      {isNeedsReview && (
                         <Button
                           variant="ghost"
                           size="sm"

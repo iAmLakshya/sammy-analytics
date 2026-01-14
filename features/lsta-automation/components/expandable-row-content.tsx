@@ -69,11 +69,11 @@ export const ExpandableRowContent = ({
         transition={{ duration: 0.2, ease: "easeOut" }}
         className="overflow-hidden"
       >
-        <div className="space-y-4 bg-muted/20 px-4 py-5 sm:px-6">
+        <div className="space-y-2 border-t border-muted/50 bg-muted/10 px-3 py-3 sm:px-4">
           <div className="relative hidden sm:block">
-            <div className="absolute left-0 right-0 top-1/2 h-1 -translate-y-1/2 rounded-full bg-muted" />
+            <div className="absolute left-0 right-0 top-1/2 h-0.5 -translate-y-1/2 rounded-full bg-muted" />
             <div
-              className="absolute left-0 top-1/2 h-1 -translate-y-1/2 rounded-full bg-emerald-500 transition-all duration-300"
+              className="absolute left-0 top-1/2 h-0.5 -translate-y-1/2 rounded-full bg-emerald-500 transition-all duration-300"
               style={{ width: `${progressPercent}%` }}
             />
             <div className="relative flex items-center justify-between">
@@ -93,7 +93,7 @@ export const ExpandableRowContent = ({
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-2 sm:hidden">
+          <div className="grid grid-cols-2 gap-1.5 sm:hidden">
             {steps.map((stepResult, index) => {
               const isActive = currentStep === stepResult.step;
               return (
@@ -109,7 +109,7 @@ export const ExpandableRowContent = ({
             })}
           </div>
 
-          <div className="flex items-start gap-3">
+          <div className="flex items-start gap-2">
             <div className="flex-1">
               <StepDetailPanel
                 stepResult={selectedStep}
@@ -119,7 +119,7 @@ export const ExpandableRowContent = ({
             </div>
             {showRetry && (
               <Button variant="outline" size="sm" onClick={onRetry} className="shrink-0">
-                <IconRefresh className="mr-1.5 size-4" />
+                <IconRefresh className="mr-1 size-3.5" />
                 Retry
               </Button>
             )}
