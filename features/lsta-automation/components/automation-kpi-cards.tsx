@@ -1,157 +1,99 @@
 "use client";
 
-import {
-  IconAlertTriangle,
-  IconCheck,
-  IconClock,
-  IconTrendingDown,
-  IconTrendingUp,
-} from "@tabler/icons-react";
-
-import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardAction,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { useMemo } from "react";
+import { IconAlertTriangle } from "@tabler/icons-react";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
-import { MiniSparkline } from "@/components/ui/sparkline";
+import type { Submission } from "../types";
 
-import { mockKpiMetrics } from "../data/mock.submissions.data";
+interface AutomationKpiCardsProps {
+  submissions: Submission[];
+  batchName: string | null;
+}
 
-const getTrendDirection = (data: number[]) => {
-  if (data.length < 2) return "neutral";
-  const first = data[0];
-  const last = data[data.length - 1];
-  if (last > first * 1.02) return "up";
-  if (last < first * 0.98) return "down";
-  return "neutral";
-};
+export const AutomationKpiCards = ({
+  submissions,
+}: AutomationKpiCardsProps) => {
+  const metrics = useMemo(() => {
+    const completedCount = submissions.filter(
+      (s) => s.status === "completed"
+    ).length;
+    const needsReviewCount = submissions.filter(
+      (s) => s.status === "needs-review"
+    ).length;
+    const processingCount = submissions.filter(
+      (s) => s.status === "processing"
+    ).length;
+    const totalCount = submissions.length;
+    const avgTime = 6.4;
 
-export const AutomationKpiCards = () => {
-  const completionTrend = getTrendDirection(mockKpiMetrics.completionRateTrend);
-  const currentPeriod = mockKpiMetrics.periodStats[0];
-  const pendingCount = mockKpiMetrics.queuedCount + mockKpiMetrics.processingCount;
+    return {
+      completedCount,
+      needsReviewCount,
+      processingCount,
+      totalCount,
+      avgTime,
+    };
+  }, [submissions]);
 
   return (
-    <div className="grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
-      <Card className="@container/card">
-        <CardHeader>
-          <CardDescription className="flex items-center gap-1.5">
-            Completion Rate
-            <InfoTooltip content="Percentage of submissions that completed all 4 steps successfully. Higher is better — we aim for 95%+." />
-          </CardDescription>
-          <CardTitle className="flex items-center gap-3 text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            {mockKpiMetrics.completionRate}%
-            <MiniSparkline
-              data={mockKpiMetrics.completionRateTrend}
-              width={48}
-              height={20}
-              color="hsl(var(--chart-3))"
-            />
-          </CardTitle>
-          <CardAction>
-            <Badge variant="outline">
-              <IconCheck className="size-3" />
-              This Month
-            </Badge>
-          </CardAction>
-        </CardHeader>
-        <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="line-clamp-1 flex items-center gap-2 font-medium">
-            {completionTrend === "up" && (
-              <IconTrendingUp className="size-3.5 text-chart-3" />
-            )}
-            {completionTrend === "down" && (
-              <IconTrendingDown className="size-3.5 text-chart-1" />
-            )}
-            {mockKpiMetrics.completedCount.toLocaleString()} of {mockKpiMetrics.totalSubmissions.toLocaleString()} submissions successful
-          </div>
-          <div className="text-muted-foreground">
-            7-day trend shown
-          </div>
-        </CardFooter>
-      </Card>
+    <div className="flex items-center divide-x divide-border">
+      <div className="flex flex-col gap-0.5 pr-6">
+        <div className="flex items-center gap-1">
+          <span className="text-sm text-muted-foreground">Completed</span>
+          <InfoTooltip content="Submissions that have been fully processed and uploaded to your document management system." />
+        </div>
+        <p className="text-xl font-semibold tabular-nums">
+          {metrics.completedCount}{" "}
+          <span className="text-sm font-normal text-muted-foreground">
+            / {metrics.totalCount}
+          </span>
+        </p>
+      </div>
 
-      <Card className="@container/card">
-        <CardHeader>
-          <CardDescription className="flex items-center gap-1.5">
-            Needs Attention
-            <InfoTooltip content="Submissions that failed and couldn't be automatically recovered. Review these to identify recurring issues." />
-          </CardDescription>
-          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            {mockKpiMetrics.needsReviewCount}
-          </CardTitle>
-          <CardAction>
-            <Badge className="bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-400">
-              <IconAlertTriangle className="size-3" />
-              Action Required
-            </Badge>
-          </CardAction>
-        </CardHeader>
-        <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="line-clamp-1 flex items-center gap-2 font-medium">
-            {mockKpiMetrics.retryingCount} scheduled for auto-retry
-          </div>
-          <div className="text-muted-foreground">
-            Will retry tomorrow automatically
-          </div>
-        </CardFooter>
-      </Card>
+      <div className="flex flex-col gap-0.5 px-6">
+        <div className="flex items-center gap-1">
+          <span className="text-sm text-muted-foreground">Needs Review</span>
+          <InfoTooltip content="Submissions that require your attention due to data mismatches or validation errors. Expand each row to see details and retry." />
+        </div>
+        <div className="flex items-center gap-1.5">
+          {metrics.needsReviewCount > 0 && (
+            <IconAlertTriangle className="size-4 text-rose-600 dark:text-rose-400" />
+          )}
+          <p
+            className={`text-xl font-semibold tabular-nums ${
+              metrics.needsReviewCount > 0
+                ? "text-rose-600 dark:text-rose-400"
+                : ""
+            }`}
+          >
+            {metrics.needsReviewCount}
+          </p>
+        </div>
+      </div>
 
-      <Card className="@container/card">
-        <CardHeader>
-          <CardDescription className="flex items-center gap-1.5">
-            Processing Time
-            <InfoTooltip content="Average time from start to completion. Includes payroll download, data extraction, tax submission, and document upload." />
-          </CardDescription>
-          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            {mockKpiMetrics.avgProcessingTime} min
-          </CardTitle>
-          <CardAction>
-            <Badge variant="outline">
-              <IconClock className="size-3" />
-              Per Submission
-            </Badge>
-          </CardAction>
-        </CardHeader>
-        <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="line-clamp-1 flex items-center gap-2 font-medium">
-            {mockKpiMetrics.processingCount} currently processing
-          </div>
-          <div className="text-muted-foreground">
-            Across 4 pipeline steps
-          </div>
-        </CardFooter>
-      </Card>
+      <div className="flex flex-col gap-0.5 px-6">
+        <div className="flex items-center gap-1">
+          <span className="text-sm text-muted-foreground">Processing</span>
+          <InfoTooltip content="Submissions currently being processed. You'll be notified when they complete or if any issues arise." />
+        </div>
+        <p className="text-xl font-semibold tabular-nums">
+          {metrics.processingCount}{" "}
+          <span className="text-sm font-normal text-muted-foreground">
+            active
+          </span>
+        </p>
+      </div>
 
-      <Card className="@container/card">
-        <CardHeader>
-          <CardDescription className="flex items-center gap-1.5">
-            This Period
-            <InfoTooltip content="Monthly submission progress. Submissions are processed between the 20th of each month and the 20th of the next month." />
-          </CardDescription>
-          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            {currentPeriod.completed} / {currentPeriod.total}
-          </CardTitle>
-          <CardAction>
-            <Badge className="bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400">
-              {currentPeriod.period}
-            </Badge>
-          </CardAction>
-        </CardHeader>
-        <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="line-clamp-1 flex items-center gap-2 font-medium">
-            {pendingCount} pending
-          </div>
-          <div className="text-muted-foreground">
-            {currentPeriod.failed} need review
-          </div>
-        </CardFooter>
-      </Card>
+      <div className="flex flex-col gap-0.5 pl-6">
+        <div className="flex items-center gap-1">
+          <span className="text-sm text-muted-foreground">Avg Time</span>
+          <InfoTooltip content="Average processing time per submission. Most submissions complete within a few minutes." />
+        </div>
+        <p className="text-xl font-semibold tabular-nums">
+          {metrics.avgTime}{" "}
+          <span className="text-sm font-normal text-muted-foreground">min</span>
+        </p>
+      </div>
     </div>
   );
 };

@@ -55,7 +55,9 @@ export const AddBatchDialog = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add New Batch</DialogTitle>
+          <DialogTitle className="text-base font-medium">
+            Add New Batch
+          </DialogTitle>
           <DialogDescription>
             Create a new batch to organize submissions. Optionally upload a CSV
             file with submission data.

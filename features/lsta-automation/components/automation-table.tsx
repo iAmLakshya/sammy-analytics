@@ -207,7 +207,7 @@ export const AutomationTable = ({
                   </TableRow>
                   {isExpanded && (
                     <tr>
-                      <td colSpan={8} className="border-0 p-0">
+                      <td colSpan={8} className="border-b bg-muted/20 p-0">
                         <motion.div
                           initial={{ height: 0, opacity: 0 }}
                           animate={{ height: "auto", opacity: 1 }}

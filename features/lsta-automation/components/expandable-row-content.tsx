@@ -57,7 +57,7 @@ export const ExpandableRowContent = ({
         transition={{ duration: 0.2, ease: "easeOut" }}
         className="overflow-hidden"
       >
-        <div className="ml-10 border-l-2 border-muted py-2 pl-4 pr-3">
+        <div className="ml-10 border-l-2 border-muted py-3 pl-4 pr-3">
           <div className="flex items-center gap-1">
             {steps.map((stepResult, index) => {
               const isActive = currentStep === stepResult.step;
