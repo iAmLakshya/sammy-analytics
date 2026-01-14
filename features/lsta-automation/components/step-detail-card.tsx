@@ -62,7 +62,6 @@ export const StepPill = ({
 
 interface StepDetailPanelProps {
   stepResult: StepResult;
-  stepLabel: string;
   isActive: boolean;
 }
 
@@ -81,55 +80,42 @@ const formatOutputValue = (value: unknown): string => {
 
 export const StepDetailPanel = ({
   stepResult,
-  stepLabel,
   isActive,
 }: StepDetailPanelProps) => {
-  const { status, output, errorMessage, activityDescription, completedAt } =
-    stepResult;
+  const { status, output, errorMessage, activityDescription } = stepResult;
   const isInProgress = status === "pending" && isActive;
 
   return (
-    <div className="rounded-md border bg-card px-3 py-2">
-      <p className="mb-1 text-xs font-semibold">{stepLabel}</p>
-
+    <div className="mt-1.5 text-xs text-muted-foreground">
       {status === "completed" && output && (
-        <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-0 text-xs">
+        <span className="flex flex-wrap gap-x-3">
           {Object.entries(output).map(([key, value]) => (
-            <div key={key} className="contents">
-              <dt className="text-muted-foreground">{formatOutputKey(key)}</dt>
-              <dd className="font-medium">{formatOutputValue(value)}</dd>
-            </div>
+            <span key={key}>
+              {formatOutputKey(key)}: <span className="font-medium text-foreground">{formatOutputValue(value)}</span>
+            </span>
           ))}
-          {completedAt && (
-            <>
-              <dt className="text-muted-foreground">Completed</dt>
-              <dd className="font-medium">
-                {new Date(completedAt).toLocaleTimeString()}
-              </dd>
-            </>
-          )}
-        </dl>
+        </span>
       )}
 
       {isInProgress && (
-        <div className="flex items-center gap-1.5 text-xs text-amber-600 dark:text-amber-400">
+        <span className="flex items-center gap-1.5 text-amber-600 dark:text-amber-400">
           <IconLoader2 className="size-3 animate-spin" />
-          <span>{activityDescription || "Processing..."}</span>
-        </div>
+          {activityDescription || "Processing..."}
+        </span>
       )}
 
       {status === "failed" && (
-        <p className="text-xs text-rose-600 dark:text-rose-400">
+        <span className="text-rose-600 dark:text-rose-400">
           {errorMessage || "Step failed"}
-        </p>
+        </span>
       )}
 
       {status === "pending" && !isActive && (
-        <p className="text-xs text-muted-foreground">Waiting for previous steps</p>
+        <span>Waiting for previous steps</span>
       )}
 
       {status === "skipped" && (
-        <p className="text-xs text-muted-foreground">Skipped due to previous failure</p>
+        <span>Skipped due to previous failure</span>
       )}
     </div>
   );

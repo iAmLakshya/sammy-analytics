@@ -69,31 +69,8 @@ export const ExpandableRowContent = ({
         transition={{ duration: 0.2, ease: "easeOut" }}
         className="overflow-hidden"
       >
-        <div className="space-y-2 border-t border-muted/50 bg-muted/10 px-3 py-3 sm:px-4">
-          <div className="relative hidden sm:block">
-            <div className="absolute left-0 right-0 top-1/2 h-0.5 -translate-y-1/2 rounded-full bg-muted" />
-            <div
-              className="absolute left-0 top-1/2 h-0.5 -translate-y-1/2 rounded-full bg-emerald-500 transition-all duration-300"
-              style={{ width: `${progressPercent}%` }}
-            />
-            <div className="relative flex items-center justify-between">
-              {steps.map((stepResult, index) => {
-                const isActive = currentStep === stepResult.step;
-                return (
-                  <StepPill
-                    key={stepResult.step}
-                    stepResult={stepResult}
-                    stepLabel={stepLabels[stepResult.step]}
-                    isActive={isActive}
-                    isSelected={selectedIndex === index}
-                    onClick={() => setSelectedIndex(index)}
-                  />
-                );
-              })}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-1.5 sm:hidden">
+        <div className="ml-10 border-l-2 border-muted py-2 pl-4 pr-3">
+          <div className="flex items-center gap-1.5">
             {steps.map((stepResult, index) => {
               const isActive = currentStep === stepResult.step;
               return (
@@ -107,23 +84,17 @@ export const ExpandableRowContent = ({
                 />
               );
             })}
-          </div>
-
-          <div className="flex items-start gap-2">
-            <div className="flex-1">
-              <StepDetailPanel
-                stepResult={selectedStep}
-                stepLabel={stepLabels[selectedStep.step]}
-                isActive={currentStep === selectedStep.step}
-              />
-            </div>
             {showRetry && (
-              <Button variant="outline" size="sm" onClick={onRetry} className="shrink-0">
-                <IconRefresh className="mr-1 size-3.5" />
+              <Button variant="outline" size="sm" onClick={onRetry} className="ml-auto shrink-0">
+                <IconRefresh className="mr-1 size-3" />
                 Retry
               </Button>
             )}
           </div>
+          <StepDetailPanel
+            stepResult={selectedStep}
+            isActive={currentStep === selectedStep.step}
+          />
         </div>
       </motion.div>
     </AnimatePresence>
