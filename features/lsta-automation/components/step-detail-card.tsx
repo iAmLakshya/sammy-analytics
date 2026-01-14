@@ -1,24 +1,22 @@
 "use client";
 
 import { IconCheck, IconX, IconLoader2 } from "@tabler/icons-react";
-import type { StepResult } from "../types";
+import type { LstaTaskStep } from "../types";
 
 interface StepPillProps {
-  stepResult: StepResult;
-  stepLabel: string;
+  step: LstaTaskStep;
   isActive: boolean;
   isSelected: boolean;
   onClick: () => void;
 }
 
 export const StepPill = ({
-  stepResult,
-  stepLabel,
+  step,
   isActive,
   isSelected,
   onClick,
 }: StepPillProps) => {
-  const { status } = stepResult;
+  const { status, title } = step;
   const isInProgress = status === "pending" && isActive;
 
   let icon: React.ReactNode;
@@ -55,13 +53,13 @@ export const StepPill = ({
       className={`relative z-10 flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition-all hover:shadow-sm ${borderClass} ${bgClass} ${textClass}`}
     >
       {icon}
-      <span>{stepLabel}</span>
+      <span>{title}</span>
     </button>
   );
 };
 
 interface StepDetailPanelProps {
-  stepResult: StepResult;
+  step: LstaTaskStep;
   isActive: boolean;
 }
 
@@ -78,18 +76,16 @@ const formatOutputValue = (value: unknown): string => {
   return String(value);
 };
 
-export const StepDetailPanel = ({
-  stepResult,
-  isActive,
-}: StepDetailPanelProps) => {
-  const { status, output, errorMessage, activityDescription } = stepResult;
+export const StepDetailPanel = ({ step, isActive }: StepDetailPanelProps) => {
+  const { status, data, errorReasons, statusDescription } = step;
   const isInProgress = status === "pending" && isActive;
+  const hasData = Object.keys(data).length > 0;
 
   return (
     <div className="mt-1.5 text-xs text-muted-foreground">
-      {status === "completed" && output && (
+      {status === "completed" && hasData && (
         <span className="flex flex-wrap gap-x-3">
-          {Object.entries(output).map(([key, value]) => (
+          {Object.entries(data).map(([key, value]) => (
             <span key={key}>
               {formatOutputKey(key)}: <span className="font-medium text-foreground">{formatOutputValue(value)}</span>
             </span>
@@ -100,22 +96,18 @@ export const StepDetailPanel = ({
       {isInProgress && (
         <span className="flex items-center gap-1.5 text-amber-600 dark:text-amber-400">
           <IconLoader2 className="size-3 animate-spin" />
-          {activityDescription || "Processing..."}
+          {statusDescription || "Processing..."}
         </span>
       )}
 
       {status === "failed" && (
         <span className="text-rose-600 dark:text-rose-400">
-          {errorMessage || "Step failed"}
+          {errorReasons.length > 0 ? errorReasons.join("; ") : "Step failed"}
         </span>
       )}
 
       {status === "pending" && !isActive && (
         <span>Waiting for previous steps</span>
-      )}
-
-      {status === "skipped" && (
-        <span>Skipped due to previous failure</span>
       )}
     </div>
   );

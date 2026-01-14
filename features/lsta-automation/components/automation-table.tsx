@@ -1,11 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import {
-  IconChevronRight,
-  IconCheck,
-  IconX,
-} from "@tabler/icons-react";
+import { IconChevronRight, IconCheck, IconX } from "@tabler/icons-react";
 import { motion, AnimatePresence } from "motion/react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -22,75 +18,70 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { Submission, SubmissionStatus } from "../types";
-import { mockSubmissions } from "../data/mock.tasks.data";
+import type { LstaTask, TaskStatus } from "../types";
 import { StepProgressIndicator } from "./step-progress-indicator";
 import { ExpandableRowContent } from "./expandable-row-content";
 
-const statusConfig: Record<
-  SubmissionStatus,
-  { label: string; className: string }
-> = {
-  queued: {
-    label: "Queued",
-    className:
-      "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400",
+const statusConfig: Record<TaskStatus, { label: string; className: string }> = {
+  pending: {
+    label: "Pending",
+    className: "bg-muted text-muted-foreground",
   },
   processing: {
     label: "Processing",
-    className:
-      "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400 animate-pulse",
+    className: "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400 animate-pulse",
   },
   completed: {
     label: "Completed",
-    className:
-      "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400",
+    className: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400",
   },
-  "needs-review": {
-    label: "Needs Review",
-    className:
-      "bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-400",
+  failed: {
+    label: "Failed",
+    className: "bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-400",
   },
   retrying: {
     label: "Retrying",
-    className:
-      "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400",
+    className: "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400",
   },
 };
 
-const sortSubmissions = (submissions: Submission[]): Submission[] => {
-  const priority: Record<SubmissionStatus, number> = {
-    "needs-review": 0,
+const sortTasks = (tasks: LstaTask[]): LstaTask[] => {
+  const priority: Record<TaskStatus, number> = {
+    failed: 0,
     processing: 1,
     retrying: 2,
-    queued: 3,
+    pending: 3,
     completed: 4,
   };
-  return [...submissions].sort(
-    (a, b) => priority[a.status] - priority[b.status]
-  );
+  return [...tasks].sort((a, b) => priority[a.status] - priority[b.status]);
 };
 
-const formatRelativeTime = (isoString: string): string => {
-  const date = new Date(isoString);
-  const now = new Date();
-  const diffMs = date.getTime() - now.getTime();
-  const diffHours = Math.round(diffMs / (1000 * 60 * 60));
-
-  if (diffHours < 0) return "overdue";
-  if (diffHours < 24) return `in ${diffHours}h`;
-  const diffDays = Math.round(diffHours / 24);
-  return `in ${diffDays}d`;
+const getCurrentStepId = (task: LstaTask): string | null => {
+  if (task.status === "processing") {
+    const activeStep = task.steps.find((s) => s.status === "pending" && s.startedAt);
+    return activeStep?.step ?? null;
+  }
+  return null;
 };
 
 interface AutomationTableProps {
-  submissions?: Submission[];
+  tasks: LstaTask[];
+  onRetry?: (taskId: string) => void;
+  retryingTaskId?: string | null;
+  page: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
 }
 
 export const AutomationTable = ({
-  submissions = mockSubmissions,
+  tasks,
+  onRetry,
+  retryingTaskId,
+  page,
+  totalPages,
+  onPageChange,
 }: AutomationTableProps) => {
-  const sortedSubmissions = sortSubmissions(submissions);
+  const sortedTasks = sortTasks(tasks);
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
 
   const toggleExpand = (id: string) => {
@@ -104,8 +95,6 @@ export const AutomationTable = ({
       return next;
     });
   };
-
-  const handleRetry = () => {};
 
   return (
     <div className="space-y-4">
@@ -126,18 +115,18 @@ export const AutomationTable = ({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {sortedSubmissions.map((submission) => {
-              const status = statusConfig[submission.status];
-              const isRetrying = submission.status === "retrying";
-              const isExpanded = expandedIds.has(submission.id);
-              const needsReview = submission.status === "needs-review";
+            {sortedTasks.map((task) => {
+              const config = statusConfig[task.status];
+              const isExpanded = expandedIds.has(task.id);
+              const isFailed = task.status === "failed";
+              const currentStepId = getCurrentStepId(task);
 
               return (
-                <AnimatePresence key={submission.id} initial={false}>
+                <AnimatePresence key={task.id} initial={false}>
                   <TableRow
-                    onClick={() => toggleExpand(submission.id)}
+                    onClick={() => toggleExpand(task.id)}
                     className={`cursor-pointer transition-colors hover:bg-muted/50 ${
-                      needsReview ? "bg-rose-50/50 dark:bg-rose-950/20" : ""
+                      isFailed ? "bg-rose-50/50 dark:bg-rose-950/20" : ""
                     } ${isExpanded ? "bg-muted/30" : ""}`}
                   >
                     <TableCell className="w-10 pr-0">
@@ -148,14 +137,14 @@ export const AutomationTable = ({
                       />
                     </TableCell>
                     <TableCell className="whitespace-nowrap font-mono">
-                      {submission.companyId}
+                      {task.companyId}
                     </TableCell>
                     <TableCell className="whitespace-nowrap font-mono">
-                      {submission.legalEntityId}
+                      {task.leId}
                     </TableCell>
                     <TableCell className="hidden md:table-cell">
-                      {submission.certificate ? (
-                        <span>{submission.certificate}</span>
+                      {task.certificate ? (
+                        <span>{task.certificate}</span>
                       ) : (
                         <span className="text-muted-foreground">-</span>
                       )}
@@ -164,7 +153,7 @@ export const AutomationTable = ({
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <span className="inline-flex">
-                            {submission.isSpecialCase ? (
+                            {task.specialCase ? (
                               <IconCheck className="mx-auto size-4 text-amber-600 dark:text-amber-400" />
                             ) : (
                               <IconX className="mx-auto size-4 text-muted-foreground" />
@@ -172,39 +161,31 @@ export const AutomationTable = ({
                           </span>
                         </TooltipTrigger>
                         <TooltipContent>
-                          {submission.isSpecialCase ? "Special case" : "Sammy submitted"}
+                          {task.specialCase ? "Special case" : "Standard submission"}
                         </TooltipContent>
                       </Tooltip>
                     </TableCell>
                     <TableCell className="whitespace-nowrap text-center">
-                      {submission.isSubmittedAndUploaded ? (
+                      {task.submitted ? (
                         <IconCheck className="mx-auto size-4 text-emerald-600 dark:text-emerald-400" />
                       ) : (
                         <IconX className="mx-auto size-4 text-muted-foreground" />
                       )}
                     </TableCell>
                     <TableCell className="whitespace-nowrap">
-                      <StepProgressIndicator
-                        steps={submission.steps}
-                        currentStep={submission.currentStep}
-                      />
+                      <StepProgressIndicator steps={task.steps} currentStepId={currentStepId} />
                     </TableCell>
                     <TableCell className="whitespace-nowrap">
-                      {isRetrying && submission.nextRetryAt ? (
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Badge className={status.className}>{status.label}</Badge>
-                          </TooltipTrigger>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Badge className={config.className}>{config.label}</Badge>
+                        </TooltipTrigger>
+                        {task.statusDescription && (
                           <TooltipContent>
-                            <p>Next retry: {formatRelativeTime(submission.nextRetryAt)}</p>
-                            <p className="text-xs text-muted-foreground">
-                              {new Date(submission.nextRetryAt).toLocaleString()}
-                            </p>
+                            <p>{task.statusDescription}</p>
                           </TooltipContent>
-                        </Tooltip>
-                      ) : (
-                        <Badge className={status.className}>{status.label}</Badge>
-                      )}
+                        )}
+                      </Tooltip>
                     </TableCell>
                   </TableRow>
                   {isExpanded && (
@@ -219,8 +200,9 @@ export const AutomationTable = ({
                           className="overflow-hidden"
                         >
                           <ExpandableRowContent
-                            submission={submission}
-                            onRetry={handleRetry}
+                            task={task}
+                            onRetry={onRetry}
+                            isRetrying={retryingTaskId === task.id}
                           />
                         </motion.div>
                       </td>
@@ -234,13 +216,23 @@ export const AutomationTable = ({
       </div>
       <div className="flex items-center justify-between px-2">
         <p className="text-sm text-muted-foreground">
-          Showing {sortedSubmissions.length} submissions
+          Showing {sortedTasks.length} tasks
         </p>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" disabled>
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={page <= 1}
+            onClick={() => onPageChange(page - 1)}
+          >
             Previous
           </Button>
-          <Button variant="outline" size="sm">
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={page >= totalPages}
+            onClick={() => onPageChange(page + 1)}
+          >
             Next
           </Button>
         </div>

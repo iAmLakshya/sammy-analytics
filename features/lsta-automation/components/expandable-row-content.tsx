@@ -4,13 +4,20 @@ import { useState, useMemo, Fragment } from "react";
 import { IconRefresh, IconChevronRight } from "@tabler/icons-react";
 import { motion, AnimatePresence } from "motion/react";
 import { Button } from "@/components/ui/button";
-import { STEP_LABELS } from "../types";
-import type { Submission, PipelineStep, StepResult } from "../types";
+import type { LstaTask, LstaTaskStep } from "../types";
 import { StepPill, StepDetailPanel } from "./step-detail-card";
 
-const getDefaultSelectedIndex = (steps: StepResult[], currentStep: PipelineStep | null): number => {
-  if (currentStep) {
-    const idx = steps.findIndex((s) => s.step === currentStep);
+const getCurrentStepId = (task: LstaTask): string | null => {
+  if (task.status === "processing") {
+    const activeStep = task.steps.find((s) => s.status === "pending" && s.startedAt);
+    return activeStep?.step ?? null;
+  }
+  return null;
+};
+
+const getDefaultSelectedIndex = (steps: LstaTaskStep[], currentStepId: string | null): number => {
+  if (currentStepId) {
+    const idx = steps.findIndex((s) => s.step === currentStepId);
     if (idx !== -1) return idx;
   }
   const failedIdx = steps.findIndex((s) => s.status === "failed");
@@ -23,23 +30,26 @@ const getDefaultSelectedIndex = (steps: StepResult[], currentStep: PipelineStep 
 };
 
 interface ExpandableRowContentProps {
-  submission: Submission;
-  onRetry?: () => void;
+  task: LstaTask;
+  onRetry?: (taskId: string) => void;
+  isRetrying?: boolean;
 }
 
 export const ExpandableRowContent = ({
-  submission,
+  task,
   onRetry,
+  isRetrying,
 }: ExpandableRowContentProps) => {
-  const { steps, currentStep, status } = submission;
+  const { steps, status } = task;
+  const currentStepId = getCurrentStepId(task);
 
   const defaultSelectedIndex = useMemo(() => {
-    return getDefaultSelectedIndex(steps, currentStep);
-  }, [steps, currentStep]);
+    return getDefaultSelectedIndex(steps, currentStepId);
+  }, [steps, currentStepId]);
 
   const [selectedIndex, setSelectedIndex] = useState(defaultSelectedIndex);
   const selectedStep = steps[selectedIndex];
-  const showRetry = status === "needs-review" && onRetry;
+  const showRetry = status === "failed" && onRetry;
 
   return (
     <AnimatePresence>
@@ -53,14 +63,13 @@ export const ExpandableRowContent = ({
       >
         <div className="ml-10 border-l-2 border-muted py-3 pl-4 pr-3">
           <div className="flex items-center gap-1">
-            {steps.map((stepResult, index) => {
-              const isActive = currentStep === stepResult.step;
+            {steps.map((step, index) => {
+              const isActive = currentStepId === step.step;
               const isLast = index === steps.length - 1;
               return (
-                <Fragment key={stepResult.step}>
+                <Fragment key={step.step}>
                   <StepPill
-                    stepResult={stepResult}
-                    stepLabel={STEP_LABELS[stepResult.step]}
+                    step={step}
                     isActive={isActive}
                     isSelected={selectedIndex === index}
                     onClick={() => setSelectedIndex(index)}
@@ -75,18 +84,16 @@ export const ExpandableRowContent = ({
               <Button
                 variant="destructive"
                 size="sm"
-                onClick={onRetry}
+                onClick={() => onRetry(task.id)}
+                disabled={isRetrying}
                 className="ml-auto h-7 shrink-0 px-2 text-xs"
               >
-                <IconRefresh className="mr-1 size-3" />
-                Retry
+                <IconRefresh className={`mr-1 size-3 ${isRetrying ? "animate-spin" : ""}`} />
+                {isRetrying ? "Retrying..." : "Retry"}
               </Button>
             )}
           </div>
-          <StepDetailPanel
-            stepResult={selectedStep}
-            isActive={currentStep === selectedStep.step}
-          />
+          <StepDetailPanel step={selectedStep} isActive={currentStepId === selectedStep.step} />
         </div>
       </motion.div>
     </AnimatePresence>

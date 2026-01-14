@@ -6,29 +6,28 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { STEP_LABELS } from "../types";
-import type { StepResult, PipelineStep } from "../types";
+import type { LstaTaskStep } from "../types";
 
 interface StepProgressIndicatorProps {
-  steps: StepResult[];
-  currentStep: PipelineStep | null;
+  steps: LstaTaskStep[];
+  currentStepId: string | null;
 }
 
 export const StepProgressIndicator = ({
   steps,
-  currentStep,
+  currentStepId,
 }: StepProgressIndicatorProps) => {
   return (
     <div className="flex items-center gap-1">
-      {steps.map((stepResult, index) => {
-        const isActive = currentStep === stepResult.step;
+      {steps.map((step, index) => {
+        const isActive = currentStepId === step.step;
         const isLast = index === steps.length - 1;
 
         let icon: React.ReactNode;
         let bgClass: string;
         let textClass: string;
 
-        switch (stepResult.status) {
+        switch (step.status) {
           case "completed":
             icon = <IconCheck className="size-3" />;
             bgClass = "bg-emerald-100 dark:bg-emerald-900/40";
@@ -50,24 +49,19 @@ export const StepProgressIndicator = ({
               textClass = "text-muted-foreground";
             }
             break;
-          case "skipped":
-            icon = <IconMinus className="size-3" />;
-            bgClass = "bg-muted";
-            textClass = "text-muted-foreground/50";
-            break;
         }
 
-        let tooltipContent = STEP_LABELS[stepResult.step];
-        if (stepResult.status === "failed" && stepResult.errorMessage) {
-          tooltipContent += `: ${stepResult.errorMessage}`;
-        } else if (stepResult.status === "completed") {
+        let tooltipContent = step.title;
+        if (step.status === "failed" && step.errorReasons.length > 0) {
+          tooltipContent += `: ${step.errorReasons[0]}`;
+        } else if (step.status === "completed") {
           tooltipContent += " ✓";
         } else if (isActive) {
           tooltipContent += " (in progress)";
         }
 
         return (
-          <div key={stepResult.step} className="flex items-center">
+          <div key={step.step} className="flex items-center">
             <Tooltip>
               <TooltipTrigger asChild>
                 <div
@@ -78,9 +72,9 @@ export const StepProgressIndicator = ({
               </TooltipTrigger>
               <TooltipContent className="max-w-xs">
                 <p className="font-medium">{tooltipContent}</p>
-                {stepResult.status === "completed" && stepResult.completedAt && (
+                {step.status === "completed" && step.endedAt && (
                   <p className="text-xs text-muted-foreground">
-                    {new Date(stepResult.completedAt).toLocaleTimeString()}
+                    {new Date(step.endedAt).toLocaleTimeString()}
                   </p>
                 )}
               </TooltipContent>
@@ -88,7 +82,7 @@ export const StepProgressIndicator = ({
             {!isLast && (
               <div
                 className={`mx-0.5 h-0.5 w-2 ${
-                  stepResult.status === "completed"
+                  step.status === "completed"
                     ? "bg-emerald-300 dark:bg-emerald-700"
                     : "bg-muted"
                 }`}

@@ -1,71 +1,51 @@
 "use client";
 
-import { useMemo } from "react";
 import { IconAlertTriangle } from "@tabler/icons-react";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
-import type { Submission } from "../types";
+import type { CountByStatus } from "../types";
 
 interface AutomationKpiCardsProps {
-  submissions: Submission[];
+  countByStatus: CountByStatus;
+  totalCount: number;
 }
 
 export const AutomationKpiCards = ({
-  submissions,
+  countByStatus,
+  totalCount,
 }: AutomationKpiCardsProps) => {
-  const metrics = useMemo(() => {
-    const completedCount = submissions.filter(
-      (s) => s.status === "completed"
-    ).length;
-    const needsReviewCount = submissions.filter(
-      (s) => s.status === "needs-review"
-    ).length;
-    const processingCount = submissions.filter(
-      (s) => s.status === "processing"
-    ).length;
-    const totalCount = submissions.length;
-    const avgTime = 6.4;
-
-    return {
-      completedCount,
-      needsReviewCount,
-      processingCount,
-      totalCount,
-      avgTime,
-    };
-  }, [submissions]);
+  const failedCount = countByStatus.failed;
+  const avgTime = 6.4;
 
   return (
     <div className="flex items-center divide-x divide-border">
       <div className="flex flex-col gap-0.5 pr-6">
         <div className="flex items-center gap-1">
           <span className="text-sm text-muted-foreground">Completed</span>
-          <InfoTooltip content="Submissions that have been fully processed and uploaded to your document management system." />
+          <InfoTooltip content="Tasks that have been fully processed and uploaded to your document management system." />
         </div>
         <p className="text-xl font-semibold tabular-nums">
-          {metrics.completedCount}{" "}
+          {countByStatus.completed}{" "}
           <span className="text-sm font-normal text-muted-foreground">
-            / {metrics.totalCount}
+            / {totalCount}
           </span>
         </p>
       </div>
 
       <div className="flex flex-col gap-0.5 px-6">
         <div className="flex items-center gap-1">
-          <span className="text-sm text-muted-foreground">Needs Review</span>
-          <InfoTooltip content="Submissions that require your attention due to data mismatches or validation errors. Expand each row to see details and retry." />
+          <span className="text-sm text-muted-foreground">Failed</span>
+          <InfoTooltip content="Tasks that failed and require your attention. Expand each row to see details and retry." />
         </div>
         <div className="flex items-center gap-1.5">
-          {metrics.needsReviewCount > 0 && (
+          {failedCount > 0 && (
             <IconAlertTriangle className="size-4 text-rose-600 dark:text-rose-400" />
           )}
           <p
             className={`text-xl font-semibold tabular-nums ${
-              metrics.needsReviewCount > 0
-                ? "text-rose-600 dark:text-rose-400"
-                : ""
+              failedCount > 0 ? "text-rose-600 dark:text-rose-400" : ""
             }`}
           >
-            {metrics.needsReviewCount}
+            {failedCount}
           </p>
         </div>
       </div>
@@ -73,10 +53,10 @@ export const AutomationKpiCards = ({
       <div className="flex flex-col gap-0.5 px-6">
         <div className="flex items-center gap-1">
           <span className="text-sm text-muted-foreground">Processing</span>
-          <InfoTooltip content="Submissions currently being processed. You'll be notified when they complete or if any issues arise." />
+          <InfoTooltip content="Tasks currently being processed. You'll be notified when they complete or if any issues arise." />
         </div>
         <p className="text-xl font-semibold tabular-nums">
-          {metrics.processingCount}{" "}
+          {countByStatus.processing}{" "}
           <span className="text-sm font-normal text-muted-foreground">
             active
           </span>
@@ -86,10 +66,10 @@ export const AutomationKpiCards = ({
       <div className="flex flex-col gap-0.5 pl-6">
         <div className="flex items-center gap-1">
           <span className="text-sm text-muted-foreground">Avg Time</span>
-          <InfoTooltip content="Average processing time per submission. Most submissions complete within a few minutes." />
+          <InfoTooltip content="Average processing time per task. Most tasks complete within a few minutes." />
         </div>
         <p className="text-xl font-semibold tabular-nums">
-          {metrics.avgTime}{" "}
+          {avgTime}{" "}
           <span className="text-sm font-normal text-muted-foreground">min</span>
         </p>
       </div>
