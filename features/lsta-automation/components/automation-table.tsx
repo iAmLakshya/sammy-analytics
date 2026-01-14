@@ -23,7 +23,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import type { Submission, SubmissionStatus } from "../types";
-import { mockSubmissions } from "../data/mock.submissions.data";
+import { mockSubmissions } from "../data/mock.tasks.data";
 import { StepProgressIndicator } from "./step-progress-indicator";
 import { ExpandableRowContent } from "./expandable-row-content";
 

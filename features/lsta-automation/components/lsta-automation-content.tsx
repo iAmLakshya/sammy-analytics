@@ -8,7 +8,7 @@ import { AddBatchDialog } from "./add-batch-dialog";
 import { SubmissionFilterBar } from "./submission-filter-bar";
 import { useSubmissionFilters } from "../hooks/use-submission-filters";
 import { mockBatches } from "../data/mock.batches.data";
-import { mockSubmissions } from "../data/mock.submissions.data";
+import { mockSubmissions } from "../data/mock.tasks.data";
 import type { Batch } from "../types";
 
 export const LstaAutomationContent = () => {
