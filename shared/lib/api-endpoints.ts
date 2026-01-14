@@ -3,6 +3,7 @@ import type { ConflictsOverviewResponse, DailyConflictsResponse, ConflictActivit
 import type { DiffsOverviewResponse, DailyDiffsResponse, WeeklyDiffsResponse } from "@/features/diffs/types"
 import type { TeamOverviewResponse, ReviewActivityResponse } from "@/features/team/types"
 import type { WebSourcesOverviewResponse, DailySyncsResponse } from "@/features/web-sources/types"
+import type { LstaTaskListResponse, LstaTaskDetailResponse, LstaTaskRetryResponse } from "@/features/lsta-automation/types"
 
 export const API_ENDPOINTS = {
   analysis: {
@@ -27,6 +28,11 @@ export const API_ENDPOINTS = {
     overview: "/api/web-sources/overview",
     daily: "/api/web-sources/daily",
   },
+  lstaAutomations: {
+    list: "/api/v1/lsta-automations",
+    detail: "/api/v1/lsta-automations/:taskId",
+    retry: "/api/v1/lsta-automations/:taskId/retry",
+  },
 } as const
 
 export type ApiEndpointMap = {
@@ -42,6 +48,9 @@ export type ApiEndpointMap = {
   "/api/team/activity": ReviewActivityResponse
   "/api/web-sources/overview": WebSourcesOverviewResponse
   "/api/web-sources/daily": DailySyncsResponse
+  "/api/v1/lsta-automations": LstaTaskListResponse
+  "/api/v1/lsta-automations/:taskId": LstaTaskDetailResponse
+  "/api/v1/lsta-automations/:taskId/retry": LstaTaskRetryResponse
 }
 
 export type ApiEndpoint = keyof ApiEndpointMap
