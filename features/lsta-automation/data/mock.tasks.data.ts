@@ -1,27 +1,8 @@
-import type { CountByStatus, LstaTask, ValidationCheck } from "../types";
-
-const STEP_DEFINITIONS: Record<string, { title: string; description: string }> =
-  {
-    "payroll-download": {
-      title: "Download LSTA",
-      description: "Download payroll data from LSTA system",
-    },
-    "data-extraction": {
-      title: "Extract & Map",
-      description: "Extract and map data fields",
-    },
-    "tax-submission": {
-      title: "Submit to ELSTER",
-      description: "Submit tax data to ELSTER portal",
-    },
-    "document-upload": {
-      title: "Upload to Personio",
-      description: "Upload documents to Personio system",
-    },
-  };
+import type { CountByStatus, LstaTask, PipelineStep, ValidationCheck } from "../types";
+import { STEP_DEFINITIONS } from "../types";
 
 const createStep = (
-  stepId: string,
+  stepId: PipelineStep,
   status: "pending" | "failed" | "completed" | "not-ready",
   options: {
     statusDescription?: string;
@@ -1022,6 +1003,6 @@ export const computeCountByStatus = (tasks: LstaTask[]): CountByStatus => {
       }
       return acc;
     },
-    { pending: 0, completed: 0, processing: 0, failed: 0, retrying: 0, notReady: 0, reviewRequired: 0 }
+    { pending: 0, completed: 0, processing: 0, failed: 0, rejected: 0, retrying: 0, notReady: 0, reviewRequired: 0 }
   );
 };

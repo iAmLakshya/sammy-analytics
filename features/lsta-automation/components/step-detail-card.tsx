@@ -5,7 +5,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { IconCheck, IconClock, IconEye, IconLoader2, IconRefresh, IconX } from "@tabler/icons-react";
+import { IconCheck, IconClock, IconExternalLink, IconEye, IconLoader2, IconRefresh, IconX } from "@tabler/icons-react";
 import type { LstaTaskStep } from "../types";
 import { ValidationCheckList } from "./validation-check-list";
 
@@ -99,7 +99,7 @@ export const StepPill = ({
 interface StepDetailPanelProps {
   step: LstaTaskStep;
   isActive: boolean;
-  taskStatus?: "pending" | "completed" | "processing" | "failed" | "retrying" | "not-ready" | "review-required";
+  taskStatus?: "pending" | "completed" | "processing" | "failed" | "rejected" | "retrying" | "not-ready" | "review-required";
 }
 
 const formatOutputKey = (key: string): string => {
@@ -185,24 +185,25 @@ export const StepDetailPanel = ({
           )}
 
           {status === "review-required" && (
-            <div className="space-y-2">
-              <div className="flex items-center gap-1.5 text-purple-600 dark:text-purple-400">
-                <IconEye className="size-3" />
-                {statusDescription || "Awaiting human approval"}
-              </div>
-              {step.elsterUrl && (
-                <a
-                  href={step.elsterUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-xs text-purple-600 underline hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
-                >
-                  View in ELSTER Portal
-                </a>
-              )}
+            <div className="flex items-center gap-1.5 text-purple-600 dark:text-purple-400">
+              <IconEye className="size-3" />
+              {statusDescription || "Awaiting human approval"}
             </div>
           )}
         </>
+      )}
+
+      {step.elsterUrl && (
+        <a
+          href={step.elsterUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground"
+        >
+          <IconExternalLink className="size-4 shrink-0 text-purple-500 dark:text-purple-400" />
+          <span>ELSTER Portal</span>
+          <IconExternalLink className="size-3 opacity-50" />
+        </a>
       )}
     </div>
   );
