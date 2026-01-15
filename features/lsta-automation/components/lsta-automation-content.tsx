@@ -10,6 +10,7 @@ import {
 } from "@tabler/icons-react";
 import { useMemo, useState } from "react";
 import { mockBatches } from "../data/mock.batches.data";
+import { useDemoController } from "../hooks/use-demo-controller";
 import { useFetchLstaTasks } from "../hooks/use-fetch-lsta-tasks";
 import { useRetryLstaTask } from "../hooks/use-retry-lsta-task";
 import { useUploadDemoCsv } from "../hooks/use-upload-demo-csv";
@@ -20,6 +21,7 @@ import { AutomationKpiCards } from "./automation-kpi-cards";
 import { AutomationTable } from "./automation-table";
 import { BatchTabs } from "./batch-tabs";
 import { CsvUploadDialog } from "./csv-upload-dialog";
+import { DemoControls } from "./demo-controls";
 import { EmptyState } from "./empty-state";
 import { TaskFilterBar } from "./task-filter-bar";
 
@@ -77,6 +79,15 @@ export const LstaAutomationContent = () => {
     variables: retryingTaskId,
   } = useRetryLstaTask();
 
+  const {
+    isRunning: isDemoRunning,
+    progress: demoProgress,
+    totalTasks: demoTotalTasks,
+    completedTasks: demoCompletedTasks,
+    startDemo,
+    stopDemo,
+  } = useDemoController();
+
   const { uploadCsv, isUploading } = useUploadDemoCsv({
     onSuccess: (data) => {
       setShowUploadDialog(false);
@@ -99,6 +110,19 @@ export const LstaAutomationContent = () => {
       setActiveBatchId(data.batchId);
     },
   });
+
+  const activeBatch = batches.find((b) => b.id === activeBatchId);
+  const isDemoBatch = activeBatch?.name.startsWith("Demo") ?? false;
+
+  const pendingTaskIds = useMemo(() => {
+    if (!data?.tasks) return [];
+    return data.tasks.filter((t) => t.status === "pending").map((t) => t.id);
+  }, [data?.tasks]);
+
+  const handleStartDemo = () => {
+    if (!activeBatchId || pendingTaskIds.length === 0) return;
+    startDemo(activeBatchId, pendingTaskIds);
+  };
 
   const filteredTasks = useMemo(() => {
     if (!data?.tasks) return [];
@@ -199,7 +223,19 @@ export const LstaAutomationContent = () => {
       </div>
       <Card className="mx-4 gap-0 overflow-hidden py-0 lg:mx-6">
         {data && (
-          <div className="border-b px-4 py-3">
+          <div className="flex items-center justify-between border-b px-4 py-3">
+            {isDemoBatch && (pendingTaskIds.length > 0 || isDemoRunning || demoProgress === 100) ? (
+              <DemoControls
+                isRunning={isDemoRunning}
+                progress={demoProgress}
+                totalTasks={demoTotalTasks}
+                completedTasks={demoCompletedTasks}
+                onStart={handleStartDemo}
+                onStop={stopDemo}
+              />
+            ) : (
+              <div />
+            )}
             <TaskFilterBar
               filters={filters}
               onFiltersChange={setFilters}
