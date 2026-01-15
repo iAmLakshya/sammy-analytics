@@ -1,9 +1,4 @@
-import type {
-  CountByStatus,
-  LstaKpiMetrics,
-  LstaTask,
-  ValidationCheck,
-} from "../types";
+import type { CountByStatus, LstaTask, ValidationCheck } from "../types";
 
 const STEP_DEFINITIONS: Record<string, { title: string; description: string }> =
   {
@@ -724,6 +719,11 @@ export const mockLstaTasks: LstaTask[] = [
     steps: [
       createStep("payroll-download", "completed", {
         data: { downloadedFile: "payroll_jan_2026.csv", recordsProcessed: 78 },
+        validationChecks: createPayrollDownloadChecks(
+          "LE-011",
+          "January 2026",
+          "payroll_jan_2026.csv"
+        ),
         startedAt: "2026-01-14T05:00:00Z",
         endedAt: "2026-01-14T05:02:00Z",
       }),
@@ -732,12 +732,66 @@ export const mockLstaTasks: LstaTask[] = [
           extractedFields: ["wages", "tax", "deductions"],
           recordsProcessed: 78,
         },
+        validationChecks: createDataExtractionChecks("Kappa Logistics GmbH"),
         startedAt: "2026-01-14T05:02:00Z",
         endedAt: "2026-01-14T05:04:00Z",
       }),
-      createStep("tax-submission", "pending", {
-        statusDescription: "Waiting for retry window...",
+      createStep("tax-submission", "failed", {
+        errorReasons: ["ELSTER connection timeout", "Retry scheduled"],
+        validationChecks: [
+          {
+            key: "full-name",
+            title: "Full Name",
+            value: "Kappa Logistics GmbH",
+            expected: null,
+            actual: null,
+            description: "Legal entity full name for ELSTER submission",
+            downloadLink: null,
+            status: "passed",
+          },
+          {
+            key: "tax-id-consistent",
+            title: "Tax ID",
+            value: "****2468",
+            expected: null,
+            actual: null,
+            description: "Tax identification number matches records",
+            downloadLink: null,
+            status: "passed",
+          },
+          {
+            key: "le-number-consistent",
+            title: "LE Number",
+            value: "LE-011",
+            expected: null,
+            actual: null,
+            description: "Legal entity number consistent with submission",
+            downloadLink: null,
+            status: "passed",
+          },
+          {
+            key: "sum-check",
+            title: "Sum Check",
+            value: null,
+            expected: "€24,680.00",
+            actual: "Connection timed out",
+            description: "Unable to verify sum — ELSTER connection failed",
+            downloadLink: null,
+            status: "failed",
+          },
+          {
+            key: "downloaded-pdf",
+            title: "Certificate PDF",
+            value: null,
+            expected: "Certificate generated",
+            actual: "ELSTER timeout",
+            description: "Failed to retrieve certificate from ELSTER",
+            downloadLink: null,
+            status: "failed",
+          },
+        ],
         startedAt: "2026-01-14T05:04:00Z",
+        endedAt: "2026-01-14T05:10:00Z",
       }),
       createStep("document-upload", "pending"),
     ],
@@ -781,25 +835,4 @@ export const computeCountByStatus = (tasks: LstaTask[]): CountByStatus => {
     },
     { pending: 0, completed: 0, processing: 0, failed: 0, retrying: 0 }
   );
-};
-
-export const mockKpiMetrics: LstaKpiMetrics = {
-  totalSubmissions: 847,
-  completionRate: 94.2,
-  avgProcessingTime: 6.4,
-
-  queuedCount: 12,
-  processingCount: 3,
-  completedCount: 798,
-  needsReviewCount: 8,
-  retryingCount: 26,
-
-  completionRateTrend: [92.1, 93.4, 91.8, 94.5, 95.2, 93.8, 94.2],
-  submissionVolumeTrend: [112, 98, 134, 121, 108, 145, 129],
-
-  periodStats: [
-    { period: "December 2025", total: 156, completed: 148, failed: 8 },
-    { period: "Q4 2025", total: 42, completed: 41, failed: 1 },
-    { period: "2025 Annual", total: 12, completed: 11, failed: 1 },
-  ],
 };
