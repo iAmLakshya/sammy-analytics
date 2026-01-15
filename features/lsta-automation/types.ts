@@ -82,6 +82,14 @@ export interface LstaTaskRetryResponse {
   task: LstaTask;
 }
 
+export interface DemoUploadResponse {
+  batchId: string;
+  taskIds: string[];
+  taskCount: number;
+}
+
+export type DemoProcessResponse = LstaTask;
+
 export interface Batch {
   id: string;
   name: string;

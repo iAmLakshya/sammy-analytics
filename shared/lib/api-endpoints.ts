@@ -13,6 +13,8 @@ import type {
   WeeklyDiffsResponse,
 } from "@/features/diffs/types";
 import type {
+  DemoProcessResponse,
+  DemoUploadResponse,
   LstaTaskDetailResponse,
   LstaTaskListResponse,
   LstaTaskRetryResponse,
@@ -53,6 +55,8 @@ export const API_ENDPOINTS = {
     list: "/api/v1/lsta-automations",
     detail: "/api/v1/lsta-automations/:taskId",
     retry: "/api/v1/lsta-automations/:taskId/retry",
+    demoUpload: "/api/v1/lsta-automations/demo/upload",
+    demoProcess: "/api/v1/lsta-automations/demo/process",
   },
 } as const;
 
@@ -72,6 +76,8 @@ export type ApiEndpointMap = {
   "/api/v1/lsta-automations": LstaTaskListResponse;
   "/api/v1/lsta-automations/:taskId": LstaTaskDetailResponse;
   "/api/v1/lsta-automations/:taskId/retry": LstaTaskRetryResponse;
+  "/api/v1/lsta-automations/demo/upload": DemoUploadResponse;
+  "/api/v1/lsta-automations/demo/process": DemoProcessResponse;
 };
 
 export type ApiEndpoint = keyof ApiEndpointMap;
