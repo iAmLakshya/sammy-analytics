@@ -81,11 +81,13 @@ export const LstaAutomationContent = () => {
 
   const {
     isRunning: isDemoRunning,
+    isRetrying: isDemoRetrying,
     progress: demoProgress,
     totalTasks: demoTotalTasks,
     completedTasks: demoCompletedTasks,
     startDemo,
     stopDemo,
+    retryFailed,
   } = useDemoController();
 
   const { uploadCsv, isUploading } = useUploadDemoCsv({
@@ -119,9 +121,19 @@ export const LstaAutomationContent = () => {
     return data.tasks.filter((t) => t.status === "pending").map((t) => t.id);
   }, [data?.tasks]);
 
+  const failedTaskIds = useMemo(() => {
+    if (!data?.tasks) return [];
+    return data.tasks.filter((t) => t.status === "failed").map((t) => t.id);
+  }, [data?.tasks]);
+
   const handleStartDemo = () => {
     if (!activeBatchId || pendingTaskIds.length === 0) return;
     startDemo(activeBatchId, pendingTaskIds);
+  };
+
+  const handleRetryFailed = () => {
+    if (!activeBatchId || failedTaskIds.length === 0) return;
+    retryFailed(activeBatchId, failedTaskIds);
   };
 
   const filteredTasks = useMemo(() => {
@@ -227,11 +239,14 @@ export const LstaAutomationContent = () => {
             {isDemoBatch && (pendingTaskIds.length > 0 || isDemoRunning || demoProgress === 100) ? (
               <DemoControls
                 isRunning={isDemoRunning}
+                isRetrying={isDemoRetrying}
                 progress={demoProgress}
                 totalTasks={demoTotalTasks}
                 completedTasks={demoCompletedTasks}
+                failedCount={failedTaskIds.length}
                 onStart={handleStartDemo}
                 onStop={stopDemo}
+                onRetryFailed={handleRetryFailed}
               />
             ) : (
               <div />

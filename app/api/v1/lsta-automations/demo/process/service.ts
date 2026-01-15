@@ -184,8 +184,15 @@ export const processTask =
         task.status = "processing";
         task.statusDescription = "Starting automation...";
         task.updatedAt = now;
+        for (const step of task.steps) {
+          step.status = "pending";
+          step.startedAt = null;
+          step.endedAt = null;
+          step.statusDescription = null;
+          step.errorReasons = [];
+          step.validationChecks = [];
+        }
         if (task.steps[0]) {
-          task.steps[0].status = "pending";
           task.steps[0].startedAt = now;
           task.steps[0].statusDescription = "Initiating payroll download...";
         }

@@ -37,6 +37,7 @@ interface TaskProgress {
 
 export const useDemoController = () => {
   const [isRunning, setIsRunning] = useState(false);
+  const [isRetrying, setIsRetrying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [currentBatchId, setCurrentBatchId] = useState<string | null>(null);
   const [totalTasks, setTotalTasks] = useState(0);
@@ -85,7 +86,7 @@ export const useDemoController = () => {
   );
 
   const processTask = useCallback(
-    async (taskId: string): Promise<void> => {
+    async (taskId: string, forceSuccess: boolean = false): Promise<void> => {
       if (abortRef.current) return;
 
       activeTasksRef.current.add(taskId);
@@ -94,7 +95,7 @@ export const useDemoController = () => {
         await processTaskApi({ taskId, action: "start" });
         invalidateQueries();
 
-        const willFail = shouldTaskFail();
+        const willFail = forceSuccess ? false : shouldTaskFail();
         const failureStep = willFail ? getFailureStep() : undefined;
 
         let currentStep = 0;
@@ -180,21 +181,79 @@ export const useDemoController = () => {
   const stopDemo = useCallback(() => {
     abortRef.current = true;
     setIsRunning(false);
+    setIsRetrying(false);
     setProgress(0);
     setCurrentBatchId(null);
     activeTasksRef.current.clear();
   }, []);
+
+  const retryFailed = useCallback(
+    async (batchId: string, failedTaskIds: string[]) => {
+      if (isRunning || isRetrying) return;
+
+      abortRef.current = false;
+      setIsRetrying(true);
+      setIsRunning(true);
+      setCurrentBatchId(batchId);
+      setProgress(0);
+      setTotalTasks(failedTaskIds.length);
+      setCompletedTasks(0);
+      activeTasksRef.current.clear();
+
+      const queue = [...failedTaskIds];
+      const processingPromises: Promise<void>[] = [];
+
+      const runNext = async (): Promise<void> => {
+        while (queue.length > 0 && !abortRef.current) {
+          if (activeTasksRef.current.size >= MAX_CONCURRENT) {
+            await new Promise((resolve) => setTimeout(resolve, 100));
+            continue;
+          }
+
+          const taskId = queue.shift();
+          if (!taskId) break;
+
+          const duration = generateProcessingDuration();
+          const processPromise = (async () => {
+            await processTask(taskId, true);
+            await new Promise((resolve) => setTimeout(resolve, duration - 2000));
+          })();
+
+          processingPromises.push(processPromise);
+          processPromise.then(() => {});
+        }
+      };
+
+      const workers = Array(MAX_CONCURRENT)
+        .fill(null)
+        .map(() => runNext());
+
+      await Promise.all(workers);
+      await Promise.all(processingPromises);
+
+      if (!abortRef.current) {
+        setProgress(100);
+        invalidateQueries();
+      }
+
+      setIsRunning(false);
+      setIsRetrying(false);
+    },
+    [isRunning, isRetrying, processTask, invalidateQueries]
+  );
 
   const calculatedProgress =
     totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : progress;
 
   return {
     isRunning,
+    isRetrying,
     progress: calculatedProgress,
     currentBatchId,
     totalTasks,
     completedTasks,
     startDemo,
     stopDemo,
+    retryFailed,
   };
 };
