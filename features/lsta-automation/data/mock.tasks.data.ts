@@ -1,4 +1,9 @@
-import type { CountByStatus, LstaKpiMetrics, LstaTask } from "../types";
+import type {
+  CountByStatus,
+  LstaKpiMetrics,
+  LstaTask,
+  ValidationCheck,
+} from "../types";
 
 const STEP_DEFINITIONS: Record<string, { title: string; description: string }> =
   {
@@ -27,6 +32,7 @@ const createStep = (
     statusDescription?: string;
     data?: Record<string, unknown>;
     errorReasons?: string[];
+    validationChecks?: ValidationCheck[];
     startedAt?: string;
     endedAt?: string;
   } = {}
@@ -37,10 +43,193 @@ const createStep = (
   statusDescription: options.statusDescription ?? null,
   data: options.data ?? {},
   errorReasons: options.errorReasons ?? [],
+  validationChecks: options.validationChecks ?? [],
   status,
   startedAt: options.startedAt ?? null,
   endedAt: options.endedAt ?? null,
 });
+
+const createPayrollDownloadChecks = (
+  leId: string,
+  targetMonth: string,
+  fileName: string,
+  status: "passed" | "pending" | "failed" = "passed"
+): ValidationCheck[] => [
+  {
+    key: "status-accepted",
+    title: "Status",
+    value: "Accepted",
+    expected: null,
+    actual: null,
+    description: "Payroll submission status from Personio",
+    downloadLink: null,
+    status,
+  },
+  {
+    key: "target-month",
+    title: "Target Month",
+    value: targetMonth,
+    expected: null,
+    actual: null,
+    description: "Target reporting period for this submission",
+    downloadLink: null,
+    status,
+  },
+  {
+    key: "lsta-file-found",
+    title: "LSTA File",
+    value: fileName,
+    expected: null,
+    actual: null,
+    description: "Source payroll file from LSTA system",
+    downloadLink: `/downloads/${fileName}`,
+    status,
+  },
+  {
+    key: "le-number-consistent",
+    title: "LE Number",
+    value: leId,
+    expected: null,
+    actual: null,
+    description: "Legal entity identifier matches across systems",
+    downloadLink: null,
+    status,
+  },
+  {
+    key: "no-manual-wage-tax",
+    title: "Manual Wage Tax",
+    value: "None found",
+    expected: null,
+    actual: null,
+    description: "No manual wage tax document conflicts detected",
+    downloadLink: null,
+    status,
+  },
+];
+
+const createDataExtractionChecks = (
+  leName: string,
+  status: "passed" | "pending" | "failed" = "passed"
+): ValidationCheck[] => [
+  {
+    key: "le-name-consistent",
+    title: "LE Name",
+    value: leName,
+    expected: null,
+    actual: null,
+    description: "Legal entity name extracted correctly from payroll data",
+    downloadLink: null,
+    status,
+  },
+];
+
+const createTaxSubmissionChecks = (
+  fullName: string,
+  taxId: string,
+  leId: string,
+  sumAmount: string,
+  pdfFileName: string,
+  status: "passed" | "pending" | "failed" = "passed"
+): ValidationCheck[] => [
+  {
+    key: "full-name",
+    title: "Full Name",
+    value: fullName,
+    expected: null,
+    actual: null,
+    description: "Legal entity full name for ELSTER submission",
+    downloadLink: null,
+    status,
+  },
+  {
+    key: "tax-id-consistent",
+    title: "Tax ID",
+    value: taxId,
+    expected: null,
+    actual: null,
+    description: "Tax identification number matches records",
+    downloadLink: null,
+    status,
+  },
+  {
+    key: "le-number-consistent",
+    title: "LE Number",
+    value: leId,
+    expected: null,
+    actual: null,
+    description: "Legal entity number consistent with submission",
+    downloadLink: null,
+    status,
+  },
+  {
+    key: "sum-check",
+    title: "Sum Check",
+    value: sumAmount,
+    expected: null,
+    actual: null,
+    description: "Total wage sum matches calculated amount",
+    downloadLink: null,
+    status,
+  },
+  {
+    key: "downloaded-pdf",
+    title: "Certificate PDF",
+    value: pdfFileName,
+    expected: null,
+    actual: null,
+    description: "Tax certificate downloaded from ELSTER",
+    downloadLink: `/downloads/${pdfFileName}`,
+    status,
+  },
+  {
+    key: "no-existing-doc",
+    title: "Existing Document",
+    value: "None",
+    expected: null,
+    actual: null,
+    description: "No duplicate submission detected",
+    downloadLink: null,
+    status,
+  },
+];
+
+const createDocumentUploadChecks = (
+  leId: string,
+  sumAmount: string,
+  pdfFileName: string,
+  status: "passed" | "pending" | "failed" = "passed"
+): ValidationCheck[] => [
+  {
+    key: "le-number-consistent",
+    title: "LE Number",
+    value: leId,
+    expected: null,
+    actual: null,
+    description: "Legal entity number matches upload destination",
+    downloadLink: null,
+    status,
+  },
+  {
+    key: "sum-check",
+    title: "Sum Check",
+    value: sumAmount,
+    expected: null,
+    actual: null,
+    description: "Document amounts match submission totals",
+    downloadLink: null,
+    status,
+  },
+  {
+    key: "uploaded-pdf",
+    title: "Uploaded PDF",
+    value: pdfFileName,
+    expected: null,
+    actual: null,
+    description: "Certificate uploaded to Personio",
+    downloadLink: `/downloads/${pdfFileName}`,
+    status,
+  },
+];
 
 export const mockLstaTasks: LstaTask[] = [
   {
@@ -57,6 +246,11 @@ export const mockLstaTasks: LstaTask[] = [
     steps: [
       createStep("payroll-download", "completed", {
         data: { downloadedFile: "payroll_jan_2026.csv", recordsProcessed: 156 },
+        validationChecks: createPayrollDownloadChecks(
+          "LE-001",
+          "January 2026",
+          "payroll_jan_2026.csv"
+        ),
         startedAt: "2026-01-14T08:00:00Z",
         endedAt: "2026-01-14T08:02:00Z",
       }),
@@ -65,16 +259,29 @@ export const mockLstaTasks: LstaTask[] = [
           extractedFields: ["wages", "tax", "deductions"],
           recordsProcessed: 156,
         },
+        validationChecks: createDataExtractionChecks("Acme Corporation GmbH"),
         startedAt: "2026-01-14T08:02:00Z",
         endedAt: "2026-01-14T08:04:00Z",
       }),
       createStep("tax-submission", "completed", {
         data: { confirmationNumber: "TAX-2026-48291", documentId: "DOC-73829" },
+        validationChecks: createTaxSubmissionChecks(
+          "Acme Corporation GmbH",
+          "****1234",
+          "LE-001",
+          "€47,892.00",
+          "lsta_jan_2026_001.pdf"
+        ),
         startedAt: "2026-01-14T08:04:00Z",
         endedAt: "2026-01-14T08:08:00Z",
       }),
       createStep("document-upload", "completed", {
         data: { documentId: "DOC-73830" },
+        validationChecks: createDocumentUploadChecks(
+          "LE-001",
+          "€47,892.00",
+          "lsta_jan_2026_001.pdf"
+        ),
         startedAt: "2026-01-14T08:08:00Z",
         endedAt: "2026-01-14T08:09:00Z",
       }),
@@ -96,6 +303,11 @@ export const mockLstaTasks: LstaTask[] = [
     steps: [
       createStep("payroll-download", "completed", {
         data: { downloadedFile: "payroll_jan_2026.csv", recordsProcessed: 89 },
+        validationChecks: createPayrollDownloadChecks(
+          "LE-002",
+          "January 2026",
+          "payroll_jan_2026.csv"
+        ),
         startedAt: "2026-01-14T07:30:00Z",
         endedAt: "2026-01-14T07:32:00Z",
       }),
@@ -104,16 +316,29 @@ export const mockLstaTasks: LstaTask[] = [
           extractedFields: ["wages", "tax", "deductions", "socialSecurity"],
           recordsProcessed: 89,
         },
+        validationChecks: createDataExtractionChecks("Beta Industries AG"),
         startedAt: "2026-01-14T07:32:00Z",
         endedAt: "2026-01-14T07:34:00Z",
       }),
       createStep("tax-submission", "completed", {
         data: { confirmationNumber: "TAX-2026-31472", documentId: "DOC-61924" },
+        validationChecks: createTaxSubmissionChecks(
+          "Beta Industries AG",
+          "****5678",
+          "LE-002",
+          "€31,245.00",
+          "lsta_jan_2026_002.pdf"
+        ),
         startedAt: "2026-01-14T07:34:00Z",
         endedAt: "2026-01-14T07:38:00Z",
       }),
       createStep("document-upload", "completed", {
         data: { documentId: "DOC-61925" },
+        validationChecks: createDocumentUploadChecks(
+          "LE-002",
+          "€31,245.00",
+          "lsta_jan_2026_002.pdf"
+        ),
         startedAt: "2026-01-14T07:38:00Z",
         endedAt: "2026-01-14T07:39:00Z",
       }),
@@ -135,6 +360,11 @@ export const mockLstaTasks: LstaTask[] = [
     steps: [
       createStep("payroll-download", "completed", {
         data: { downloadedFile: "payroll_q4_2025.csv", recordsProcessed: 468 },
+        validationChecks: createPayrollDownloadChecks(
+          "LE-003",
+          "Q4 2025",
+          "payroll_q4_2025.csv"
+        ),
         startedAt: "2026-01-13T22:00:00Z",
         endedAt: "2026-01-13T22:03:00Z",
       }),
@@ -143,6 +373,7 @@ export const mockLstaTasks: LstaTask[] = [
           extractedFields: ["wages", "tax", "deductions", "bonuses"],
           recordsProcessed: 468,
         },
+        validationChecks: createDataExtractionChecks("Gamma Holdings KG"),
         startedAt: "2026-01-13T22:03:00Z",
         endedAt: "2026-01-13T22:06:00Z",
       }),
@@ -151,11 +382,23 @@ export const mockLstaTasks: LstaTask[] = [
           confirmationNumber: "TAX-2025-Q4-7821",
           documentId: "DOC-82910",
         },
+        validationChecks: createTaxSubmissionChecks(
+          "Gamma Holdings KG",
+          "****9012",
+          "LE-003",
+          "€128,560.00",
+          "lsta_q4_2025_003.pdf"
+        ),
         startedAt: "2026-01-13T22:06:00Z",
         endedAt: "2026-01-13T22:12:00Z",
       }),
       createStep("document-upload", "completed", {
         data: { documentId: "DOC-82911" },
+        validationChecks: createDocumentUploadChecks(
+          "LE-003",
+          "€128,560.00",
+          "lsta_q4_2025_003.pdf"
+        ),
         startedAt: "2026-01-13T22:12:00Z",
         endedAt: "2026-01-13T22:13:00Z",
       }),
@@ -177,6 +420,11 @@ export const mockLstaTasks: LstaTask[] = [
     steps: [
       createStep("payroll-download", "completed", {
         data: { downloadedFile: "payroll_jan_2026.csv", recordsProcessed: 234 },
+        validationChecks: createPayrollDownloadChecks(
+          "LE-004",
+          "January 2026",
+          "payroll_jan_2026.csv"
+        ),
         startedAt: "2026-01-14T09:00:00Z",
         endedAt: "2026-01-14T09:02:00Z",
       }),
@@ -185,11 +433,20 @@ export const mockLstaTasks: LstaTask[] = [
           extractedFields: ["wages", "tax", "deductions"],
           recordsProcessed: 234,
         },
+        validationChecks: createDataExtractionChecks("Delta Services GmbH"),
         startedAt: "2026-01-14T09:02:00Z",
         endedAt: "2026-01-14T09:04:00Z",
       }),
       createStep("tax-submission", "pending", {
         statusDescription: "Connecting to ELSTER portal...",
+        validationChecks: createTaxSubmissionChecks(
+          "Delta Services GmbH",
+          "****3456",
+          "LE-004",
+          "€52,340.00",
+          "lsta_jan_2026_004.pdf",
+          "pending"
+        ),
         startedAt: "2026-01-14T09:04:00Z",
       }),
       createStep("document-upload", "pending"),
@@ -211,11 +468,20 @@ export const mockLstaTasks: LstaTask[] = [
     steps: [
       createStep("payroll-download", "completed", {
         data: { downloadedFile: "payroll_jan_2026.csv", recordsProcessed: 67 },
+        validationChecks: createPayrollDownloadChecks(
+          "LE-005",
+          "January 2026",
+          "payroll_jan_2026.csv"
+        ),
         startedAt: "2026-01-14T09:10:00Z",
         endedAt: "2026-01-14T09:12:00Z",
       }),
       createStep("data-extraction", "pending", {
         statusDescription: "Processing 67 employee records...",
+        validationChecks: createDataExtractionChecks(
+          "Epsilon Tech Solutions",
+          "pending"
+        ),
         startedAt: "2026-01-14T09:12:00Z",
       }),
       createStep("tax-submission", "pending"),
@@ -261,6 +527,11 @@ export const mockLstaTasks: LstaTask[] = [
     steps: [
       createStep("payroll-download", "completed", {
         data: { downloadedFile: "payroll_jan_2026.csv", recordsProcessed: 112 },
+        validationChecks: createPayrollDownloadChecks(
+          "LE-007",
+          "January 2026",
+          "payroll_jan_2026.csv"
+        ),
         startedAt: "2026-01-14T06:00:00Z",
         endedAt: "2026-01-14T06:02:00Z",
       }),
@@ -269,6 +540,7 @@ export const mockLstaTasks: LstaTask[] = [
           extractedFields: ["wages", "tax", "deductions"],
           recordsProcessed: 112,
         },
+        validationChecks: createDataExtractionChecks("Zeta Manufacturing AG"),
         startedAt: "2026-01-14T06:02:00Z",
         endedAt: "2026-01-14T06:04:00Z",
       }),
@@ -277,6 +549,68 @@ export const mockLstaTasks: LstaTask[] = [
           "ELSTER portal returned error code 503",
           "Service temporarily unavailable",
           "Retry limit exceeded",
+        ],
+        validationChecks: [
+          {
+            key: "full-name",
+            title: "Full Name",
+            value: "Zeta Manufacturing AG",
+            expected: null,
+            actual: null,
+            description: "Legal entity full name for ELSTER submission",
+            downloadLink: null,
+            status: "passed",
+          },
+          {
+            key: "tax-id-consistent",
+            title: "Tax ID",
+            value: "****7890",
+            expected: null,
+            actual: null,
+            description: "Tax identification number matches records",
+            downloadLink: null,
+            status: "passed",
+          },
+          {
+            key: "le-number-consistent",
+            title: "LE Number",
+            value: "LE-007",
+            expected: null,
+            actual: null,
+            description: "Legal entity number consistent with submission",
+            downloadLink: null,
+            status: "passed",
+          },
+          {
+            key: "sum-check",
+            title: "Sum Check",
+            value: null,
+            expected: "€38,420.00",
+            actual: "€38,419.50",
+            description: "Total wage sum does not match calculated amount",
+            downloadLink: null,
+            status: "failed",
+          },
+          {
+            key: "downloaded-pdf",
+            title: "Certificate PDF",
+            value: null,
+            expected: "Certificate generated",
+            actual: "ELSTER service unavailable",
+            description: "Failed to download certificate from ELSTER",
+            downloadLink: null,
+            status: "failed",
+          },
+          {
+            key: "no-existing-doc",
+            title: "Existing Document",
+            value: "None",
+            expected: null,
+            actual: null,
+            description: "No duplicate submission detected",
+            downloadLink: null,
+            status: "passed",
+          },
         ],
         startedAt: "2026-01-14T06:04:00Z",
         endedAt: "2026-01-14T06:15:00Z",
@@ -300,6 +634,11 @@ export const mockLstaTasks: LstaTask[] = [
     steps: [
       createStep("payroll-download", "completed", {
         data: { downloadedFile: "payroll_q4_2025.csv", recordsProcessed: 345 },
+        validationChecks: createPayrollDownloadChecks(
+          "LE-008",
+          "Q4 2025",
+          "payroll_q4_2025.csv"
+        ),
         startedAt: "2026-01-13T14:00:00Z",
         endedAt: "2026-01-13T14:03:00Z",
       }),
@@ -308,6 +647,19 @@ export const mockLstaTasks: LstaTask[] = [
           "Legal entity name doesn't match records",
           "Missing required field: socialSecurityNumber",
           "Data validation failed for 12 records",
+        ],
+        validationChecks: [
+          {
+            key: "le-name-consistent",
+            title: "LE Name",
+            value: null,
+            expected: "Eta Partners GmbH & Co. KG",
+            actual: "Eta Partners GmbH",
+            description:
+              "Legal entity name mismatch - expected full company name",
+            downloadLink: null,
+            status: "failed",
+          },
         ],
         startedAt: "2026-01-13T14:03:00Z",
         endedAt: "2026-01-13T14:05:00Z",
