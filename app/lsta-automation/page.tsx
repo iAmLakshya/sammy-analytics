@@ -1,5 +1,10 @@
 import { LstaAutomationContent } from "@/features/lsta-automation";
+import { Suspense } from "react";
 
 export default function LstaAutomationPage() {
-  return <LstaAutomationContent />;
+  return (
+    <Suspense>
+      <LstaAutomationContent />
+    </Suspense>
+  );
 }

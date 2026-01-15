@@ -8,6 +8,7 @@ import {
   IconPlus,
   IconUpload,
 } from "@tabler/icons-react";
+import { useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import { mockBatches } from "../data/mock.batches.data";
 import { useDemoController } from "../hooks/use-demo-controller";
@@ -60,7 +61,10 @@ const filterTasks = (tasks: LstaTask[], filters: TaskFilters): LstaTask[] => {
 };
 
 export const LstaAutomationContent = () => {
-  const [batches, setBatches] = useState<Batch[]>(mockBatches);
+  const searchParams = useSearchParams();
+  const isDemoMode = searchParams.get("demo") === "true";
+
+  const [batches, setBatches] = useState<Batch[]>(isDemoMode ? [] : mockBatches);
   const [activeBatchId, setActiveBatchId] = useState<string | null>(null);
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showUploadDialog, setShowUploadDialog] = useState(false);

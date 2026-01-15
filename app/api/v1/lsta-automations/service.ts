@@ -2,9 +2,10 @@ import {
   computeCountByStatus,
   mockLstaTasks,
 } from "@/features/lsta-automation/data/mock.tasks.data";
-import type { LstaTaskListResponse } from "@/features/lsta-automation/types";
+import type { LstaTask, LstaTaskListResponse } from "@/features/lsta-automation/types";
 import type { ServiceError } from "@/shared/utils/server/errors";
 import type { CoreDependencies } from "@/shared/utils/server/wrap-route-handler";
+import { demoBatches } from "./demo/upload/service";
 
 interface ListParams {
   batchId?: string;
@@ -12,14 +13,20 @@ interface ListParams {
   size: number;
 }
 
+const getAllTasks = (): LstaTask[] => {
+  const demoTasks = Array.from(demoBatches.values()).flatMap((b) => b.tasks);
+  return [...mockLstaTasks, ...demoTasks];
+};
+
 export const getLstaTaskList =
-  (dependencies: CoreDependencies) =>
+  (_dependencies: CoreDependencies) =>
   async (params: ListParams): Promise<LstaTaskListResponse | ServiceError> => {
     await new Promise((resolve) => setTimeout(resolve, 200));
 
+    const allTasks = getAllTasks();
     const filteredTasks = params.batchId
-      ? mockLstaTasks.filter((task) => task.batch.id === params.batchId)
-      : mockLstaTasks;
+      ? allTasks.filter((task) => task.batch.id === params.batchId)
+      : allTasks;
 
     const totalCount = filteredTasks.length;
     const totalPages = Math.ceil(totalCount / params.size);
