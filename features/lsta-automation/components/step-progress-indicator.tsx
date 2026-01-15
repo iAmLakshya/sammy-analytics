@@ -6,7 +6,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { IconCheck, IconClock, IconEye, IconLoader2, IconMinus, IconX } from "@tabler/icons-react";
-import type { LstaTaskStep } from "../types";
+import type { LstaTaskStep, StepStatus } from "../types";
+import { STEP_STATUS_COLORS } from "../utils/status-config";
 
 interface StepProgressIndicatorProps {
   steps: LstaTaskStep[];
@@ -23,43 +24,32 @@ export const StepProgressIndicator = ({
         const isActive = currentStepId === step.step;
         const isLast = index === steps.length - 1;
 
-        let icon: React.ReactNode;
-        let bgClass: string;
-        let textClass: string;
+        const statusKey: StepStatus | "in-progress" =
+          step.status === "pending" && isActive ? "in-progress" : step.status;
+        const colors = STEP_STATUS_COLORS[statusKey];
 
-        switch (step.status) {
-          case "completed":
-            icon = <IconCheck className="size-3" />;
-            bgClass = "bg-emerald-100 dark:bg-emerald-900/40";
-            textClass = "text-emerald-700 dark:text-emerald-400";
-            break;
-          case "failed":
-            icon = <IconX className="size-3" />;
-            bgClass = "bg-rose-100 dark:bg-rose-900/40";
-            textClass = "text-rose-700 dark:text-rose-400";
-            break;
-          case "not-ready":
-            icon = <IconClock className="size-3" />;
-            bgClass = "bg-amber-100 dark:bg-amber-900/40";
-            textClass = "text-amber-700 dark:text-amber-400";
-            break;
-          case "review-required":
-            icon = <IconEye className="size-3" />;
-            bgClass = "bg-purple-100 dark:bg-purple-900/40";
-            textClass = "text-purple-700 dark:text-purple-400";
-            break;
-          case "pending":
-            if (isActive) {
-              icon = <IconLoader2 className="size-3 animate-spin" />;
-              bgClass = "bg-blue-100 dark:bg-blue-900/40";
-              textClass = "text-blue-700 dark:text-blue-400";
-            } else {
-              icon = <IconMinus className="size-3" />;
-              bgClass = "bg-muted";
-              textClass = "text-muted-foreground";
-            }
-            break;
-        }
+        const getIcon = (): React.ReactNode => {
+          switch (step.status) {
+            case "completed":
+              return <IconCheck className="size-3" />;
+            case "failed":
+              return <IconX className="size-3" />;
+            case "not-ready":
+              return <IconClock className="size-3" />;
+            case "review-required":
+              return <IconEye className="size-3" />;
+            case "pending":
+              return isActive ? (
+                <IconLoader2 className="size-3 animate-spin" />
+              ) : (
+                <IconMinus className="size-3" />
+              );
+          }
+        };
+
+        const icon = getIcon();
+        const bgClass = colors.bg;
+        const textClass = colors.text;
 
         let tooltipContent = step.title;
         if (step.status === "failed" && step.errorReasons.length > 0) {
@@ -94,17 +84,7 @@ export const StepProgressIndicator = ({
               </TooltipContent>
             </Tooltip>
             {!isLast && (
-              <div
-                className={`mx-0.5 h-0.5 w-2 ${
-                  step.status === "completed"
-                    ? "bg-emerald-300 dark:bg-emerald-700"
-                    : step.status === "not-ready"
-                      ? "bg-amber-300 dark:bg-amber-700"
-                      : step.status === "review-required"
-                        ? "bg-purple-300 dark:bg-purple-700"
-                        : "bg-muted"
-                }`}
-              />
+              <div className={`mx-0.5 h-0.5 w-2 ${colors.connector}`} />
             )}
           </div>
         );
