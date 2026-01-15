@@ -166,3 +166,10 @@ export interface SubmissionFilters {
   isSpecialCase: boolean | null;
   searchQuery: string;
 }
+
+export interface TaskFilters {
+  searchQuery: string;
+  specialCase: boolean | null;
+  submitted: boolean | null;
+  statuses: TaskStatus[];
+}
