@@ -263,6 +263,26 @@ const createNotReadyPayrollChecks = (
         downloadLink: null,
         status: "waiting",
       },
+      {
+        key: "le-number-consistent",
+        title: "LE Number",
+        value: leId,
+        expected: null,
+        actual: null,
+        description: "Legal entity identifier matches across systems",
+        downloadLink: null,
+        status: "passed",
+      },
+      {
+        key: "no-manual-wage-tax",
+        title: "Manual Wage Tax",
+        value: "None found",
+        expected: null,
+        actual: null,
+        description: "No manual wage tax document conflicts detected",
+        downloadLink: null,
+        status: "passed",
+      },
     ];
   }
   return [
@@ -295,6 +315,26 @@ const createNotReadyPayrollChecks = (
       description: "LSTA export is scheduled. File will be available shortly.",
       downloadLink: null,
       status: "waiting",
+    },
+    {
+      key: "le-number-consistent",
+      title: "LE Number",
+      value: leId,
+      expected: null,
+      actual: null,
+      description: "Legal entity identifier matches across systems",
+      downloadLink: null,
+      status: "passed",
+    },
+    {
+      key: "no-manual-wage-tax",
+      title: "Manual Wage Tax",
+      value: "None found",
+      expected: null,
+      actual: null,
+      description: "No manual wage tax document conflicts detected",
+      downloadLink: null,
+      status: "passed",
     },
   ];
 };

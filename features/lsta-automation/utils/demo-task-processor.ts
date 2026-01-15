@@ -322,6 +322,8 @@ export const generateNotReadyValidationChecks = (
 ): ValidationCheck[] => {
   if (stepId !== "payroll-download") return [];
 
+  const targetMonth = new Date().toLocaleString("en-US", { month: "long", year: "numeric" });
+
   return [
     {
       key: "status-accepted",
@@ -334,6 +336,16 @@ export const generateNotReadyValidationChecks = (
       status: "waiting",
     },
     {
+      key: "target-month",
+      title: "Target Month",
+      value: targetMonth,
+      expected: null,
+      actual: null,
+      description: "Target reporting period for this submission",
+      downloadLink: null,
+      status: "passed",
+    },
+    {
       key: "lsta-file-found",
       title: "LSTA File",
       value: null,
@@ -342,6 +354,26 @@ export const generateNotReadyValidationChecks = (
       description: "File will be available after review completion. No action required.",
       downloadLink: null,
       status: "waiting",
+    },
+    {
+      key: "le-number-consistent",
+      title: "LE Number",
+      value: leId,
+      expected: null,
+      actual: null,
+      description: "Legal entity identifier matches across systems",
+      downloadLink: null,
+      status: "passed",
+    },
+    {
+      key: "no-manual-wage-tax",
+      title: "Manual Wage Tax",
+      value: "None found",
+      expected: null,
+      actual: null,
+      description: "No manual wage tax document conflicts detected",
+      downloadLink: null,
+      status: "passed",
     },
   ];
 };
