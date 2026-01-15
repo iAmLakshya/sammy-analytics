@@ -2,20 +2,14 @@
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import {
-  IconClipboardList,
-  IconLoader2,
-  IconPlus,
-  IconUpload,
-} from "@tabler/icons-react";
-import { useMemo, useState } from "react";
+import { IconClipboardList, IconLoader2, IconUpload } from "@tabler/icons-react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useDemoController } from "../hooks/use-demo-controller";
 import { useFetchLstaTasks } from "../hooks/use-fetch-lsta-tasks";
 import { useRetryLstaTask } from "../hooks/use-retry-lsta-task";
 import { useUploadDemoCsv } from "../hooks/use-upload-demo-csv";
 import type { Batch, LstaTask, TaskFilters } from "../types";
 import { exportTasksToCsv } from "../utils/export-tasks";
-import { AddBatchDialog } from "./add-batch-dialog";
 import { AutomationKpiCards } from "./automation-kpi-cards";
 import { AutomationTable } from "./automation-table";
 import { BatchTabs } from "./batch-tabs";
@@ -61,10 +55,13 @@ const filterTasks = (tasks: LstaTask[], filters: TaskFilters): LstaTask[] => {
 export const LstaAutomationContent = () => {
   const [batches, setBatches] = useState<Batch[]>([]);
   const [activeBatchId, setActiveBatchId] = useState<string | null>(null);
-  const [showAddDialog, setShowAddDialog] = useState(false);
   const [showUploadDialog, setShowUploadDialog] = useState(false);
   const [page, setPage] = useState(1);
   const [filters, setFilters] = useState<TaskFilters>(DEFAULT_FILTERS);
+  const [pendingAutoStart, setPendingAutoStart] = useState<{
+    batchId: string;
+    taskIds: string[];
+  } | null>(null);
 
   const { data, isLoading, error } = useFetchLstaTasks({
     batchId: activeBatchId,
@@ -79,56 +76,51 @@ export const LstaAutomationContent = () => {
   } = useRetryLstaTask();
 
   const {
-    isRunning: isDemoRunning,
-    isRetrying: isDemoRetrying,
-    progress: demoProgress,
-    totalTasks: demoTotalTasks,
-    completedTasks: demoCompletedTasks,
+    isRunning,
+    isRetrying: isRetryingFailed,
+    progress,
+    totalTasks,
+    completedTasks,
     startDemo,
     stopDemo,
     retryFailed,
   } = useDemoController();
 
   const { uploadCsv, isUploading } = useUploadDemoCsv({
-    onSuccess: (data) => {
+    onSuccess: (result) => {
       setShowUploadDialog(false);
       const newBatch: Batch = {
-        id: data.batchId,
-        name: `Demo Upload - ${new Date().toLocaleString("en-US", {
-          month: "short",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-        })}`,
+        id: result.batchId,
+        name: new Date().toLocaleString("en-US", {
+          month: "long",
+          year: "numeric",
+        }),
         dateRange: {
           start: new Date().toISOString(),
           end: new Date().toISOString(),
         },
         createdAt: new Date().toISOString(),
-        submissionCount: data.taskCount,
+        submissionCount: result.taskCount,
       };
       setBatches((prev) => [...prev, newBatch]);
-      setActiveBatchId(data.batchId);
+      setActiveBatchId(result.batchId);
+      setPendingAutoStart({ batchId: result.batchId, taskIds: result.taskIds });
     },
   });
 
-  const activeBatch = batches.find((b) => b.id === activeBatchId);
-  const isDemoBatch = activeBatch?.name.startsWith("Demo") ?? false;
-
-  const pendingTaskIds = useMemo(() => {
-    if (!data?.tasks) return [];
-    return data.tasks.filter((t) => t.status === "pending").map((t) => t.id);
-  }, [data?.tasks]);
+  const autoStartTriggered = useRef(false);
+  useEffect(() => {
+    if (pendingAutoStart && !autoStartTriggered.current && !isLoading) {
+      autoStartTriggered.current = true;
+      startDemo(pendingAutoStart.batchId, pendingAutoStart.taskIds);
+      setPendingAutoStart(null);
+    }
+  }, [pendingAutoStart, isLoading, startDemo]);
 
   const failedTaskIds = useMemo(() => {
     if (!data?.tasks) return [];
     return data.tasks.filter((t) => t.status === "failed").map((t) => t.id);
   }, [data?.tasks]);
-
-  const handleStartDemo = () => {
-    if (!activeBatchId || pendingTaskIds.length === 0) return;
-    startDemo(activeBatchId, pendingTaskIds);
-  };
 
   const handleRetryFailed = () => {
     if (!activeBatchId || failedTaskIds.length === 0) return;
@@ -139,18 +131,6 @@ export const LstaAutomationContent = () => {
     if (!data?.tasks) return [];
     return filterTasks(data.tasks, filters);
   }, [data?.tasks, filters]);
-
-  const handleAddBatch = (
-    batchData: Omit<Batch, "id" | "createdAt" | "submissionCount">
-  ) => {
-    const newBatch: Batch = {
-      ...batchData,
-      id: `batch-${Date.now()}`,
-      createdAt: new Date().toISOString(),
-      submissionCount: 0,
-    };
-    setBatches((prev) => [...prev, newBatch]);
-  };
 
   const handleBatchChange = (batchId: string | null) => {
     setActiveBatchId(batchId);
@@ -178,29 +158,15 @@ export const LstaAutomationContent = () => {
           <EmptyState
             icon={IconClipboardList}
             title="Welcome to LSTA Automation"
-            description="This is your command center for tracking loan submissions. Once you create your first batch, you'll see real-time status updates for each submission, including progress tracking and detailed validation results."
+            description="This is your command center for tracking loan submissions. Upload your CSV file to begin processing. You'll see real-time status updates for each submission, including progress tracking and detailed validation results."
             action={
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  onClick={() => setShowUploadDialog(true)}
-                >
-                  <IconUpload className="mr-2 size-4" />
-                  Upload Demo CSV
-                </Button>
-                <Button onClick={() => setShowAddDialog(true)}>
-                  <IconPlus className="mr-2 size-4" />
-                  Create Your First Batch
-                </Button>
-              </div>
+              <Button onClick={() => setShowUploadDialog(true)}>
+                <IconUpload className="mr-2 size-4" />
+                Upload CSV
+              </Button>
             }
           />
         </Card>
-        <AddBatchDialog
-          open={showAddDialog}
-          onOpenChange={setShowAddDialog}
-          onAddBatch={handleAddBatch}
-        />
         <CsvUploadDialog
           open={showUploadDialog}
           onOpenChange={setShowUploadDialog}
@@ -211,6 +177,8 @@ export const LstaAutomationContent = () => {
     );
   }
 
+  const showControls = isRunning || isRetryingFailed || progress === 100;
+
   return (
     <div className="flex flex-col gap-6 py-4">
       <div className="flex flex-col gap-4 px-4 lg:px-6">
@@ -219,7 +187,7 @@ export const LstaAutomationContent = () => {
           activeBatchId={activeBatchId}
           totalSubmissions={data?.metadata.totalCount ?? 0}
           onBatchChange={handleBatchChange}
-          onAddBatch={() => setShowAddDialog(true)}
+          onAddBatch={() => setShowUploadDialog(true)}
         />
         {isLoading ? (
           <div className="flex h-16 items-center justify-center">
@@ -235,15 +203,14 @@ export const LstaAutomationContent = () => {
       <Card className="mx-4 gap-0 overflow-hidden py-0 lg:mx-6">
         {data && (
           <div className="flex items-center justify-between border-b px-4 py-3">
-            {isDemoBatch && (pendingTaskIds.length > 0 || isDemoRunning || demoProgress === 100) ? (
+            {showControls ? (
               <DemoControls
-                isRunning={isDemoRunning}
-                isRetrying={isDemoRetrying}
-                progress={demoProgress}
-                totalTasks={demoTotalTasks}
-                completedTasks={demoCompletedTasks}
+                isRunning={isRunning}
+                isRetrying={isRetryingFailed}
+                progress={progress}
+                totalTasks={totalTasks}
+                completedTasks={completedTasks}
                 failedCount={failedTaskIds.length}
-                onStart={handleStartDemo}
                 onStop={stopDemo}
                 onRetryFailed={handleRetryFailed}
               />
@@ -272,10 +239,11 @@ export const LstaAutomationContent = () => {
           />
         ) : null}
       </Card>
-      <AddBatchDialog
-        open={showAddDialog}
-        onOpenChange={setShowAddDialog}
-        onAddBatch={handleAddBatch}
+      <CsvUploadDialog
+        open={showUploadDialog}
+        onOpenChange={setShowUploadDialog}
+        onUpload={uploadCsv}
+        isUploading={isUploading}
       />
     </div>
   );

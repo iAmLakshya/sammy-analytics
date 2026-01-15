@@ -65,15 +65,11 @@ export const createDemoBatch =
   ): Promise<CreateDemoBatchResponse | ServiceError> => {
     await new Promise((resolve) => setTimeout(resolve, 100));
 
-    const timestamp = new Date().toLocaleString("en-US", {
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
+    const batchId = `batch-${Date.now()}`;
+    const batchName = new Date().toLocaleString("en-US", {
+      month: "long",
+      year: "numeric",
     });
-
-    const batchId = `demo-batch-${Date.now()}`;
-    const batchName = `Demo Upload - ${timestamp}`;
     const now = new Date().toISOString();
 
     const tasks: LstaTask[] = params.rows.map((row) => {
