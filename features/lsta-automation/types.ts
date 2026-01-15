@@ -3,13 +3,29 @@ export type TaskStatus =
   | "completed"
   | "processing"
   | "failed"
+  | "rejected"
   | "retrying"
   | "not-ready"
   | "review-required";
 
-export type StepStatus = "pending" | "failed" | "completed" | "not-ready" | "review-required";
+export type StepStatus =
+  | "pending"
+  | "failed"
+  | "completed"
+  | "not-ready"
+  | "review-required";
 
 export type ValidationCheckStatus = "passed" | "pending" | "failed" | "waiting";
+
+export type ProcessAction =
+  | "start"
+  | "complete-step"
+  | "fail"
+  | "complete"
+  | "not-ready"
+  | "review-required"
+  | "approve"
+  | "reject";
 
 export interface ValidationCheck {
   key: string;
@@ -62,6 +78,7 @@ export interface CountByStatus {
   completed: number;
   processing: number;
   failed: number;
+  rejected: number;
   retrying: number;
   notReady: number;
   reviewRequired: number;
@@ -70,6 +87,17 @@ export interface CountByStatus {
 export interface LstaTaskListMetadata {
   totalCount: number;
   countByStatus: CountByStatus;
+}
+
+export interface Batch {
+  id: string;
+  name: string;
+  dateRange: {
+    start: string;
+    end: string;
+  };
+  createdAt: string;
+  submissionCount: number;
 }
 
 export interface LstaTaskListResponse {
@@ -95,103 +123,21 @@ export interface DemoUploadResponse {
 
 export type DemoProcessResponse = LstaTask;
 
-export interface Batch {
-  id: string;
-  name: string;
-  dateRange: {
-    start: string;
-    end: string;
-  };
-  createdAt: string;
-  submissionCount: number;
+export interface LstaTaskListRequest {
+  batchId?: string;
+  page?: number;
+  size?: number;
 }
 
-export interface LstaKpiMetrics {
-  totalSubmissions: number;
-  completionRate: number;
-  avgProcessingTime: number;
-
-  queuedCount: number;
-  processingCount: number;
-  completedCount: number;
-  needsReviewCount: number;
-  retryingCount: number;
-
-  completionRateTrend: number[];
-  submissionVolumeTrend: number[];
-
-  periodStats: {
-    period: string;
-    total: number;
-    completed: number;
-    failed: number;
-  }[];
+export interface DemoProcessRequest {
+  taskId: string;
+  action: ProcessAction;
+  failureStep?: string;
 }
 
-export type SubmissionStatus =
-  | "queued"
-  | "processing"
-  | "completed"
-  | "needs-review"
-  | "retrying";
-
-export type PipelineStep =
-  | "payroll-download"
-  | "data-extraction"
-  | "tax-submission"
-  | "document-upload";
-
-export const STEP_LABELS: Record<PipelineStep, string> = {
-  "payroll-download": "Download LSTA",
-  "data-extraction": "Extract & Map",
-  "tax-submission": "Submit to ELSTER",
-  "document-upload": "Upload to Personio",
-};
-
-export interface StepOutput {
-  recordsProcessed?: number;
-  documentId?: string;
-  confirmationNumber?: string;
-  downloadedFile?: string;
-  extractedFields?: string[];
-  [key: string]: unknown;
-}
-
-export interface StepResult {
-  step: PipelineStep;
-  status: "completed" | "failed" | "skipped" | "pending";
-  completedAt: string | null;
-  errorMessage: string | null;
-  output: StepOutput | null;
-  activityDescription: string | null;
-}
-
-export interface Submission {
-  id: string;
-  companyId: string;
-  legalEntityId: string;
-  certificate: string | null;
-  isSpecialCase: boolean;
-  isSubmittedAndUploaded: boolean;
-  period: string;
-  periodType: "monthly" | "quarterly" | "yearly";
-  status: SubmissionStatus;
-  steps: StepResult[];
-  currentStep: PipelineStep | null;
-  startedAt: string;
-  completedAt: string | null;
-  nextRetryAt: string | null;
-  retryCount: number;
-  batchId: string | null;
-}
-
-export type PeriodType = "monthly" | "quarterly" | "yearly";
-
-export interface SubmissionFilters {
-  statuses: SubmissionStatus[];
-  periodTypes: PeriodType[];
-  isSpecialCase: boolean | null;
-  searchQuery: string;
+export interface DemoUploadRequest {
+  csvContent: string;
+  batchName: string;
 }
 
 export interface TaskFilters {
@@ -200,3 +146,23 @@ export interface TaskFilters {
   submitted: boolean | null;
   statuses: TaskStatus[];
 }
+
+export type PipelineStep =
+  | "payroll-download"
+  | "data-extraction"
+  | "tax-submission"
+  | "document-upload";
+
+export const PIPELINE_STEPS: readonly PipelineStep[] = [
+  "payroll-download",
+  "data-extraction",
+  "tax-submission",
+  "document-upload",
+] as const;
+
+export const STEP_LABELS: Record<PipelineStep, string> = {
+  "payroll-download": "Download LSTA",
+  "data-extraction": "Extract & Map",
+  "tax-submission": "Submit to ELSTER",
+  "document-upload": "Upload to Personio",
+};
