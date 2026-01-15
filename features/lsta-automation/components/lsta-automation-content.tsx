@@ -1,7 +1,8 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { IconLoader2 } from "@tabler/icons-react";
+import { IconClipboardList, IconLoader2, IconPlus } from "@tabler/icons-react";
 import { useMemo, useState } from "react";
 import { mockBatches } from "../data/mock.batches.data";
 import { useFetchLstaTasks } from "../hooks/use-fetch-lsta-tasks";
@@ -12,6 +13,7 @@ import { AddBatchDialog } from "./add-batch-dialog";
 import { AutomationKpiCards } from "./automation-kpi-cards";
 import { AutomationTable } from "./automation-table";
 import { BatchTabs } from "./batch-tabs";
+import { EmptyState } from "./empty-state";
 import { TaskFilterBar } from "./task-filter-bar";
 
 const DEFAULT_FILTERS: TaskFilters = {
@@ -99,6 +101,31 @@ export const LstaAutomationContent = () => {
       <div className="flex flex-col items-center justify-center gap-2 py-12 text-center">
         <p className="text-sm text-muted-foreground">Failed to load tasks</p>
         <p className="text-xs text-destructive">{error.message}</p>
+      </div>
+    );
+  }
+
+  if (batches.length === 0) {
+    return (
+      <div className="flex flex-col gap-6 py-4">
+        <Card className="mx-4 lg:mx-6">
+          <EmptyState
+            icon={IconClipboardList}
+            title="Welcome to LSTA Automation"
+            description="This is your command center for tracking loan submissions. Once you create your first batch, you'll see real-time status updates for each submission, including progress tracking and detailed validation results."
+            action={
+              <Button onClick={() => setShowAddDialog(true)}>
+                <IconPlus className="mr-2 size-4" />
+                Create Your First Batch
+              </Button>
+            }
+          />
+        </Card>
+        <AddBatchDialog
+          open={showAddDialog}
+          onOpenChange={setShowAddDialog}
+          onAddBatch={handleAddBatch}
+        />
       </div>
     );
   }

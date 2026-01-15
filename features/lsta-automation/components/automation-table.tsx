@@ -16,10 +16,16 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import { IconCheck, IconChevronRight, IconX } from "@tabler/icons-react";
+import {
+  IconCheck,
+  IconChevronRight,
+  IconFileSearch,
+  IconX,
+} from "@tabler/icons-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import type { LstaTask, TaskStatus } from "../types";
+import { EmptyState } from "./empty-state";
 import { ExpandableRowContent } from "./expandable-row-content";
 import { StepProgressIndicator } from "./step-progress-indicator";
 
@@ -124,11 +130,23 @@ export const AutomationTable = ({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {sortedTasks.map((task) => {
-              const config = statusConfig[task.status];
-              const isExpanded = expandedIds.has(task.id);
-              const isFailed = task.status === "failed";
-              const currentStepId = getCurrentStepId(task);
+            {sortedTasks.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={8} className="h-32">
+                  <EmptyState
+                    variant="compact"
+                    icon={IconFileSearch}
+                    title="No submissions found"
+                    description="We couldn't find any submissions matching your current filters. Try adjusting your search or filters to see more results."
+                  />
+                </TableCell>
+              </TableRow>
+            ) : (
+              sortedTasks.map((task) => {
+                const config = statusConfig[task.status];
+                const isExpanded = expandedIds.has(task.id);
+                const isFailed = task.status === "failed";
+                const currentStepId = getCurrentStepId(task);
 
               return (
                 <AnimatePresence key={task.id} initial={false}>
@@ -233,7 +251,8 @@ export const AutomationTable = ({
                   )}
                 </AnimatePresence>
               );
-            })}
+            })
+            )}
           </TableBody>
         </Table>
       </div>
