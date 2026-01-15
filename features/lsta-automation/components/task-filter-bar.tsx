@@ -2,14 +2,9 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Popover,
   PopoverContent,
@@ -22,50 +17,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  IconCheck,
-  IconChevronDown,
-  IconDownload,
-  IconSearch,
-  IconX,
-} from "@tabler/icons-react";
+import { IconDownload, IconFilter, IconSearch, IconX } from "@tabler/icons-react";
 import { useEffect, useRef, useState } from "react";
 import type { TaskFilters, TaskStatus } from "../types";
 
-const STATUS_OPTIONS: {
-  value: TaskStatus;
-  label: string;
-  className: string;
-}[] = [
-  {
-    value: "pending",
-    label: "Pending",
-    className: "bg-muted text-muted-foreground",
-  },
-  {
-    value: "processing",
-    label: "Processing",
-    className:
-      "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400",
-  },
-  {
-    value: "completed",
-    label: "Completed",
-    className:
-      "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400",
-  },
-  {
-    value: "failed",
-    label: "Failed",
-    className:
-      "bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-400",
-  },
-  {
-    value: "retrying",
-    label: "Retrying",
-    className:
-      "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400",
-  },
+const STATUS_OPTIONS: { value: TaskStatus; label: string }[] = [
+  { value: "pending", label: "Pending" },
+  { value: "processing", label: "Processing" },
+  { value: "completed", label: "Completed" },
+  { value: "failed", label: "Failed" },
+  { value: "retrying", label: "Retrying" },
 ];
 
 interface TaskFilterBarProps {
@@ -79,7 +40,7 @@ export const TaskFilterBar = ({
   onFiltersChange,
   onExport,
 }: TaskFilterBarProps) => {
-  const [statusOpen, setStatusOpen] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const [searchValue, setSearchValue] = useState(filters.searchQuery);
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -136,38 +97,36 @@ export const TaskFilterBar = ({
     onFiltersChange({ ...filters, searchQuery: "" });
   };
 
-  const handleClearAll = () => {
-    setSearchValue("");
+  const handleClearFilters = () => {
     onFiltersChange({
-      searchQuery: "",
+      ...filters,
       specialCase: null,
       submitted: null,
       statuses: [],
     });
   };
 
-  const hasActiveFilters =
-    searchValue !== "" ||
-    filters.specialCase !== null ||
-    filters.submitted !== null ||
-    filters.statuses.length > 0;
+  const activeFilterCount =
+    (filters.specialCase !== null ? 1 : 0) +
+    (filters.submitted !== null ? 1 : 0) +
+    filters.statuses.length;
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="flex items-center gap-2">
       <div className="relative">
         <IconSearch className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
         <Input
-          placeholder="Search company, LE ID, certificate..."
+          placeholder="Search"
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
-          className="h-9 w-[260px] pl-8 pr-8 text-sm"
+          className="h-8 w-[240px] border-muted bg-transparent py-1 pl-8 pr-8 text-sm shadow-none"
         />
         {searchValue && (
           <Button
             variant="ghost"
             size="sm"
             onClick={handleClearSearch}
-            className="absolute right-1 top-1/2 h-6 w-6 -translate-y-1/2 p-0"
+            className="absolute right-1 top-1/2 size-6 -translate-y-1/2 cursor-pointer p-0"
             aria-label="Clear search"
           >
             <IconX className="size-3.5" />
@@ -175,91 +134,94 @@ export const TaskFilterBar = ({
         )}
       </div>
 
-      <Select value={getSpecialCaseValue()} onValueChange={handleSpecialCaseChange}>
-        <SelectTrigger className="h-9 w-[130px]" aria-label="Filter by special case">
-          <SelectValue placeholder="Special Case" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">Special Case</SelectItem>
-          <SelectItem value="yes">Yes</SelectItem>
-          <SelectItem value="no">No</SelectItem>
-        </SelectContent>
-      </Select>
-
-      <Select value={getSubmittedValue()} onValueChange={handleSubmittedChange}>
-        <SelectTrigger className="h-9 w-[120px]" aria-label="Filter by submitted">
-          <SelectValue placeholder="Submitted" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">Submitted</SelectItem>
-          <SelectItem value="yes">Yes</SelectItem>
-          <SelectItem value="no">No</SelectItem>
-        </SelectContent>
-      </Select>
-
-      <Popover open={statusOpen} onOpenChange={setStatusOpen}>
+      <Popover open={filtersOpen} onOpenChange={setFiltersOpen}>
         <PopoverTrigger asChild>
           <Button
             variant="outline"
-            className="h-9 gap-1.5"
-            aria-label="Filter by status"
+            size="sm"
+            className="ml-auto cursor-pointer gap-1.5 border-muted bg-transparent shadow-none"
           >
-            Status
-            {filters.statuses.length > 0 && (
-              <Badge
-                variant="secondary"
-                className="ml-1 h-5 rounded-full px-1.5 text-xs"
-              >
-                {filters.statuses.length}
+            <IconFilter className="size-4" />
+            Filters
+            {activeFilterCount > 0 && (
+              <Badge variant="secondary" className="h-5 rounded-full px-1.5 text-xs">
+                {activeFilterCount}
               </Badge>
             )}
-            <IconChevronDown className="size-3.5 opacity-50" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[200px] p-0" align="start">
-          <Command>
-            <CommandList>
-              <CommandEmpty>No status found.</CommandEmpty>
-              <CommandGroup>
-                {STATUS_OPTIONS.map((option) => {
-                  const isSelected = filters.statuses.includes(option.value);
-                  return (
-                    <CommandItem
-                      key={option.value}
-                      onSelect={() => handleStatusToggle(option.value)}
-                    >
-                      <div
-                        className={`mr-2 flex size-4 items-center justify-center rounded border ${
-                          isSelected
-                            ? "border-primary bg-primary text-primary-foreground"
-                            : "border-muted-foreground/30"
-                        }`}
-                      >
-                        {isSelected && <IconCheck className="size-3" />}
-                      </div>
-                      <Badge className={option.className}>{option.label}</Badge>
-                    </CommandItem>
-                  );
-                })}
-              </CommandGroup>
-            </CommandList>
-          </Command>
+        <PopoverContent className="w-[280px] p-4" align="end">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium">Filters</span>
+              {activeFilterCount > 0 && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-auto cursor-pointer p-0 text-xs text-muted-foreground hover:text-foreground"
+                  onClick={handleClearFilters}
+                >
+                  Clear all
+                </Button>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-xs text-muted-foreground">Special Case</Label>
+              <Select value={getSpecialCaseValue()} onValueChange={handleSpecialCaseChange}>
+                <SelectTrigger size="sm" className="w-full cursor-pointer">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All</SelectItem>
+                  <SelectItem value="yes">Yes</SelectItem>
+                  <SelectItem value="no">No</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-xs text-muted-foreground">Submitted</Label>
+              <Select value={getSubmittedValue()} onValueChange={handleSubmittedChange}>
+                <SelectTrigger size="sm" className="w-full cursor-pointer">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All</SelectItem>
+                  <SelectItem value="yes">Yes</SelectItem>
+                  <SelectItem value="no">No</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-xs text-muted-foreground">Status</Label>
+              <div className="space-y-2">
+                {STATUS_OPTIONS.map((option) => (
+                  <label
+                    key={option.value}
+                    className="flex cursor-pointer items-center gap-2"
+                  >
+                    <Checkbox
+                      checked={filters.statuses.includes(option.value)}
+                      onCheckedChange={() => handleStatusToggle(option.value)}
+                    />
+                    <span className="text-sm">{option.label}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
         </PopoverContent>
       </Popover>
 
-      {hasActiveFilters && (
-        <Button variant="ghost" className="h-9" onClick={handleClearAll}>
-          Clear all
-        </Button>
-      )}
-
       <Button
-        variant="outline"
-        className="ml-auto h-9 gap-1.5"
+        size="sm"
+        className="cursor-pointer gap-1.5"
         onClick={onExport}
       >
         <IconDownload className="size-4" />
-        Export CSV
+        Export
       </Button>
     </div>
   );

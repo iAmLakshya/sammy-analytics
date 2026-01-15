@@ -1,5 +1,6 @@
 "use client";
 
+import { Card } from "@/components/ui/card";
 import { IconLoader2 } from "@tabler/icons-react";
 import { useMemo, useState } from "react";
 import { mockBatches } from "../data/mock.batches.data";
@@ -123,16 +124,18 @@ export const LstaAutomationContent = () => {
           />
         ) : null}
       </div>
-      <div className="space-y-4 px-4 lg:px-6">
+      <Card className="mx-4 gap-0 overflow-hidden py-0 lg:mx-6">
         {data && (
-          <TaskFilterBar
-            filters={filters}
-            onFiltersChange={setFilters}
-            onExport={handleExport}
-          />
+          <div className="border-b px-4 py-3">
+            <TaskFilterBar
+              filters={filters}
+              onFiltersChange={setFilters}
+              onExport={handleExport}
+            />
+          </div>
         )}
         {isLoading ? (
-          <div className="flex h-64 items-center justify-center rounded-lg border">
+          <div className="flex h-64 items-center justify-center">
             <IconLoader2 className="size-6 animate-spin text-muted-foreground" />
           </div>
         ) : data ? (
@@ -145,7 +148,7 @@ export const LstaAutomationContent = () => {
             onPageChange={setPage}
           />
         ) : null}
-      </div>
+      </Card>
       <AddBatchDialog
         open={showAddDialog}
         onOpenChange={setShowAddDialog}

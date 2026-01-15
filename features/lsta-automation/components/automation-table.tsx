@@ -103,8 +103,8 @@ export const AutomationTable = ({
   };
 
   return (
-    <div className="space-y-4">
-      <div className="overflow-x-auto rounded-lg border">
+    <div>
+      <div className="overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>
@@ -233,7 +233,7 @@ export const AutomationTable = ({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-between px-2">
+      <div className="flex items-center justify-between border-t px-4 py-3">
         <p className="text-sm text-muted-foreground">
           Showing {sortedTasks.length} tasks
         </p>
