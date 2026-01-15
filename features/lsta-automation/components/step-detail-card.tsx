@@ -6,7 +6,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { IconCheck, IconClock, IconExternalLink, IconEye, IconLoader2, IconRefresh, IconX } from "@tabler/icons-react";
-import type { LstaTaskStep } from "../types";
+import type { LstaTaskStep, StepStatus } from "../types";
+import { STEP_STATUS_COLORS } from "../utils/status-config";
 import { ValidationCheckList } from "./validation-check-list";
 
 interface StepPillProps {
@@ -26,52 +27,32 @@ export const StepPill = ({
   const isInProgress = status === "pending" && isActive;
   const tooltipContent = statusDescription || description;
 
-  let icon: React.ReactNode;
-  let borderClass: string;
-  let bgClass: string;
-  let textClass: string;
+  const statusKey: StepStatus | "in-progress" = isInProgress ? "in-progress" : status;
+  const colors = STEP_STATUS_COLORS[statusKey];
 
-  if (status === "completed") {
-    icon = <IconCheck className="size-3" strokeWidth={2.5} />;
-    borderClass = "border-emerald-500";
-    bgClass = isSelected
-      ? "bg-emerald-50 dark:bg-emerald-950/50"
-      : "bg-white dark:bg-background";
-    textClass = "text-emerald-600 dark:text-emerald-400";
-  } else if (status === "failed") {
-    icon = <IconX className="size-3" strokeWidth={2.5} />;
-    borderClass = "border-rose-500";
-    bgClass = isSelected
-      ? "bg-rose-50 dark:bg-rose-950/50"
-      : "bg-white dark:bg-background";
-    textClass = "text-rose-600 dark:text-rose-400";
-  } else if (status === "not-ready") {
-    icon = <IconClock className="size-3" />;
-    borderClass = "border-amber-500";
-    bgClass = isSelected
-      ? "bg-amber-50 dark:bg-amber-950/50"
-      : "bg-white dark:bg-background";
-    textClass = "text-amber-600 dark:text-amber-400";
-  } else if (status === "review-required") {
-    icon = <IconEye className="size-3" />;
-    borderClass = "border-purple-500";
-    bgClass = isSelected
-      ? "bg-purple-50 dark:bg-purple-950/50"
-      : "bg-white dark:bg-background";
-    textClass = "text-purple-600 dark:text-purple-400";
-  } else if (isInProgress) {
-    icon = <IconLoader2 className="size-3 animate-spin" />;
-    borderClass = "border-amber-500";
-    bgClass = isSelected
-      ? "bg-amber-50 dark:bg-amber-950/50"
-      : "bg-white dark:bg-background";
-    textClass = "text-amber-600 dark:text-amber-400";
-  } else {
-    icon = <span className="size-1 rounded-full bg-muted-foreground/40" />;
-    borderClass = "border-muted-foreground/30";
-    bgClass = isSelected ? "bg-muted" : "bg-white dark:bg-background";
-    textClass = "text-muted-foreground";
-  }
+  const getIcon = (): React.ReactNode => {
+    switch (status) {
+      case "completed":
+        return <IconCheck className="size-3" strokeWidth={2.5} />;
+      case "failed":
+        return <IconX className="size-3" strokeWidth={2.5} />;
+      case "not-ready":
+        return <IconClock className="size-3" />;
+      case "review-required":
+        return <IconEye className="size-3" />;
+      case "pending":
+        return isInProgress ? (
+          <IconLoader2 className="size-3 animate-spin" />
+        ) : (
+          <span className="size-1 rounded-full bg-muted-foreground/40" />
+        );
+    }
+  };
+
+  const icon = getIcon();
+  const borderClass = colors.border;
+  const bgClass = isSelected ? colors.bgSelected : "bg-white dark:bg-background";
+  const textClass = colors.text;
 
   const button = (
     <button
