@@ -1,5 +1,8 @@
 import { useCallback, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { fetchApi } from "@/shared/lib/api-client";
+import { API_ENDPOINTS } from "@/shared/lib/api-endpoints";
+import type { DemoProcessResponse } from "../types";
 import {
   generateProcessingDuration,
   generateStepDuration,
@@ -14,15 +17,13 @@ interface ProcessTaskPayload {
 }
 
 const processTaskApi = async (payload: ProcessTaskPayload) => {
-  const response = await fetch("/api/v1/lsta-automations/demo/process", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
-  if (!response.ok) {
-    throw new Error("Failed to process task");
-  }
-  return response.json();
+  return fetchApi<DemoProcessResponse>(
+    API_ENDPOINTS.lstaAutomations.demoProcess,
+    {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }
+  );
 };
 
 const STEP_COUNT = 4;
