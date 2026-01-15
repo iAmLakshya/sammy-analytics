@@ -180,7 +180,6 @@ export const useDemoController = () => {
           })();
 
           processingPromises.push(processPromise);
-          processPromise.then(() => {});
         }
       };
 
@@ -243,7 +242,6 @@ export const useDemoController = () => {
           })();
 
           processingPromises.push(processPromise);
-          processPromise.then(() => {});
         }
       };
 
