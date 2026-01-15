@@ -86,8 +86,16 @@ export const LstaAutomationContent = () => {
     variables: retryingTaskId,
   } = useRetryLstaTask();
 
-  const { isRunning, totalTasks, completedTasks, startDemo } =
-    useDemoController();
+  const {
+    isRunning,
+    totalTasks,
+    completedTasks,
+    startDemo,
+    approveTask,
+    rejectTask,
+    approvingTaskId,
+    rejectingTaskId,
+  } = useDemoController();
 
   const handleRetryTask = (taskId: string) => {
     retryTaskMutation(taskId, {
@@ -243,6 +251,10 @@ export const LstaAutomationContent = () => {
             tasks={filteredTasks}
             onRetry={handleRetryTask}
             retryingTaskId={isRetrying ? retryingTaskId : null}
+            onApprove={approveTask}
+            onReject={rejectTask}
+            approvingTaskId={approvingTaskId}
+            rejectingTaskId={rejectingTaskId}
             page={data.page}
             totalPages={data.totalPages}
             onPageChange={setPage}

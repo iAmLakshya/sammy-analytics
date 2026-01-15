@@ -8,12 +8,13 @@ import {
   generateStepDuration,
   shouldTaskFail,
   shouldTaskBeNotReady,
+  shouldRequireReview,
   getFailureStep,
 } from "../utils/demo-task-processor";
 
 interface ProcessTaskPayload {
   taskId: string;
-  action: "start" | "complete-step" | "fail" | "complete" | "not-ready";
+  action: "start" | "complete-step" | "fail" | "complete" | "not-ready" | "review-required" | "approve" | "reject";
   failureStep?: string;
 }
 
@@ -35,6 +36,7 @@ interface TaskProgress {
   currentStep: number;
   willFail: boolean;
   failureStep?: string;
+  willRequireReview: boolean;
 }
 
 export const useDemoController = () => {
@@ -54,10 +56,10 @@ export const useDemoController = () => {
   }, [queryClient]);
 
   const processStep = useCallback(
-    async (taskProgress: TaskProgress): Promise<boolean> => {
+    async (taskProgress: TaskProgress): Promise<boolean | "review-required"> => {
       if (abortRef.current) return false;
 
-      const { taskId, currentStep, willFail, failureStep } = taskProgress;
+      const { taskId, currentStep, willFail, failureStep, willRequireReview } = taskProgress;
 
       if (willFail && failureStep) {
         const failureStepIndex = [
@@ -82,6 +84,15 @@ export const useDemoController = () => {
 
       await processTaskApi({ taskId, action: "complete-step" });
       invalidateQueries();
+
+      if (willRequireReview && currentStep === 2) {
+        await new Promise((resolve) => setTimeout(resolve, generateStepDuration()));
+        if (abortRef.current) return false;
+        await processTaskApi({ taskId, action: "review-required" });
+        invalidateQueries();
+        return "review-required";
+      }
+
       return false;
     },
     [invalidateQueries]
@@ -112,21 +123,23 @@ export const useDemoController = () => {
 
         const willFail = forceSuccess ? false : shouldTaskFail();
         const failureStep = willFail ? getFailureStep() : undefined;
+        const willRequireReview = !forceSuccess && !willFail && shouldRequireReview();
 
         let currentStep = 0;
-        let isComplete = false;
+        let result: boolean | "review-required" = false;
 
-        while (!isComplete && !abortRef.current) {
+        while (result === false && !abortRef.current) {
           const stepDuration = generateStepDuration();
           await new Promise((resolve) => setTimeout(resolve, stepDuration));
 
           if (abortRef.current) break;
 
-          isComplete = await processStep({
+          result = await processStep({
             taskId,
             currentStep,
             willFail,
             failureStep,
+            willRequireReview,
           });
 
           currentStep++;
@@ -257,12 +270,51 @@ export const useDemoController = () => {
     [isRunning, isRetrying, processTask, invalidateQueries]
   );
 
+  const [isApproving, setIsApproving] = useState(false);
+  const [isRejecting, setIsRejecting] = useState(false);
+  const [approvingTaskId, setApprovingTaskId] = useState<string | null>(null);
+  const [rejectingTaskId, setRejectingTaskId] = useState<string | null>(null);
+
+  const approveTask = useCallback(
+    async (taskId: string) => {
+      setIsApproving(true);
+      setApprovingTaskId(taskId);
+      try {
+        await processTaskApi({ taskId, action: "approve" });
+        invalidateQueries();
+      } finally {
+        setIsApproving(false);
+        setApprovingTaskId(null);
+      }
+    },
+    [invalidateQueries]
+  );
+
+  const rejectTask = useCallback(
+    async (taskId: string) => {
+      setIsRejecting(true);
+      setRejectingTaskId(taskId);
+      try {
+        await processTaskApi({ taskId, action: "reject" });
+        invalidateQueries();
+      } finally {
+        setIsRejecting(false);
+        setRejectingTaskId(null);
+      }
+    },
+    [invalidateQueries]
+  );
+
   const calculatedProgress =
     totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : progress;
 
   return {
     isRunning,
     isRetrying,
+    isApproving,
+    isRejecting,
+    approvingTaskId,
+    rejectingTaskId,
     progress: calculatedProgress,
     currentBatchId,
     totalTasks,
@@ -270,5 +322,7 @@ export const useDemoController = () => {
     startDemo,
     stopDemo,
     retryFailed,
+    approveTask,
+    rejectTask,
   };
 };
