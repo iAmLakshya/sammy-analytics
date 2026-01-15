@@ -41,7 +41,7 @@ export const generateStepDuration = (): number => {
 };
 
 export const shouldTaskFail = (): boolean => {
-  return Math.random() < 0.15;
+  return Math.random() < 0.35;
 };
 
 export const generateEnrichedData = (
