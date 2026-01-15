@@ -718,7 +718,6 @@ export const mockLstaTasks: LstaTask[] = [
     batch: { id: "batch-001", name: "January 2026 Monthly" },
     steps: [
       createStep("payroll-download", "completed", {
-        data: { downloadedFile: "payroll_jan_2026.csv", recordsProcessed: 78 },
         validationChecks: createPayrollDownloadChecks(
           "LE-011",
           "January 2026",
@@ -728,10 +727,6 @@ export const mockLstaTasks: LstaTask[] = [
         endedAt: "2026-01-14T05:02:00Z",
       }),
       createStep("data-extraction", "completed", {
-        data: {
-          extractedFields: ["wages", "tax", "deductions"],
-          recordsProcessed: 78,
-        },
         validationChecks: createDataExtractionChecks("Kappa Logistics GmbH"),
         startedAt: "2026-01-14T05:02:00Z",
         endedAt: "2026-01-14T05:04:00Z",
@@ -811,13 +806,30 @@ export const mockLstaTasks: LstaTask[] = [
     batch: { id: "batch-002", name: "Q4 2025 Quarterly" },
     steps: [
       createStep("payroll-download", "completed", {
-        data: { downloadedFile: "payroll_q4_2025.csv", recordsProcessed: 201 },
+        validationChecks: createPayrollDownloadChecks(
+          "LE-012",
+          "Q4 2025",
+          "payroll_q4_2025.csv"
+        ),
         startedAt: "2026-01-13T16:00:00Z",
         endedAt: "2026-01-13T16:03:00Z",
       }),
-      createStep("data-extraction", "pending", {
-        statusDescription: "Re-processing with updated field mapping...",
-        startedAt: "2026-01-13T18:00:00Z",
+      createStep("data-extraction", "failed", {
+        errorReasons: ["Field mapping mismatch", "Retry with corrected config"],
+        validationChecks: [
+          {
+            key: "le-name-consistent",
+            title: "LE Name",
+            value: null,
+            expected: "Lambda Analytics KG",
+            actual: "Lambda Analytics",
+            description: "Legal entity name mismatch — missing suffix",
+            downloadLink: null,
+            status: "failed",
+          },
+        ],
+        startedAt: "2026-01-13T16:03:00Z",
+        endedAt: "2026-01-13T16:05:00Z",
       }),
       createStep("tax-submission", "pending"),
       createStep("document-upload", "pending"),

@@ -112,15 +112,16 @@ export const StepDetailPanel = ({
   const hasData = Object.keys(data).length > 0;
   const hasValidationChecks = validationChecks && validationChecks.length > 0;
   const isRetrying = taskStatus === "retrying";
+  const showRetryBanner = isRetrying && status !== "completed";
 
   return (
-    <div className="mt-1.5 text-xs text-muted-foreground">
-      <div className="mb-1.5 text-[11px] font-medium uppercase tracking-wide text-muted-foreground/70">
+    <div className="mt-3 space-y-3 text-xs text-muted-foreground">
+      <div className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground/70">
         {title}
       </div>
 
-      {isRetrying && (
-        <div className="mb-2 flex items-center gap-1.5 rounded-md bg-blue-100 px-2 py-1.5 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400">
+      {showRetryBanner && (
+        <div className="flex items-center gap-1.5 rounded-md bg-blue-100 px-2 py-1.5 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400">
           <IconRefresh className="size-3.5" />
           <span>Scheduled for retry — will restart from beginning</span>
         </div>
@@ -131,7 +132,7 @@ export const StepDetailPanel = ({
       ) : (
         <>
           {status === "completed" && hasData && (
-            <span className="flex flex-wrap gap-x-3">
+            <div className="flex flex-wrap gap-x-3">
               {Object.entries(data).map(([key, value]) => (
                 <span key={key}>
                   {formatOutputKey(key)}:{" "}
@@ -140,26 +141,28 @@ export const StepDetailPanel = ({
                   </span>
                 </span>
               ))}
-            </span>
+            </div>
           )}
 
           {status === "failed" && (
-            <span className="text-rose-600 dark:text-rose-400">
+            <div className="text-rose-600 dark:text-rose-400">
               {errorReasons.length > 0 ? errorReasons.join("; ") : "Step failed"}
-            </span>
+            </div>
+          )}
+
+          {isInProgress && (
+            <div className="flex items-center gap-1.5 text-amber-600 dark:text-amber-400">
+              <IconLoader2 className="size-3 animate-spin" />
+              {statusDescription || "Processing..."}
+            </div>
+          )}
+
+          {status === "pending" && !isActive && (
+            <div className="italic text-muted-foreground/60">
+              Waiting for previous steps
+            </div>
           )}
         </>
-      )}
-
-      {isInProgress && !hasValidationChecks && (
-        <span className="flex items-center gap-1.5 text-amber-600 dark:text-amber-400">
-          <IconLoader2 className="size-3 animate-spin" />
-          {statusDescription || "Processing..."}
-        </span>
-      )}
-
-      {status === "pending" && !isActive && (
-        <span>Waiting for previous steps</span>
       )}
     </div>
   );
