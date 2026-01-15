@@ -1,4 +1,5 @@
 import type { CsvRow } from "./csv-parser";
+import type { ValidationCheck } from "../types";
 
 const GERMAN_COMPANY_PREFIXES = [
   "Müller",
@@ -131,4 +132,182 @@ const FAILURE_REASONS: Record<string, string[]> = {
 export const getFailureReason = (stepId: string): string => {
   const reasons = FAILURE_REASONS[stepId] ?? FAILURE_REASONS["tax-submission"];
   return reasons[Math.floor(Math.random() * reasons.length)];
+};
+
+interface EnrichedData {
+  companyName: string;
+  sumCheck: string;
+  taxIdLast4: string;
+  confirmationNumber: string;
+}
+
+export const generateFailedValidationChecks = (
+  stepId: string,
+  leId: string,
+  enrichedData: EnrichedData
+): ValidationCheck[] => {
+  const targetMonth = new Date().toLocaleString("en-US", { month: "long", year: "numeric" });
+  const pdfFileName = `lsta_${leId.toLowerCase()}.pdf`;
+  const expectedFile = `payroll_${leId.toLowerCase()}.csv`;
+
+  const failureVariant = Math.floor(Math.random() * 2);
+
+  switch (stepId) {
+    case "payroll-download": {
+      const passedChecks: ValidationCheck[] = [
+        {
+          key: "status-accepted",
+          title: "Status",
+          value: null,
+          expected: "Accepted",
+          actual: failureVariant === 0 ? "Rejected" : "Pending review",
+          description: "Payroll submission status from Personio",
+          downloadLink: null,
+          status: "failed",
+        },
+      ];
+      const failedCheck: ValidationCheck = {
+        key: "lsta-file-found",
+        title: "LSTA File",
+        value: null,
+        expected: expectedFile,
+        actual: failureVariant === 0 ? "File not found" : "Access denied",
+        description: "Source payroll file from LSTA system",
+        downloadLink: null,
+        status: "failed",
+      };
+      return [...passedChecks, failedCheck];
+    }
+
+    case "data-extraction": {
+      const passedCheck: ValidationCheck = {
+        key: "le-name-consistent",
+        title: "LE Name",
+        value: null,
+        expected: enrichedData.companyName,
+        actual: failureVariant === 0
+          ? enrichedData.companyName.replace(" GmbH", "").replace(" AG", "").replace(" KG", "")
+          : `${enrichedData.companyName.split(" ")[0]} Holdings`,
+        description: "Legal entity name extracted correctly from payroll data",
+        downloadLink: null,
+        status: "failed",
+      };
+      return [passedCheck];
+    }
+
+    case "tax-submission": {
+      const sumAmount = parseFloat(enrichedData.sumCheck.replace(/[^\d,]/g, "").replace(",", ".")) || 10000;
+      const wrongSum = new Intl.NumberFormat("de-DE", {
+        style: "currency",
+        currency: "EUR",
+      }).format(sumAmount - 0.5);
+
+      return [
+        {
+          key: "full-name",
+          title: "Full Name",
+          value: enrichedData.companyName,
+          expected: null,
+          actual: null,
+          description: "Legal entity full name for ELSTER submission",
+          downloadLink: null,
+          status: "passed",
+        },
+        {
+          key: "tax-id-consistent",
+          title: "Tax ID",
+          value: null,
+          expected: `****${enrichedData.taxIdLast4}`,
+          actual: failureVariant === 0 ? "****0000" : `****${String(parseInt(enrichedData.taxIdLast4) + 1).padStart(4, "0")}`,
+          description: "Tax identification number matches records",
+          downloadLink: null,
+          status: failureVariant === 0 ? "failed" : "passed",
+        },
+        {
+          key: "le-number-consistent",
+          title: "LE Number",
+          value: leId,
+          expected: null,
+          actual: null,
+          description: "Legal entity number consistent with submission",
+          downloadLink: null,
+          status: "passed",
+        },
+        {
+          key: "sum-check",
+          title: "Sum Check",
+          value: null,
+          expected: enrichedData.sumCheck,
+          actual: wrongSum,
+          description: "Total wage sum does not match calculated amount",
+          downloadLink: null,
+          status: "failed",
+        },
+        {
+          key: "downloaded-pdf",
+          title: "Certificate PDF",
+          value: null,
+          expected: "Certificate generated",
+          actual: failureVariant === 0 ? "ELSTER service unavailable" : "Generation timeout",
+          description: "Failed to download certificate from ELSTER",
+          downloadLink: null,
+          status: "failed",
+        },
+        {
+          key: "no-existing-doc",
+          title: "Existing Document",
+          value: "None",
+          expected: null,
+          actual: null,
+          description: "No duplicate submission detected",
+          downloadLink: null,
+          status: "passed",
+        },
+      ];
+    }
+
+    case "document-upload": {
+      const sumAmount = parseFloat(enrichedData.sumCheck.replace(/[^\d,]/g, "").replace(",", ".")) || 10000;
+      const wrongSum = new Intl.NumberFormat("de-DE", {
+        style: "currency",
+        currency: "EUR",
+      }).format(sumAmount + 100);
+
+      return [
+        {
+          key: "le-number-consistent",
+          title: "LE Number",
+          value: leId,
+          expected: null,
+          actual: null,
+          description: "Legal entity number matches upload destination",
+          downloadLink: null,
+          status: "passed",
+        },
+        {
+          key: "sum-check",
+          title: "Sum Check",
+          value: null,
+          expected: enrichedData.sumCheck,
+          actual: wrongSum,
+          description: "Document amounts do not match submission totals",
+          downloadLink: null,
+          status: failureVariant === 0 ? "failed" : "passed",
+        },
+        {
+          key: "uploaded-pdf",
+          title: "Uploaded PDF",
+          value: null,
+          expected: pdfFileName,
+          actual: failureVariant === 0 ? "Upload rejected" : "File corrupted",
+          description: "Certificate upload to Personio failed",
+          downloadLink: null,
+          status: "failed",
+        },
+      ];
+    }
+
+    default:
+      return [];
+  }
 };
