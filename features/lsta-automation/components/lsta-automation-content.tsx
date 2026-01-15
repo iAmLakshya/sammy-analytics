@@ -75,15 +75,8 @@ export const LstaAutomationContent = () => {
     variables: retryingTaskId,
   } = useRetryLstaTask();
 
-  const {
-    isRunning,
-    isRetrying: isRetryingFailed,
-    progress,
-    totalTasks,
-    completedTasks,
-    startDemo,
-    retryFailed,
-  } = useDemoController();
+  const { isRunning, progress, totalTasks, completedTasks, startDemo } =
+    useDemoController();
 
   const { uploadCsv, isUploading } = useUploadDemoCsv({
     onSuccess: (result) => {
@@ -116,15 +109,10 @@ export const LstaAutomationContent = () => {
     }
   }, [pendingAutoStart, isLoading, startDemo]);
 
-  const failedTaskIds = useMemo(() => {
-    if (!data?.tasks) return [];
-    return data.tasks.filter((t) => t.status === "failed").map((t) => t.id);
+  const failedTaskCount = useMemo(() => {
+    if (!data?.tasks) return 0;
+    return data.tasks.filter((t) => t.status === "failed").length;
   }, [data?.tasks]);
-
-  const handleRetryFailed = () => {
-    if (!activeBatchId || failedTaskIds.length === 0) return;
-    retryFailed(activeBatchId, failedTaskIds);
-  };
 
   const filteredTasks = useMemo(() => {
     if (!data?.tasks) return [];
@@ -176,7 +164,7 @@ export const LstaAutomationContent = () => {
     );
   }
 
-  const showControls = isRunning || isRetryingFailed || progress === 100;
+  const showControls = isRunning || progress === 100;
 
   return (
     <div className="flex flex-col gap-6 py-4">
@@ -205,12 +193,10 @@ export const LstaAutomationContent = () => {
             {showControls ? (
               <DemoControls
                 isRunning={isRunning}
-                isRetrying={isRetryingFailed}
                 progress={progress}
                 totalTasks={totalTasks}
                 completedTasks={completedTasks}
-                failedCount={failedTaskIds.length}
-                onRetryFailed={handleRetryFailed}
+                failedCount={failedTaskCount}
               />
             ) : (
               <div />
