@@ -1,14 +1,10 @@
 import { fetchApi } from "@/shared/lib/api-client";
+import { API_ENDPOINTS } from "@/shared/lib/api-endpoints";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-
-interface UploadDemoCsvResponse {
-  batchId: string;
-  taskIds: string[];
-  taskCount: number;
-}
+import type { DemoUploadResponse } from "../types";
 
 interface UseUploadDemoCsvOptions {
-  onSuccess?: (data: UploadDemoCsvResponse) => void;
+  onSuccess?: (data: DemoUploadResponse) => void;
 }
 
 export const useUploadDemoCsv = (options: UseUploadDemoCsvOptions = {}) => {
@@ -16,8 +12,8 @@ export const useUploadDemoCsv = (options: UseUploadDemoCsvOptions = {}) => {
 
   const mutation = useMutation({
     mutationFn: async (csvContent: string) => {
-      return fetchApi<UploadDemoCsvResponse>(
-        "/api/v1/lsta-automations/demo/upload",
+      return fetchApi<DemoUploadResponse>(
+        API_ENDPOINTS.lstaAutomations.demoUpload,
         {
           method: "POST",
           body: JSON.stringify({ csvContent }),
