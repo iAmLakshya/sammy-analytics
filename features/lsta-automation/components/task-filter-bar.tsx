@@ -9,12 +9,6 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import {
   Popover,
@@ -142,6 +136,22 @@ export const TaskFilterBar = ({
     onFiltersChange({ ...filters, searchQuery: "" });
   };
 
+  const handleClearAll = () => {
+    setSearchValue("");
+    onFiltersChange({
+      searchQuery: "",
+      specialCase: null,
+      submitted: null,
+      statuses: [],
+    });
+  };
+
+  const hasActiveFilters =
+    searchValue !== "" ||
+    filters.specialCase !== null ||
+    filters.submitted !== null ||
+    filters.statuses.length > 0;
+
   return (
     <div className="flex flex-wrap items-center gap-2">
       <div className="relative">
@@ -237,21 +247,20 @@ export const TaskFilterBar = ({
         </PopoverContent>
       </Popover>
 
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" className="ml-auto h-9 gap-1.5">
-            <IconDownload className="size-4" />
-            Export
-            <IconChevronDown className="size-3.5 opacity-50" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={onExport}>
-            <IconDownload className="mr-2 size-4" />
-            Export CSV
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      {hasActiveFilters && (
+        <Button variant="ghost" className="h-9" onClick={handleClearAll}>
+          Clear all
+        </Button>
+      )}
+
+      <Button
+        variant="outline"
+        className="ml-auto h-9 gap-1.5"
+        onClick={onExport}
+      >
+        <IconDownload className="size-4" />
+        Export CSV
+      </Button>
     </div>
   );
 };
