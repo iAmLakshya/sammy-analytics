@@ -22,10 +22,10 @@ export const EmptyState = ({
     <div
       className={cn(
         "flex items-center justify-center rounded-lg border border-dashed",
-        variant === "default" ? "h-64" : "min-h-32 py-6"
+        variant === "default" ? "p-6" : "min-h-32 py-6"
       )}
     >
-      <div className="max-w-md px-4 text-center">
+      <div className="max-w-md p-4 text-center">
         <IconComponent className="mx-auto mb-3 size-8 text-muted-foreground" />
         <p className="text-sm font-medium">{title}</p>
         <p className="mt-1 text-sm text-muted-foreground">{description}</p>

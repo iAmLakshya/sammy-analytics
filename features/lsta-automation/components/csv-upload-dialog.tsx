@@ -14,7 +14,19 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { IconLoader2, IconUpload } from "@tabler/icons-react";
 import { motion } from "motion/react";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
+
+const getMonthSuggestions = (): string[] => {
+  const now = new Date();
+  const format = (date: Date) =>
+    date.toLocaleString("en-US", { month: "long", year: "numeric" });
+
+  const prevMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  const currMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+
+  return [format(prevMonth), format(currMonth), format(nextMonth)];
+};
 
 interface CsvUploadDialogProps {
   open: boolean;
@@ -33,6 +45,7 @@ export const CsvUploadDialog = ({
   const [file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const suggestions = useMemo(() => getMonthSuggestions(), []);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -102,6 +115,23 @@ export const CsvUploadDialog = ({
               onChange={(e) => setBatchName(e.target.value)}
               placeholder="e.g., January 2026"
             />
+            <div className="flex flex-wrap gap-1.5">
+              {suggestions.map((suggestion) => (
+                <button
+                  key={suggestion}
+                  type="button"
+                  onClick={() => setBatchName(suggestion)}
+                  className={cn(
+                    "rounded-md border px-2 py-0.5 text-xs transition-colors",
+                    batchName === suggestion
+                      ? "border-primary bg-primary/10 text-primary"
+                      : "border-border bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground"
+                  )}
+                >
+                  {suggestion}
+                </button>
+              ))}
+            </div>
           </div>
           <motion.div
             onClick={handleZoneClick}
