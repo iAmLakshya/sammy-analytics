@@ -9,6 +9,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { IconLoader2, IconUpload } from "@tabler/icons-react";
 import { motion } from "motion/react";
@@ -17,7 +19,7 @@ import { useCallback, useRef, useState } from "react";
 interface CsvUploadDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onUpload: (csvContent: string) => void;
+  onUpload: (csvContent: string, batchName: string) => void;
   isUploading: boolean;
 }
 
@@ -27,6 +29,7 @@ export const CsvUploadDialog = ({
   onUpload,
   isUploading,
 }: CsvUploadDialogProps) => {
+  const [batchName, setBatchName] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -64,14 +67,15 @@ export const CsvUploadDialog = ({
   };
 
   const handleSubmit = async () => {
-    if (!file) return;
+    if (!file || !batchName.trim()) return;
 
     const content = await file.text();
-    onUpload(content);
+    onUpload(content, batchName.trim());
   };
 
   const handleOpenChange = (newOpen: boolean) => {
     if (!newOpen) {
+      setBatchName("");
       setFile(null);
       setIsDragging(false);
     }
@@ -89,7 +93,16 @@ export const CsvUploadDialog = ({
             Upload a CSV file with task data to start the demo processing flow.
           </DialogDescription>
         </DialogHeader>
-        <div className="py-4">
+        <div className="grid gap-4 py-4">
+          <div className="grid gap-2">
+            <Label htmlFor="batch-name">Batch Name</Label>
+            <Input
+              id="batch-name"
+              value={batchName}
+              onChange={(e) => setBatchName(e.target.value)}
+              placeholder="e.g., January 2026"
+            />
+          </div>
           <motion.div
             onClick={handleZoneClick}
             onDragOver={handleDragOver}
@@ -147,7 +160,7 @@ export const CsvUploadDialog = ({
           <Button
             type="button"
             onClick={handleSubmit}
-            disabled={!file || isUploading}
+            disabled={!file || !batchName.trim() || isUploading}
           >
             {isUploading ? (
               <>
