@@ -2,17 +2,24 @@
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { IconClipboardList, IconLoader2, IconPlus } from "@tabler/icons-react";
+import {
+  IconClipboardList,
+  IconLoader2,
+  IconPlus,
+  IconUpload,
+} from "@tabler/icons-react";
 import { useMemo, useState } from "react";
 import { mockBatches } from "../data/mock.batches.data";
 import { useFetchLstaTasks } from "../hooks/use-fetch-lsta-tasks";
 import { useRetryLstaTask } from "../hooks/use-retry-lsta-task";
+import { useUploadDemoCsv } from "../hooks/use-upload-demo-csv";
 import type { Batch, LstaTask, TaskFilters } from "../types";
 import { exportTasksToCsv } from "../utils/export-tasks";
 import { AddBatchDialog } from "./add-batch-dialog";
 import { AutomationKpiCards } from "./automation-kpi-cards";
 import { AutomationTable } from "./automation-table";
 import { BatchTabs } from "./batch-tabs";
+import { CsvUploadDialog } from "./csv-upload-dialog";
 import { EmptyState } from "./empty-state";
 import { TaskFilterBar } from "./task-filter-bar";
 
@@ -54,6 +61,7 @@ export const LstaAutomationContent = () => {
   const [batches, setBatches] = useState<Batch[]>(mockBatches);
   const [activeBatchId, setActiveBatchId] = useState<string | null>(null);
   const [showAddDialog, setShowAddDialog] = useState(false);
+  const [showUploadDialog, setShowUploadDialog] = useState(false);
   const [page, setPage] = useState(1);
   const [filters, setFilters] = useState<TaskFilters>(DEFAULT_FILTERS);
 
@@ -68,6 +76,29 @@ export const LstaAutomationContent = () => {
     isPending: isRetrying,
     variables: retryingTaskId,
   } = useRetryLstaTask();
+
+  const { uploadCsv, isUploading } = useUploadDemoCsv({
+    onSuccess: (data) => {
+      setShowUploadDialog(false);
+      const newBatch: Batch = {
+        id: data.batchId,
+        name: `Demo Upload - ${new Date().toLocaleString("en-US", {
+          month: "short",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        })}`,
+        dateRange: {
+          start: new Date().toISOString(),
+          end: new Date().toISOString(),
+        },
+        createdAt: new Date().toISOString(),
+        submissionCount: data.taskCount,
+      };
+      setBatches((prev) => [...prev, newBatch]);
+      setActiveBatchId(data.batchId);
+    },
+  });
 
   const filteredTasks = useMemo(() => {
     if (!data?.tasks) return [];
@@ -114,10 +145,19 @@ export const LstaAutomationContent = () => {
             title="Welcome to LSTA Automation"
             description="This is your command center for tracking loan submissions. Once you create your first batch, you'll see real-time status updates for each submission, including progress tracking and detailed validation results."
             action={
-              <Button onClick={() => setShowAddDialog(true)}>
-                <IconPlus className="mr-2 size-4" />
-                Create Your First Batch
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowUploadDialog(true)}
+                >
+                  <IconUpload className="mr-2 size-4" />
+                  Upload Demo CSV
+                </Button>
+                <Button onClick={() => setShowAddDialog(true)}>
+                  <IconPlus className="mr-2 size-4" />
+                  Create Your First Batch
+                </Button>
+              </div>
             }
           />
         </Card>
@@ -125,6 +165,12 @@ export const LstaAutomationContent = () => {
           open={showAddDialog}
           onOpenChange={setShowAddDialog}
           onAddBatch={handleAddBatch}
+        />
+        <CsvUploadDialog
+          open={showUploadDialog}
+          onOpenChange={setShowUploadDialog}
+          onUpload={uploadCsv}
+          isUploading={isUploading}
         />
       </div>
     );
