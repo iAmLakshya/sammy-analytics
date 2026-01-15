@@ -132,7 +132,7 @@ export const AutomationTable = ({
           <TableBody>
             {sortedTasks.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={8} className="h-32">
+                <TableCell colSpan={8}>
                   <EmptyState
                     variant="compact"
                     icon={IconFileSearch}
