@@ -1,21 +1,58 @@
 "use client";
 
 import { IconLoader2 } from "@tabler/icons-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { mockBatches } from "../data/mock.batches.data";
 import { useFetchLstaTasks } from "../hooks/use-fetch-lsta-tasks";
 import { useRetryLstaTask } from "../hooks/use-retry-lsta-task";
-import type { Batch } from "../types";
+import type { Batch, LstaTask, TaskFilters } from "../types";
+import { exportTasksToCsv } from "../utils/export-tasks";
 import { AddBatchDialog } from "./add-batch-dialog";
 import { AutomationKpiCards } from "./automation-kpi-cards";
 import { AutomationTable } from "./automation-table";
 import { BatchTabs } from "./batch-tabs";
+import { TaskFilterBar } from "./task-filter-bar";
+
+const DEFAULT_FILTERS: TaskFilters = {
+  searchQuery: "",
+  specialCase: null,
+  submitted: null,
+  statuses: [],
+};
+
+const filterTasks = (tasks: LstaTask[], filters: TaskFilters): LstaTask[] => {
+  return tasks.filter((task) => {
+    if (filters.searchQuery) {
+      const query = filters.searchQuery.toLowerCase();
+      const matchesSearch =
+        task.companyId.toLowerCase().includes(query) ||
+        task.leId.toLowerCase().includes(query) ||
+        (task.certificate?.toLowerCase().includes(query) ?? false);
+      if (!matchesSearch) return false;
+    }
+
+    if (filters.specialCase !== null && task.specialCase !== filters.specialCase) {
+      return false;
+    }
+
+    if (filters.submitted !== null && task.submitted !== filters.submitted) {
+      return false;
+    }
+
+    if (filters.statuses.length > 0 && !filters.statuses.includes(task.status)) {
+      return false;
+    }
+
+    return true;
+  });
+};
 
 export const LstaAutomationContent = () => {
   const [batches, setBatches] = useState<Batch[]>(mockBatches);
   const [activeBatchId, setActiveBatchId] = useState<string | null>(null);
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [page, setPage] = useState(1);
+  const [filters, setFilters] = useState<TaskFilters>(DEFAULT_FILTERS);
 
   const { data, isLoading, error } = useFetchLstaTasks({
     batchId: activeBatchId,
@@ -28,6 +65,11 @@ export const LstaAutomationContent = () => {
     isPending: isRetrying,
     variables: retryingTaskId,
   } = useRetryLstaTask();
+
+  const filteredTasks = useMemo(() => {
+    if (!data?.tasks) return [];
+    return filterTasks(data.tasks, filters);
+  }, [data?.tasks, filters]);
 
   const handleAddBatch = (
     batchData: Omit<Batch, "id" | "createdAt" | "submissionCount">
@@ -44,6 +86,11 @@ export const LstaAutomationContent = () => {
   const handleBatchChange = (batchId: string | null) => {
     setActiveBatchId(batchId);
     setPage(1);
+    setFilters(DEFAULT_FILTERS);
+  };
+
+  const handleExport = () => {
+    exportTasksToCsv(filteredTasks);
   };
 
   if (error) {
@@ -77,13 +124,20 @@ export const LstaAutomationContent = () => {
         ) : null}
       </div>
       <div className="space-y-4 px-4 lg:px-6">
+        {data && (
+          <TaskFilterBar
+            filters={filters}
+            onFiltersChange={setFilters}
+            onExport={handleExport}
+          />
+        )}
         {isLoading ? (
           <div className="flex h-64 items-center justify-center rounded-lg border">
             <IconLoader2 className="size-6 animate-spin text-muted-foreground" />
           </div>
         ) : data ? (
           <AutomationTable
-            tasks={data.tasks}
+            tasks={filteredTasks}
             onRetry={retryTask}
             retryingTaskId={isRetrying ? retryingTaskId : null}
             page={data.page}
