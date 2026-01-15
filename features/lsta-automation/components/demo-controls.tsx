@@ -1,10 +1,7 @@
 "use client";
 
-import { motion } from "motion/react";
-
 interface DemoControlsProps {
   isRunning: boolean;
-  progress: number;
   totalTasks: number;
   completedTasks: number;
   failedCount: number;
@@ -12,31 +9,24 @@ interface DemoControlsProps {
 
 export const DemoControls = ({
   isRunning,
-  progress,
   totalTasks,
   completedTasks,
   failedCount,
 }: DemoControlsProps) => {
-  const isComplete = progress === 100 && !isRunning;
+  const isComplete =
+    totalTasks > 0 && completedTasks === totalTasks && !isRunning;
 
   return (
-    <div className="flex items-center gap-3">
-      <div className="relative h-2 w-40 overflow-hidden rounded-full bg-muted">
-        <motion.div
-          style={{ willChange: "width" }}
-          className="absolute inset-y-0 left-0 rounded-full bg-primary"
-          initial={{ width: 0 }}
-          animate={{ width: `${progress}%` }}
-          transition={{ duration: 0.3, ease: "easeOut" }}
-        />
-      </div>
-      <span className="text-xs tabular-nums text-muted-foreground">
-        {isComplete ? (
-          failedCount > 0 ? `Completed with ${failedCount} failed` : "Processing complete"
-        ) : (
-          <>{completedTasks} of {totalTasks} tasks</>
-        )}
-      </span>
-    </div>
+    <span className="text-xs tabular-nums text-muted-foreground">
+      {isComplete ? (
+        failedCount > 0
+          ? `Completed with ${failedCount} failed`
+          : "Processing complete"
+      ) : (
+        <>
+          {completedTasks} of {totalTasks} tasks
+        </>
+      )}
+    </span>
   );
 };

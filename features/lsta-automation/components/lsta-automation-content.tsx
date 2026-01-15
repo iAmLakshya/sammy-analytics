@@ -2,7 +2,11 @@
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { IconClipboardList, IconLoader2, IconUpload } from "@tabler/icons-react";
+import {
+  IconClipboardList,
+  IconLoader2,
+  IconUpload,
+} from "@tabler/icons-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useDemoController } from "../hooks/use-demo-controller";
 import { useFetchLstaTasks } from "../hooks/use-fetch-lsta-tasks";
@@ -36,7 +40,10 @@ const filterTasks = (tasks: LstaTask[], filters: TaskFilters): LstaTask[] => {
       if (!matchesSearch) return false;
     }
 
-    if (filters.specialCase !== null && task.specialCase !== filters.specialCase) {
+    if (
+      filters.specialCase !== null &&
+      task.specialCase !== filters.specialCase
+    ) {
       return false;
     }
 
@@ -44,7 +51,10 @@ const filterTasks = (tasks: LstaTask[], filters: TaskFilters): LstaTask[] => {
       return false;
     }
 
-    if (filters.statuses.length > 0 && !filters.statuses.includes(task.status)) {
+    if (
+      filters.statuses.length > 0 &&
+      !filters.statuses.includes(task.status)
+    ) {
       return false;
     }
 
@@ -75,7 +85,7 @@ export const LstaAutomationContent = () => {
     variables: retryingTaskId,
   } = useRetryLstaTask();
 
-  const { isRunning, progress, totalTasks, completedTasks, startDemo } =
+  const { isRunning, totalTasks, completedTasks, startDemo } =
     useDemoController();
 
   const handleRetryTask = (taskId: string) => {
@@ -153,7 +163,7 @@ export const LstaAutomationContent = () => {
   if (batches.length === 0) {
     return (
       <div className="flex flex-col gap-6 py-4">
-        <Card className="mx-4 lg:mx-6">
+        <div className="mx-4 lg:mx-6">
           <EmptyState
             icon={IconClipboardList}
             title="Welcome to LSTA Automation"
@@ -165,7 +175,7 @@ export const LstaAutomationContent = () => {
               </Button>
             }
           />
-        </Card>
+        </div>
         <CsvUploadDialog
           open={showUploadDialog}
           onOpenChange={setShowUploadDialog}
@@ -176,7 +186,8 @@ export const LstaAutomationContent = () => {
     );
   }
 
-  const showControls = isRunning || progress === 100;
+  const showControls =
+    isRunning || (totalTasks > 0 && completedTasks === totalTasks);
 
   return (
     <div className="flex flex-col gap-6 py-4">
@@ -205,7 +216,6 @@ export const LstaAutomationContent = () => {
             {showControls ? (
               <DemoControls
                 isRunning={isRunning}
-                progress={progress}
                 totalTasks={totalTasks}
                 completedTasks={completedTasks}
                 failedCount={failedTaskCount}
