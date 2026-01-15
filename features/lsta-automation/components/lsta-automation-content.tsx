@@ -72,6 +72,7 @@ export const LstaAutomationContent = () => {
     batchId: string;
     taskIds: string[];
   } | null>(null);
+  const [pendingBatchName, setPendingBatchName] = useState<string | null>(null);
 
   const { data, isLoading, error } = useFetchLstaTasks({
     batchId: activeBatchId,
@@ -105,10 +106,7 @@ export const LstaAutomationContent = () => {
       setShowUploadDialog(false);
       const newBatch: Batch = {
         id: result.batchId,
-        name: new Date().toLocaleString("en-US", {
-          month: "long",
-          year: "numeric",
-        }),
+        name: pendingBatchName ?? "Untitled Batch",
         dateRange: {
           start: new Date().toISOString(),
           end: new Date().toISOString(),
@@ -119,8 +117,14 @@ export const LstaAutomationContent = () => {
       setBatches((prev) => [...prev, newBatch]);
       setActiveBatchId(result.batchId);
       setPendingAutoStart({ batchId: result.batchId, taskIds: result.taskIds });
+      setPendingBatchName(null);
     },
   });
+
+  const handleUploadCsv = (csvContent: string, batchName: string) => {
+    setPendingBatchName(batchName);
+    uploadCsv(csvContent);
+  };
 
   const autoStartTriggered = useRef(false);
   useEffect(() => {
@@ -179,7 +183,7 @@ export const LstaAutomationContent = () => {
         <CsvUploadDialog
           open={showUploadDialog}
           onOpenChange={setShowUploadDialog}
-          onUpload={uploadCsv}
+          onUpload={handleUploadCsv}
           isUploading={isUploading}
         />
       </div>
@@ -248,7 +252,7 @@ export const LstaAutomationContent = () => {
       <CsvUploadDialog
         open={showUploadDialog}
         onOpenChange={setShowUploadDialog}
-        onUpload={uploadCsv}
+        onUpload={handleUploadCsv}
         isUploading={isUploading}
       />
     </div>
