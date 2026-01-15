@@ -8,11 +8,12 @@ import {
   generateStepDuration,
   shouldTaskFail,
   getFailureStep,
+  shouldBeNotReady,
 } from "../utils/demo-task-processor";
 
 interface ProcessTaskPayload {
   taskId: string;
-  action: "start" | "complete-step" | "fail" | "complete";
+  action: "start" | "complete-step" | "fail" | "complete" | "not-ready";
   failureStep?: string;
 }
 
@@ -34,6 +35,7 @@ interface TaskProgress {
   currentStep: number;
   willFail: boolean;
   failureStep?: string;
+  isNotReady: boolean;
 }
 
 export const useDemoController = () => {
@@ -56,7 +58,7 @@ export const useDemoController = () => {
     async (taskProgress: TaskProgress): Promise<boolean> => {
       if (abortRef.current) return false;
 
-      const { taskId, currentStep, willFail, failureStep } = taskProgress;
+      const { taskId, currentStep, willFail, failureStep, isNotReady } = taskProgress;
 
       if (willFail && failureStep) {
         const failureStepIndex = [
@@ -67,7 +69,11 @@ export const useDemoController = () => {
         ].indexOf(failureStep);
 
         if (currentStep >= failureStepIndex) {
-          await processTaskApi({ taskId, action: "fail", failureStep });
+          if (isNotReady) {
+            await processTaskApi({ taskId, action: "not-ready", failureStep });
+          } else {
+            await processTaskApi({ taskId, action: "fail", failureStep });
+          }
           invalidateQueries();
           return true;
         }
@@ -98,6 +104,7 @@ export const useDemoController = () => {
 
         const willFail = forceSuccess ? false : shouldTaskFail();
         const failureStep = willFail ? getFailureStep() : undefined;
+        const isNotReady = willFail && failureStep ? shouldBeNotReady(failureStep) : false;
 
         let currentStep = 0;
         let isComplete = false;
@@ -113,6 +120,7 @@ export const useDemoController = () => {
             currentStep,
             willFail,
             failureStep,
+            isNotReady,
           });
 
           currentStep++;
