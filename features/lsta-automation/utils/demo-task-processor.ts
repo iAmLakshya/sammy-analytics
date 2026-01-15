@@ -1,6 +1,13 @@
 import type { CsvRow } from "./csv-parser";
 import { PIPELINE_STEPS, type ValidationCheck } from "../types";
 
+const PROCESSING_DURATION_MIN = 2000;
+const PROCESSING_DURATION_RANGE = 4000;
+const STEP_DURATION_MIN = 500;
+const STEP_DURATION_RANGE = 1000;
+const TASK_FAILURE_PROBABILITY = 0.35;
+const TASK_NOT_READY_PROBABILITY = 0.12;
+
 const GERMAN_COMPANY_PREFIXES = [
   "Müller",
   "Schmidt",
@@ -33,19 +40,19 @@ const GERMAN_COMPANY_SUFFIXES = [
 ];
 
 export const generateProcessingDuration = (): number => {
-  return Math.floor(Math.random() * 4000) + 2000;
+  return Math.floor(Math.random() * PROCESSING_DURATION_RANGE) + PROCESSING_DURATION_MIN;
 };
 
 export const generateStepDuration = (): number => {
-  return Math.floor(Math.random() * 1000) + 500;
+  return Math.floor(Math.random() * STEP_DURATION_RANGE) + STEP_DURATION_MIN;
 };
 
 export const shouldTaskFail = (): boolean => {
-  return Math.random() < 0.35;
+  return Math.random() < TASK_FAILURE_PROBABILITY;
 };
 
 export const shouldTaskBeNotReady = (): boolean => {
-  return Math.random() < 0.12;
+  return Math.random() < TASK_NOT_READY_PROBABILITY;
 };
 
 export const shouldRequireReview = (): boolean => {
