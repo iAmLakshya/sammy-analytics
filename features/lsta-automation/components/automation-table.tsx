@@ -59,16 +59,22 @@ const statusConfig: Record<TaskStatus, { label: string; className: string }> = {
     className:
       "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400",
   },
+  "review-required": {
+    label: "Needs Review",
+    className:
+      "bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-400",
+  },
 };
 
 const sortTasks = (tasks: LstaTask[]): LstaTask[] => {
   const priority: Record<TaskStatus, number> = {
     failed: 0,
-    "not-ready": 1,
-    processing: 2,
-    retrying: 3,
-    pending: 4,
-    completed: 5,
+    "review-required": 1,
+    "not-ready": 2,
+    processing: 3,
+    retrying: 4,
+    pending: 5,
+    completed: 6,
   };
   return [...tasks].sort((a, b) => priority[a.status] - priority[b.status]);
 };
@@ -87,6 +93,10 @@ interface AutomationTableProps {
   tasks: LstaTask[];
   onRetry?: (taskId: string) => void;
   retryingTaskId?: string | null;
+  onApprove?: (taskId: string) => void;
+  onReject?: (taskId: string) => void;
+  approvingTaskId?: string | null;
+  rejectingTaskId?: string | null;
   page: number;
   totalPages: number;
   onPageChange: (page: number) => void;
@@ -96,6 +106,10 @@ export const AutomationTable = ({
   tasks,
   onRetry,
   retryingTaskId,
+  onApprove,
+  onReject,
+  approvingTaskId,
+  rejectingTaskId,
   page,
   totalPages,
   onPageChange,
@@ -250,6 +264,10 @@ export const AutomationTable = ({
                             task={task}
                             onRetry={onRetry}
                             isRetrying={retryingTaskId === task.id}
+                            onApprove={onApprove}
+                            onReject={onReject}
+                            isApproving={approvingTaskId === task.id}
+                            isRejecting={rejectingTaskId === task.id}
                           />
                         </motion.div>
                       </td>

@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { IconChevronRight, IconRefresh } from "@tabler/icons-react";
+import { IconCheck, IconChevronRight, IconRefresh, IconX } from "@tabler/icons-react";
 import { AnimatePresence, motion } from "motion/react";
 import { Fragment, useMemo, useState } from "react";
 import type { LstaTask, LstaTaskStep } from "../types";
@@ -38,12 +38,20 @@ interface ExpandableRowContentProps {
   task: LstaTask;
   onRetry?: (taskId: string) => void;
   isRetrying?: boolean;
+  onApprove?: (taskId: string) => void;
+  onReject?: (taskId: string) => void;
+  isApproving?: boolean;
+  isRejecting?: boolean;
 }
 
 export const ExpandableRowContent = ({
   task,
   onRetry,
   isRetrying,
+  onApprove,
+  onReject,
+  isApproving,
+  isRejecting,
 }: ExpandableRowContentProps) => {
   const { steps, status } = task;
   const currentStepId = getCurrentStepId(task);
@@ -55,6 +63,7 @@ export const ExpandableRowContent = ({
   const [selectedIndex, setSelectedIndex] = useState(defaultSelectedIndex);
   const selectedStep = steps[selectedIndex];
   const showRetry = status === "failed" && onRetry;
+  const showReviewActions = status === "review-required" && onApprove && onReject;
 
   return (
     <AnimatePresence>
@@ -98,6 +107,30 @@ export const ExpandableRowContent = ({
                 />
                 {isRetrying ? "Retrying..." : "Retry"}
               </Button>
+            )}
+            {showReviewActions && (
+              <div className="ml-auto flex shrink-0 gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => onReject(task.id)}
+                  disabled={isApproving || isRejecting}
+                  className="h-7 px-2 text-xs"
+                >
+                  <IconX className="mr-1 size-3" />
+                  {isRejecting ? "Rejecting..." : "Reject"}
+                </Button>
+                <Button
+                  variant="default"
+                  size="sm"
+                  onClick={() => onApprove(task.id)}
+                  disabled={isApproving || isRejecting}
+                  className="h-7 px-2 text-xs"
+                >
+                  <IconCheck className="mr-1 size-3" />
+                  {isApproving ? "Approving..." : "Approve"}
+                </Button>
+              </div>
             )}
           </div>
           <StepDetailPanel

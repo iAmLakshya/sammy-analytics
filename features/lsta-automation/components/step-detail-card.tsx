@@ -5,7 +5,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { IconCheck, IconClock, IconLoader2, IconRefresh, IconX } from "@tabler/icons-react";
+import { IconCheck, IconClock, IconEye, IconLoader2, IconRefresh, IconX } from "@tabler/icons-react";
 import type { LstaTaskStep } from "../types";
 import { ValidationCheckList } from "./validation-check-list";
 
@@ -52,6 +52,13 @@ export const StepPill = ({
       ? "bg-amber-50 dark:bg-amber-950/50"
       : "bg-white dark:bg-background";
     textClass = "text-amber-600 dark:text-amber-400";
+  } else if (status === "review-required") {
+    icon = <IconEye className="size-3" />;
+    borderClass = "border-purple-500";
+    bgClass = isSelected
+      ? "bg-purple-50 dark:bg-purple-950/50"
+      : "bg-white dark:bg-background";
+    textClass = "text-purple-600 dark:text-purple-400";
   } else if (isInProgress) {
     icon = <IconLoader2 className="size-3 animate-spin" />;
     borderClass = "border-amber-500";
@@ -92,7 +99,7 @@ export const StepPill = ({
 interface StepDetailPanelProps {
   step: LstaTaskStep;
   isActive: boolean;
-  taskStatus?: "pending" | "completed" | "processing" | "failed" | "retrying" | "not-ready";
+  taskStatus?: "pending" | "completed" | "processing" | "failed" | "retrying" | "not-ready" | "review-required";
 }
 
 const formatOutputKey = (key: string): string => {
@@ -174,6 +181,25 @@ export const StepDetailPanel = ({
             <div className="flex items-center gap-1.5 text-amber-600 dark:text-amber-400">
               <IconClock className="size-3" />
               {statusDescription || "Waiting for source data..."}
+            </div>
+          )}
+
+          {status === "review-required" && (
+            <div className="space-y-2">
+              <div className="flex items-center gap-1.5 text-purple-600 dark:text-purple-400">
+                <IconEye className="size-3" />
+                {statusDescription || "Awaiting human approval"}
+              </div>
+              {step.elsterUrl && (
+                <a
+                  href={step.elsterUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-xs text-purple-600 underline hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
+                >
+                  View in ELSTER Portal
+                </a>
+              )}
             </div>
           )}
         </>

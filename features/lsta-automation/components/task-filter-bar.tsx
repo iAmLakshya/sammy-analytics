@@ -24,6 +24,7 @@ import type { TaskFilters, TaskStatus } from "../types";
 const STATUS_OPTIONS: { value: TaskStatus; label: string }[] = [
   { value: "pending", label: "Pending" },
   { value: "not-ready", label: "Not Ready" },
+  { value: "review-required", label: "Needs Review" },
   { value: "processing", label: "Processing" },
   { value: "completed", label: "Completed" },
   { value: "failed", label: "Failed" },

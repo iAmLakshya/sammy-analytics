@@ -1,7 +1,7 @@
 "use client";
 
 import { InfoTooltip } from "@/components/ui/info-tooltip";
-import { IconAlertTriangle, IconClock } from "@tabler/icons-react";
+import { IconAlertTriangle, IconClock, IconEye } from "@tabler/icons-react";
 import type { CountByStatus } from "../types";
 
 interface AutomationKpiCardsProps {
@@ -15,6 +15,7 @@ export const AutomationKpiCards = ({
 }: AutomationKpiCardsProps) => {
   const failedCount = countByStatus.failed;
   const notReadyCount = countByStatus.notReady;
+  const reviewRequiredCount = countByStatus.reviewRequired;
   const avgTime = 6.4;
   const progressPercent =
     totalCount > 0 ? (countByStatus.completed / totalCount) * 100 : 0;
@@ -57,6 +58,25 @@ export const AutomationKpiCards = ({
             }`}
           >
             {failedCount}
+          </p>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-0.5 px-6">
+        <div className="flex items-center gap-1">
+          <span className="text-sm text-muted-foreground">Needs Review</span>
+          <InfoTooltip content="Tasks awaiting human approval before continuing." />
+        </div>
+        <div className="flex items-center gap-1.5">
+          {reviewRequiredCount > 0 && (
+            <IconEye className="size-4 text-purple-600 dark:text-purple-400" />
+          )}
+          <p
+            className={`text-xl font-semibold tabular-nums ${
+              reviewRequiredCount > 0 ? "text-purple-600 dark:text-purple-400" : ""
+            }`}
+          >
+            {reviewRequiredCount}
           </p>
         </div>
       </div>
