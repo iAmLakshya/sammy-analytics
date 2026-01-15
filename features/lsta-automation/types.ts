@@ -166,3 +166,37 @@ export const STEP_LABELS: Record<PipelineStep, string> = {
   "tax-submission": "Submit to ELSTER",
   "document-upload": "Upload to Personio",
 };
+
+export interface StepDefinition {
+  step: PipelineStep;
+  title: string;
+  description: string;
+  statusDescription: string;
+}
+
+export const STEP_DEFINITIONS: Record<PipelineStep, StepDefinition> = {
+  "payroll-download": {
+    step: "payroll-download",
+    title: "Download LSTA",
+    description: "Download payroll data from LSTA system",
+    statusDescription: "Downloading LSTA file",
+  },
+  "data-extraction": {
+    step: "data-extraction",
+    title: "Extract & Map",
+    description: "Extract and map data fields",
+    statusDescription: "Extracting and mapping data",
+  },
+  "tax-submission": {
+    step: "tax-submission",
+    title: "Submit to ELSTER",
+    description: "Submit tax data to ELSTER portal",
+    statusDescription: "Submitting to ELSTER",
+  },
+  "document-upload": {
+    step: "document-upload",
+    title: "Upload to Personio",
+    description: "Upload documents to Personio system",
+    statusDescription: "Uploading to Personio",
+  },
+};
