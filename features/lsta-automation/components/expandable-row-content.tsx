@@ -4,35 +4,9 @@ import { Button } from "@/components/ui/button";
 import { IconCheck, IconChevronRight, IconRefresh, IconX } from "@tabler/icons-react";
 import { AnimatePresence, motion } from "motion/react";
 import { Fragment, useMemo, useState } from "react";
-import type { LstaTask, LstaTaskStep } from "../types";
+import type { LstaTask } from "../types";
+import { getCurrentStepId, getDefaultSelectedStepIndex } from "../utils/task-helpers";
 import { StepDetailPanel, StepPill } from "./step-detail-card";
-
-const getCurrentStepId = (task: LstaTask): string | null => {
-  if (task.status === "processing") {
-    const activeStep = task.steps.find(
-      (s) => s.status === "pending" && s.startedAt
-    );
-    return activeStep?.step ?? null;
-  }
-  return null;
-};
-
-const getDefaultSelectedIndex = (
-  steps: LstaTaskStep[],
-  currentStepId: string | null
-): number => {
-  if (currentStepId) {
-    const idx = steps.findIndex((s) => s.step === currentStepId);
-    if (idx !== -1) return idx;
-  }
-  const failedIdx = steps.findIndex((s) => s.status === "failed");
-  if (failedIdx !== -1) return failedIdx;
-  const lastCompleted = steps.reduceRight(
-    (acc, s, i) => (acc === -1 && s.status === "completed" ? i : acc),
-    -1
-  );
-  return lastCompleted !== -1 ? lastCompleted : 0;
-};
 
 interface ExpandableRowContentProps {
   task: LstaTask;
@@ -57,7 +31,7 @@ export const ExpandableRowContent = ({
   const currentStepId = getCurrentStepId(task);
 
   const defaultSelectedIndex = useMemo(() => {
-    return getDefaultSelectedIndex(steps, currentStepId);
+    return getDefaultSelectedStepIndex(steps, currentStepId);
   }, [steps, currentStepId]);
 
   const [selectedIndex, setSelectedIndex] = useState(defaultSelectedIndex);

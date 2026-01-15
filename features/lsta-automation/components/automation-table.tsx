@@ -24,70 +24,12 @@ import {
 } from "@tabler/icons-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
-import type { LstaTask, TaskStatus } from "../types";
+import type { LstaTask } from "../types";
+import { getCurrentStepId, sortTasksByPriority } from "../utils/task-helpers";
+import { TASK_STATUS_CONFIG } from "../utils/status-config";
 import { EmptyState } from "./empty-state";
 import { ExpandableRowContent } from "./expandable-row-content";
 import { StepProgressIndicator } from "./step-progress-indicator";
-
-const statusConfig: Record<TaskStatus, { label: string; className: string }> = {
-  pending: {
-    label: "Pending",
-    className: "bg-muted text-muted-foreground",
-  },
-  processing: {
-    label: "Processing",
-    className:
-      "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400 animate-pulse",
-  },
-  completed: {
-    label: "Completed",
-    className:
-      "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400",
-  },
-  failed: {
-    label: "Failed",
-    className:
-      "bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-400",
-  },
-  retrying: {
-    label: "Retrying",
-    className:
-      "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400",
-  },
-  "not-ready": {
-    label: "Not Ready",
-    className:
-      "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400",
-  },
-  "review-required": {
-    label: "Needs Review",
-    className:
-      "bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-400",
-  },
-};
-
-const sortTasks = (tasks: LstaTask[]): LstaTask[] => {
-  const priority: Record<TaskStatus, number> = {
-    failed: 0,
-    "review-required": 1,
-    "not-ready": 2,
-    processing: 3,
-    retrying: 4,
-    pending: 5,
-    completed: 6,
-  };
-  return [...tasks].sort((a, b) => priority[a.status] - priority[b.status]);
-};
-
-const getCurrentStepId = (task: LstaTask): string | null => {
-  if (task.status === "processing") {
-    const activeStep = task.steps.find(
-      (s) => s.status === "pending" && s.startedAt
-    );
-    return activeStep?.step ?? null;
-  }
-  return null;
-};
 
 interface AutomationTableProps {
   tasks: LstaTask[];
@@ -114,7 +56,7 @@ export const AutomationTable = ({
   totalPages,
   onPageChange,
 }: AutomationTableProps) => {
-  const sortedTasks = sortTasks(tasks);
+  const sortedTasks = sortTasksByPriority(tasks);
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
 
   const toggleExpand = (id: string) => {
@@ -163,7 +105,7 @@ export const AutomationTable = ({
               </TableRow>
             ) : (
               sortedTasks.map((task) => {
-                const config = statusConfig[task.status];
+                const config = TASK_STATUS_CONFIG[task.status];
                 const isExpanded = expandedIds.has(task.id);
                 const isFailed = task.status === "failed";
                 const currentStepId = getCurrentStepId(task);
