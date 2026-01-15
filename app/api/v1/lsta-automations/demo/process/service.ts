@@ -3,12 +3,13 @@ import {
   generateEnrichedData,
   getFailureReason,
   generateFailedValidationChecks,
+  generateNotReadyValidationChecks,
 } from "@/features/lsta-automation/utils/demo-task-processor";
 import type { LstaTask, LstaTaskStep, ValidationCheck } from "@/features/lsta-automation/types";
 import type { ServiceError, NotFoundError } from "@/shared/utils/server/errors";
 import type { CoreDependencies } from "@/shared/utils/server/wrap-route-handler";
 
-type ProcessAction = "start" | "complete-step" | "fail" | "complete";
+type ProcessAction = "start" | "complete-step" | "fail" | "complete" | "not-ready";
 
 interface ProcessTaskParams {
   taskId: string;
@@ -343,6 +344,27 @@ export const processTask =
               enrichedData
             );
           }
+        }
+        break;
+      }
+
+      case "not-ready": {
+        const notReadyStepId = params.failureStep ?? "payroll-download";
+        const notReadyStepIndex = STEP_IDS.indexOf(notReadyStepId);
+
+        task.status = "not-ready";
+        task.statusDescription = "Waiting for source data...";
+        task.updatedAt = now;
+
+        if (notReadyStepIndex >= 0 && task.steps[notReadyStepIndex]) {
+          const notReadyStep = task.steps[notReadyStepIndex];
+          notReadyStep.status = "not-ready";
+          notReadyStep.endedAt = now;
+          notReadyStep.statusDescription = "Waiting for source system";
+          notReadyStep.validationChecks = generateNotReadyValidationChecks(
+            notReadyStepId,
+            task.leId
+          );
         }
         break;
       }

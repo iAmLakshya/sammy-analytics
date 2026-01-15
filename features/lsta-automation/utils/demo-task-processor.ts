@@ -44,6 +44,11 @@ export const shouldTaskFail = (): boolean => {
   return Math.random() < 0.35;
 };
 
+export const shouldBeNotReady = (stepId: string): boolean => {
+  if (stepId !== "payroll-download") return false;
+  return Math.random() < 0.4;
+};
+
 export const generateEnrichedData = (
   row: CsvRow
 ): {
@@ -310,4 +315,34 @@ export const generateFailedValidationChecks = (
     default:
       return [];
   }
+};
+
+export const generateNotReadyValidationChecks = (
+  stepId: string,
+  leId: string
+): ValidationCheck[] => {
+  if (stepId !== "payroll-download") return [];
+
+  return [
+    {
+      key: "status-accepted",
+      title: "Status",
+      value: null,
+      expected: "Accepted",
+      actual: "Pending review",
+      description: "Payroll submission awaiting review in source system",
+      downloadLink: null,
+      status: "failed",
+    },
+    {
+      key: "lsta-file-found",
+      title: "LSTA File",
+      value: null,
+      expected: `payroll_${leId.toLowerCase()}.csv`,
+      actual: "Not yet available",
+      description: "Source file will be available after review completion",
+      downloadLink: null,
+      status: "failed",
+    },
+  ];
 };
