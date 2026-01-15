@@ -7,8 +7,8 @@ import {
   generateProcessingDuration,
   generateStepDuration,
   shouldTaskFail,
+  shouldTaskBeNotReady,
   getFailureStep,
-  shouldBeNotReady,
 } from "../utils/demo-task-processor";
 
 interface ProcessTaskPayload {
@@ -35,7 +35,6 @@ interface TaskProgress {
   currentStep: number;
   willFail: boolean;
   failureStep?: string;
-  isNotReady: boolean;
 }
 
 export const useDemoController = () => {
@@ -58,7 +57,7 @@ export const useDemoController = () => {
     async (taskProgress: TaskProgress): Promise<boolean> => {
       if (abortRef.current) return false;
 
-      const { taskId, currentStep, willFail, failureStep, isNotReady } = taskProgress;
+      const { taskId, currentStep, willFail, failureStep } = taskProgress;
 
       if (willFail && failureStep) {
         const failureStepIndex = [
@@ -69,11 +68,7 @@ export const useDemoController = () => {
         ].indexOf(failureStep);
 
         if (currentStep >= failureStepIndex) {
-          if (isNotReady) {
-            await processTaskApi({ taskId, action: "not-ready", failureStep });
-          } else {
-            await processTaskApi({ taskId, action: "fail", failureStep });
-          }
+          await processTaskApi({ taskId, action: "fail", failureStep });
           invalidateQueries();
           return true;
         }
@@ -99,12 +94,24 @@ export const useDemoController = () => {
       activeTasksRef.current.add(taskId);
 
       try {
+        const isNotReady = !forceSuccess && shouldTaskBeNotReady();
+
+        if (isNotReady) {
+          await processTaskApi({ taskId, action: "start" });
+          invalidateQueries();
+          await new Promise((resolve) => setTimeout(resolve, generateStepDuration()));
+          if (abortRef.current) return;
+          await processTaskApi({ taskId, action: "not-ready", failureStep: "payroll-download" });
+          invalidateQueries();
+          setCompletedTasks((prev) => prev + 1);
+          return;
+        }
+
         await processTaskApi({ taskId, action: "start" });
         invalidateQueries();
 
         const willFail = forceSuccess ? false : shouldTaskFail();
         const failureStep = willFail ? getFailureStep() : undefined;
-        const isNotReady = willFail && failureStep ? shouldBeNotReady(failureStep) : false;
 
         let currentStep = 0;
         let isComplete = false;
@@ -120,7 +127,6 @@ export const useDemoController = () => {
             currentStep,
             willFail,
             failureStep,
-            isNotReady,
           });
 
           currentStep++;

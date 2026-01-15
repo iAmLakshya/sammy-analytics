@@ -44,9 +44,8 @@ export const shouldTaskFail = (): boolean => {
   return Math.random() < 0.35;
 };
 
-export const shouldBeNotReady = (stepId: string): boolean => {
-  if (stepId !== "payroll-download") return false;
-  return Math.random() < 0.4;
+export const shouldTaskBeNotReady = (): boolean => {
+  return Math.random() < 0.12;
 };
 
 export const generateEnrichedData = (
