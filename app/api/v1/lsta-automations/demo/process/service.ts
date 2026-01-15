@@ -6,11 +6,9 @@ import {
   generateNotReadyValidationChecks,
   generateReviewRequiredValidationChecks,
 } from "@/features/lsta-automation/utils/demo-task-processor";
-import type { LstaTask, LstaTaskStep, ValidationCheck } from "@/features/lsta-automation/types";
+import type { LstaTask, LstaTaskStep, ProcessAction, ValidationCheck } from "@/features/lsta-automation/types";
 import type { ServiceError, NotFoundError } from "@/shared/utils/server/errors";
 import type { CoreDependencies } from "@/shared/utils/server/wrap-route-handler";
-
-type ProcessAction = "start" | "complete-step" | "fail" | "complete" | "not-ready" | "review-required" | "approve" | "reject";
 
 interface ProcessTaskParams {
   taskId: string;
@@ -440,7 +438,7 @@ export const processTask =
       case "reject": {
         const taxSubmissionIndex = STEP_IDS.indexOf("tax-submission");
 
-        task.status = "failed";
+        task.status = "rejected";
         task.statusDescription = "Rejected during human review";
         task.updatedAt = now;
 
