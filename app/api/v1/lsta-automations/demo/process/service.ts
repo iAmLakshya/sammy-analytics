@@ -48,8 +48,11 @@ const getCurrentStepIndex = (steps: LstaTaskStep[]): number => {
 const createValidationChecks = (
   stepId: string,
   leId: string,
-  enrichedData: { companyName: string; sumCheck: string; taxIdLast4: string; confirmationNumber: string }
+  enrichedData: { companyName: string; sumCheck: string; taxIdLast4: string }
 ): ValidationCheck[] => {
+  const targetMonth = new Date().toLocaleString("en-US", { month: "long", year: "numeric" });
+  const pdfFileName = `lsta_${leId.toLowerCase()}.pdf`;
+
   const baseChecks: Record<string, ValidationCheck[]> = {
     "payroll-download": [
       {
@@ -63,6 +66,16 @@ const createValidationChecks = (
         status: "passed",
       },
       {
+        key: "target-month",
+        title: "Target Month",
+        value: targetMonth,
+        expected: null,
+        actual: null,
+        description: "Target reporting period for this submission",
+        downloadLink: null,
+        status: "passed",
+      },
+      {
         key: "lsta-file-found",
         title: "LSTA File",
         value: `payroll_${leId.toLowerCase()}.csv`,
@@ -70,6 +83,26 @@ const createValidationChecks = (
         actual: null,
         description: "Source payroll file from LSTA system",
         downloadLink: `/downloads/payroll_${leId.toLowerCase()}.csv`,
+        status: "passed",
+      },
+      {
+        key: "le-number-consistent",
+        title: "LE Number",
+        value: leId,
+        expected: null,
+        actual: null,
+        description: "Legal entity identifier matches across systems",
+        downloadLink: null,
+        status: "passed",
+      },
+      {
+        key: "no-manual-wage-tax",
+        title: "Manual Wage Tax",
+        value: "None found",
+        expected: null,
+        actual: null,
+        description: "No manual wage tax document conflicts detected",
+        downloadLink: null,
         status: "passed",
       },
     ],
@@ -80,7 +113,7 @@ const createValidationChecks = (
         value: enrichedData.companyName,
         expected: null,
         actual: null,
-        description: "Legal entity name extracted correctly",
+        description: "Legal entity name extracted correctly from payroll data",
         downloadLink: null,
         status: "passed",
       },
@@ -107,6 +140,16 @@ const createValidationChecks = (
         status: "passed",
       },
       {
+        key: "le-number-consistent",
+        title: "LE Number",
+        value: leId,
+        expected: null,
+        actual: null,
+        description: "Legal entity number consistent with submission",
+        downloadLink: null,
+        status: "passed",
+      },
+      {
         key: "sum-check",
         title: "Sum Check",
         value: enrichedData.sumCheck,
@@ -117,12 +160,22 @@ const createValidationChecks = (
         status: "passed",
       },
       {
-        key: "confirmation",
-        title: "Confirmation Number",
-        value: enrichedData.confirmationNumber,
+        key: "downloaded-pdf",
+        title: "Certificate PDF",
+        value: pdfFileName,
         expected: null,
         actual: null,
-        description: "ELSTER submission confirmation",
+        description: "Tax certificate downloaded from ELSTER",
+        downloadLink: `/downloads/${pdfFileName}`,
+        status: "passed",
+      },
+      {
+        key: "no-existing-doc",
+        title: "Existing Document",
+        value: "None",
+        expected: null,
+        actual: null,
+        description: "No duplicate submission detected",
         downloadLink: null,
         status: "passed",
       },
@@ -139,13 +192,23 @@ const createValidationChecks = (
         status: "passed",
       },
       {
+        key: "sum-check",
+        title: "Sum Check",
+        value: enrichedData.sumCheck,
+        expected: null,
+        actual: null,
+        description: "Document amounts match submission totals",
+        downloadLink: null,
+        status: "passed",
+      },
+      {
         key: "uploaded-pdf",
         title: "Uploaded PDF",
-        value: `lsta_${leId.toLowerCase()}.pdf`,
+        value: pdfFileName,
         expected: null,
         actual: null,
         description: "Certificate uploaded to Personio",
-        downloadLink: `/downloads/lsta_${leId.toLowerCase()}.pdf`,
+        downloadLink: `/downloads/${pdfFileName}`,
         status: "passed",
       },
     ],
