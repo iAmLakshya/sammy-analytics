@@ -70,13 +70,25 @@ export const LstaAutomationContent = () => {
   });
 
   const {
-    mutate: retryTask,
+    mutate: retryTaskMutation,
     isPending: isRetrying,
     variables: retryingTaskId,
   } = useRetryLstaTask();
 
   const { isRunning, progress, totalTasks, completedTasks, startDemo } =
     useDemoController();
+
+  const handleRetryTask = (taskId: string) => {
+    retryTaskMutation(taskId, {
+      onSuccess: () => {
+        if (activeBatchId) {
+          setTimeout(() => {
+            startDemo(activeBatchId, [taskId]);
+          }, 300);
+        }
+      },
+    });
+  };
 
   const { uploadCsv, isUploading } = useUploadDemoCsv({
     onSuccess: (result) => {
@@ -215,7 +227,7 @@ export const LstaAutomationContent = () => {
         ) : data ? (
           <AutomationTable
             tasks={filteredTasks}
-            onRetry={retryTask}
+            onRetry={handleRetryTask}
             retryingTaskId={isRetrying ? retryingTaskId : null}
             page={data.page}
             totalPages={data.totalPages}
