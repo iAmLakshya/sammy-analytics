@@ -22,7 +22,7 @@ export const EmptyState = ({
     <div
       className={cn(
         "flex items-center justify-center rounded-lg border border-dashed",
-        variant === "default" ? "h-64" : "h-32"
+        variant === "default" ? "h-64" : "min-h-32 py-6"
       )}
     >
       <div className="max-w-md px-4 text-center">
