@@ -82,7 +82,6 @@ export const LstaAutomationContent = () => {
     totalTasks,
     completedTasks,
     startDemo,
-    stopDemo,
     retryFailed,
   } = useDemoController();
 
@@ -211,7 +210,6 @@ export const LstaAutomationContent = () => {
                 totalTasks={totalTasks}
                 completedTasks={completedTasks}
                 failedCount={failedTaskIds.length}
-                onStop={stopDemo}
                 onRetryFailed={handleRetryFailed}
               />
             ) : (

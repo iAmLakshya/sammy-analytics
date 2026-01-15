@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { IconPlayerPause, IconRefresh } from "@tabler/icons-react";
+import { IconRefresh } from "@tabler/icons-react";
 import { motion } from "motion/react";
 
 interface DemoControlsProps {
@@ -11,7 +11,6 @@ interface DemoControlsProps {
   totalTasks: number;
   completedTasks: number;
   failedCount: number;
-  onStop: () => void;
   onRetryFailed: () => void;
 }
 
@@ -22,7 +21,6 @@ export const DemoControls = ({
   totalTasks,
   completedTasks,
   failedCount,
-  onStop,
   onRetryFailed,
 }: DemoControlsProps) => {
   const isComplete = progress === 100 && !isRunning && !isRetrying;
@@ -30,18 +28,6 @@ export const DemoControls = ({
 
   return (
     <div className="flex items-center gap-3">
-      {isRunning && (
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={onStop}
-          className="cursor-pointer gap-1.5"
-        >
-          <IconPlayerPause className="size-4" />
-          Stop
-        </Button>
-      )}
-
       {showRetryButton && (
         <Button
           size="sm"

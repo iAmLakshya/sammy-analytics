@@ -2,6 +2,7 @@ import type { CsvRow } from "@/features/lsta-automation/utils/csv-parser";
 import type { LstaTask, LstaTaskStep } from "@/features/lsta-automation/types";
 import type { ServiceError } from "@/shared/utils/server/errors";
 import type { CoreDependencies } from "@/shared/utils/server/wrap-route-handler";
+import { uploadedBatches } from "../../store";
 
 interface CreateDemoBatchParams {
   rows: CsvRow[];
@@ -53,11 +54,6 @@ const generateTaskId = (): string => {
   return `demo-task-${taskIdCounter}`;
 };
 
-export const demoBatches: Map<
-  string,
-  { id: string; name: string; tasks: LstaTask[] }
-> = new Map();
-
 export const createDemoBatch =
   (_dependencies: CoreDependencies) =>
   async (
@@ -96,7 +92,7 @@ export const createDemoBatch =
       };
     });
 
-    demoBatches.set(batchId, {
+    uploadedBatches.set(batchId, {
       id: batchId,
       name: batchName,
       tasks,

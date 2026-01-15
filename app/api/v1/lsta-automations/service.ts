@@ -5,7 +5,7 @@ import {
 import type { LstaTask, LstaTaskListResponse } from "@/features/lsta-automation/types";
 import type { ServiceError } from "@/shared/utils/server/errors";
 import type { CoreDependencies } from "@/shared/utils/server/wrap-route-handler";
-import { demoBatches } from "./demo/upload/service";
+import { uploadedBatches } from "./store";
 
 interface ListParams {
   batchId?: string;
@@ -14,8 +14,8 @@ interface ListParams {
 }
 
 const getAllTasks = (): LstaTask[] => {
-  const demoTasks = Array.from(demoBatches.values()).flatMap((b) => b.tasks);
-  return [...mockLstaTasks, ...demoTasks];
+  const uploadedTasks = Array.from(uploadedBatches.values()).flatMap((b) => b.tasks);
+  return [...mockLstaTasks, ...uploadedTasks];
 };
 
 export const getLstaTaskList =

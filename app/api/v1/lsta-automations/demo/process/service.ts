@@ -1,4 +1,4 @@
-import { demoBatches } from "../upload/service";
+import { uploadedBatches } from "../../store";
 import {
   generateEnrichedData,
   getFailureReason,
@@ -29,7 +29,7 @@ const STEP_IDS = [
 const findTaskById = (
   taskId: string
 ): { batch: { id: string; name: string; tasks: LstaTask[] }; task: LstaTask; taskIndex: number } | null => {
-  for (const batch of demoBatches.values()) {
+  for (const batch of uploadedBatches.values()) {
     const taskIndex = batch.tasks.findIndex((t) => t.id === taskId);
     if (taskIndex !== -1) {
       return { batch, task: batch.tasks[taskIndex], taskIndex };
