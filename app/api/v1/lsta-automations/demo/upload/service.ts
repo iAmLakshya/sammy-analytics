@@ -1,5 +1,6 @@
 import type { CsvRow } from "@/features/lsta-automation/utils/csv-parser";
-import type { LstaTask, LstaTaskStep } from "@/features/lsta-automation/types";
+import type { LstaTask, LstaTaskStep, PipelineStep } from "@/features/lsta-automation/types";
+import { STEP_DEFINITIONS } from "@/features/lsta-automation/types";
 import type { ServiceError } from "@/shared/utils/server/errors";
 import type { CoreDependencies } from "@/shared/utils/server/wrap-route-handler";
 import { uploadedBatches } from "../../store";
@@ -14,27 +15,7 @@ interface CreateDemoBatchResponse {
   taskCount: number;
 }
 
-const STEP_DEFINITIONS: Record<string, { title: string; description: string }> =
-  {
-    "payroll-download": {
-      title: "Download LSTA",
-      description: "Download payroll data from LSTA system",
-    },
-    "data-extraction": {
-      title: "Extract & Map",
-      description: "Extract and map data fields",
-    },
-    "tax-submission": {
-      title: "Submit to ELSTER",
-      description: "Submit tax data to ELSTER portal",
-    },
-    "document-upload": {
-      title: "Upload to Personio",
-      description: "Upload documents to Personio system",
-    },
-  };
-
-const createPendingStep = (stepId: string): LstaTaskStep => ({
+const createPendingStep = (stepId: PipelineStep): LstaTaskStep => ({
   step: stepId,
   title: STEP_DEFINITIONS[stepId].title,
   description: STEP_DEFINITIONS[stepId].description,
