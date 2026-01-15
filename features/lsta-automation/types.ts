@@ -3,9 +3,10 @@ export type TaskStatus =
   | "completed"
   | "processing"
   | "failed"
-  | "retrying";
+  | "retrying"
+  | "not-ready";
 
-export type StepStatus = "pending" | "failed" | "completed";
+export type StepStatus = "pending" | "failed" | "completed" | "not-ready";
 
 export type ValidationCheckStatus = "passed" | "pending" | "failed";
 
@@ -60,6 +61,7 @@ export interface CountByStatus {
   processing: number;
   failed: number;
   retrying: number;
+  notReady: number;
 }
 
 export interface LstaTaskListMetadata {

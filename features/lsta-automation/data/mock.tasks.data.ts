@@ -842,9 +842,13 @@ export const mockLstaTasks: LstaTask[] = [
 export const computeCountByStatus = (tasks: LstaTask[]): CountByStatus => {
   return tasks.reduce(
     (acc, task) => {
-      acc[task.status]++;
+      if (task.status === "not-ready") {
+        acc.notReady++;
+      } else {
+        acc[task.status]++;
+      }
       return acc;
     },
-    { pending: 0, completed: 0, processing: 0, failed: 0, retrying: 0 }
+    { pending: 0, completed: 0, processing: 0, failed: 0, retrying: 0, notReady: 0 }
   );
 };
