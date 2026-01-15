@@ -6,7 +6,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { IconCheck, IconClock, IconExternalLink, IconEye, IconLoader2, IconRefresh, IconX } from "@tabler/icons-react";
-import type { LstaTaskStep, StepStatus } from "../types";
+import type { LstaTaskStep, StepStatus, TaskStatus } from "../types";
+import { formatOutputKey, formatOutputValue } from "../utils/format-output";
 import { STEP_STATUS_COLORS } from "../utils/status-config";
 import { ValidationCheckList } from "./validation-check-list";
 
@@ -80,21 +81,8 @@ export const StepPill = ({
 interface StepDetailPanelProps {
   step: LstaTaskStep;
   isActive: boolean;
-  taskStatus?: "pending" | "completed" | "processing" | "failed" | "rejected" | "retrying" | "not-ready" | "review-required";
+  taskStatus?: TaskStatus;
 }
-
-const formatOutputKey = (key: string): string => {
-  return key
-    .replace(/([A-Z])/g, " $1")
-    .replace(/^./, (str) => str.toUpperCase())
-    .trim();
-};
-
-const formatOutputValue = (value: unknown): string => {
-  if (Array.isArray(value)) return value.join(", ");
-  if (typeof value === "number") return value.toLocaleString();
-  return String(value);
-};
 
 export const StepDetailPanel = ({
   step,
