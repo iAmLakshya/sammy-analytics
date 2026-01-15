@@ -1015,11 +1015,13 @@ export const computeCountByStatus = (tasks: LstaTask[]): CountByStatus => {
     (acc, task) => {
       if (task.status === "not-ready") {
         acc.notReady++;
+      } else if (task.status === "review-required") {
+        acc.reviewRequired++;
       } else {
         acc[task.status]++;
       }
       return acc;
     },
-    { pending: 0, completed: 0, processing: 0, failed: 0, retrying: 0, notReady: 0 }
+    { pending: 0, completed: 0, processing: 0, failed: 0, retrying: 0, notReady: 0, reviewRequired: 0 }
   );
 };

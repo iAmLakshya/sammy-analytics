@@ -4,12 +4,13 @@ import {
   getFailureReason,
   generateFailedValidationChecks,
   generateNotReadyValidationChecks,
+  generateReviewRequiredValidationChecks,
 } from "@/features/lsta-automation/utils/demo-task-processor";
 import type { LstaTask, LstaTaskStep, ValidationCheck } from "@/features/lsta-automation/types";
 import type { ServiceError, NotFoundError } from "@/shared/utils/server/errors";
 import type { CoreDependencies } from "@/shared/utils/server/wrap-route-handler";
 
-type ProcessAction = "start" | "complete-step" | "fail" | "complete" | "not-ready";
+type ProcessAction = "start" | "complete-step" | "fail" | "complete" | "not-ready" | "review-required" | "approve" | "reject";
 
 interface ProcessTaskParams {
   taskId: string;
@@ -365,6 +366,90 @@ export const processTask =
             notReadyStepId,
             task.leId
           );
+        }
+        break;
+      }
+
+      case "review-required": {
+        const taxSubmissionIndex = STEP_IDS.indexOf("tax-submission");
+
+        task.status = "review-required";
+        task.statusDescription = "Awaiting human approval";
+        task.updatedAt = now;
+
+        for (let i = 0; i < taxSubmissionIndex; i++) {
+          const step = task.steps[i];
+          if (step.status !== "completed") {
+            step.status = "completed";
+            step.endedAt = now;
+            step.statusDescription = null;
+            step.validationChecks = createValidationChecks(
+              step.step,
+              task.leId,
+              enrichedData
+            );
+          }
+        }
+
+        if (taxSubmissionIndex >= 0 && task.steps[taxSubmissionIndex]) {
+          const taxStep = task.steps[taxSubmissionIndex];
+          taxStep.status = "review-required";
+          taxStep.endedAt = now;
+          taxStep.statusDescription = "Awaiting human approval";
+          taxStep.validationChecks = generateReviewRequiredValidationChecks(
+            "tax-submission",
+            task.leId,
+            enrichedData
+          );
+          taxStep.elsterUrl = `https://elster.de/review/${task.leId.toLowerCase()}/${Date.now()}`;
+        }
+        break;
+      }
+
+      case "approve": {
+        const taxSubmissionIndex = STEP_IDS.indexOf("tax-submission");
+
+        if (taxSubmissionIndex >= 0 && task.steps[taxSubmissionIndex]) {
+          const taxStep = task.steps[taxSubmissionIndex];
+          taxStep.status = "completed";
+          taxStep.endedAt = now;
+          taxStep.statusDescription = null;
+        }
+
+        const documentUploadIndex = STEP_IDS.indexOf("document-upload");
+        if (documentUploadIndex >= 0 && task.steps[documentUploadIndex]) {
+          const docStep = task.steps[documentUploadIndex];
+          docStep.status = "completed";
+          docStep.endedAt = now;
+          docStep.statusDescription = null;
+          docStep.validationChecks = createValidationChecks(
+            docStep.step,
+            task.leId,
+            enrichedData
+          );
+        }
+
+        task.status = "completed";
+        task.submitted = true;
+        task.statusDescription = null;
+        task.certificate = "Monthly Wage Tax Certificate";
+        task.updatedAt = now;
+        break;
+      }
+
+      case "reject": {
+        const taxSubmissionIndex = STEP_IDS.indexOf("tax-submission");
+
+        task.status = "failed";
+        task.statusDescription = "Rejected during human review";
+        task.updatedAt = now;
+
+        if (taxSubmissionIndex >= 0 && task.steps[taxSubmissionIndex]) {
+          const taxStep = task.steps[taxSubmissionIndex];
+          taxStep.status = "failed";
+          taxStep.endedAt = now;
+          taxStep.statusDescription = "Rejected by reviewer";
+          taxStep.errorReasons = ["Submission rejected during human review"];
         }
         break;
       }

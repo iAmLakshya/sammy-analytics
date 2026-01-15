@@ -4,9 +4,10 @@ export type TaskStatus =
   | "processing"
   | "failed"
   | "retrying"
-  | "not-ready";
+  | "not-ready"
+  | "review-required";
 
-export type StepStatus = "pending" | "failed" | "completed" | "not-ready";
+export type StepStatus = "pending" | "failed" | "completed" | "not-ready" | "review-required";
 
 export type ValidationCheckStatus = "passed" | "pending" | "failed" | "waiting";
 
@@ -32,6 +33,7 @@ export interface LstaTaskStep {
   status: StepStatus;
   startedAt: string | null;
   endedAt: string | null;
+  elsterUrl?: string;
 }
 
 export interface LstaTaskBatch {
@@ -62,6 +64,7 @@ export interface CountByStatus {
   failed: number;
   retrying: number;
   notReady: number;
+  reviewRequired: number;
 }
 
 export interface LstaTaskListMetadata {

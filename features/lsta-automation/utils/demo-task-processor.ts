@@ -48,6 +48,10 @@ export const shouldTaskBeNotReady = (): boolean => {
   return Math.random() < 0.12;
 };
 
+export const shouldRequireReview = (): boolean => {
+  return Math.random() < 0.2;
+};
+
 export const generateEnrichedData = (
   row: CsvRow
 ): {
@@ -372,6 +376,79 @@ export const generateNotReadyValidationChecks = (
       expected: null,
       actual: null,
       description: "No manual wage tax document conflicts detected",
+      downloadLink: null,
+      status: "passed",
+    },
+  ];
+};
+
+export const generateReviewRequiredValidationChecks = (
+  stepId: string,
+  leId: string,
+  enrichedData: EnrichedData
+): ValidationCheck[] => {
+  if (stepId !== "tax-submission") return [];
+
+  const pdfFileName = `lsta_${leId.toLowerCase()}.pdf`;
+
+  return [
+    {
+      key: "full-name",
+      title: "Full Name",
+      value: enrichedData.companyName,
+      expected: null,
+      actual: null,
+      description: "Legal entity full name for ELSTER submission",
+      downloadLink: null,
+      status: "passed",
+    },
+    {
+      key: "tax-id-consistent",
+      title: "Tax ID",
+      value: `****${enrichedData.taxIdLast4}`,
+      expected: null,
+      actual: null,
+      description: "Tax identification number matches records",
+      downloadLink: null,
+      status: "passed",
+    },
+    {
+      key: "le-number-consistent",
+      title: "LE Number",
+      value: leId,
+      expected: null,
+      actual: null,
+      description: "Legal entity number consistent with submission",
+      downloadLink: null,
+      status: "passed",
+    },
+    {
+      key: "sum-check",
+      title: "Sum Check",
+      value: enrichedData.sumCheck,
+      expected: null,
+      actual: null,
+      description: "Total wage sum matches calculated amount",
+      downloadLink: null,
+      status: "passed",
+    },
+    {
+      key: "downloaded-pdf",
+      title: "Certificate PDF",
+      value: pdfFileName,
+      expected: null,
+      actual: null,
+      description: "Tax certificate downloaded from ELSTER",
+      downloadLink: `/downloads/${pdfFileName}`,
+      status: "passed",
+    },
+    {
+      key: "no-existing-doc",
+      title: "Existing Document",
+      value: "None",
+      expected: null,
+      actual: null,
+      description: "No duplicate submission detected",
       downloadLink: null,
       status: "passed",
     },
