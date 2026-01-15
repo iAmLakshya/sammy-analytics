@@ -7,6 +7,19 @@ export type TaskStatus =
 
 export type StepStatus = "pending" | "failed" | "completed";
 
+export type ValidationCheckStatus = "passed" | "pending" | "failed";
+
+export interface ValidationCheck {
+  key: string;
+  title: string;
+  value: string | null;
+  expected: string | null;
+  actual: string | null;
+  description: string | null;
+  downloadLink: string | null;
+  status: ValidationCheckStatus;
+}
+
 export interface LstaTaskStep {
   step: string;
   title: string;
@@ -14,6 +27,7 @@ export interface LstaTaskStep {
   statusDescription: string | null;
   data: Record<string, unknown>;
   errorReasons: string[];
+  validationChecks: ValidationCheck[];
   status: StepStatus;
   startedAt: string | null;
   endedAt: string | null;
