@@ -70,12 +70,12 @@ export const ReviewTrendsChart = ({
   }, [data]);
 
   const avgDaily = useMemo(() => {
-    return Math.round(totalReviews / data.length);
+    return data.length > 0 ? Math.round(totalReviews / data.length) : 0;
   }, [totalReviews, data.length]);
 
   const acceptanceRate = useMemo(() => {
     const totalAccepted = data.reduce((acc, d) => acc + d.accepted, 0);
-    return Math.round((totalAccepted / totalReviews) * 100);
+    return totalReviews > 0 ? Math.round((totalAccepted / totalReviews) * 100) : 0;
   }, [data, totalReviews]);
 
   const trend = useMemo(() => {
@@ -84,7 +84,7 @@ export const ReviewTrendsChart = ({
       data.slice(0, 3).reduce((acc, d) => acc + d.reviews_completed, 0) / 3;
     const earlier =
       data.slice(-3).reduce((acc, d) => acc + d.reviews_completed, 0) / 3;
-    return Math.round(((recent - earlier) / earlier) * 100);
+    return earlier > 0 ? Math.round(((recent - earlier) / earlier) * 100) : 0;
   }, [data]);
 
   if (isLoading) {

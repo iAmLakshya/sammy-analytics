@@ -63,7 +63,7 @@ export const WeekdayActivityChart = ({
 
   const avgReviews = useMemo(() => {
     const total = data.reduce((acc, d) => acc + d.reviews_completed, 0);
-    return Math.round(total / data.length);
+    return data.length > 0 ? Math.round(total / data.length) : 0;
   }, [data]);
 
   const weekdayAvg = useMemo(() => {
@@ -71,13 +71,14 @@ export const WeekdayActivityChart = ({
       (d) => d.day_number !== 0 && d.day_number !== 6
     );
     const total = weekdayData.reduce((acc, d) => acc + d.reviews_completed, 0);
-    return Math.round(total / weekdayData.length);
+    return weekdayData.length > 0 ? Math.round(total / weekdayData.length) : 0;
   }, [data]);
 
   const weekendDrop = useMemo(() => {
     const weekendData = data.filter(
       (d) => d.day_number === 0 || d.day_number === 6
     );
+    if (weekendData.length === 0 || weekdayAvg === 0) return 0;
     const weekendAvg =
       weekendData.reduce((acc, d) => acc + d.reviews_completed, 0) /
       weekendData.length;

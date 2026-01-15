@@ -63,9 +63,9 @@ export const ReviewerLeaderboardChart = ({
       rejected: reviewer.rejected,
       corrections: reviewer.corrections_provided,
       avgTime: reviewer.avg_review_time_hours,
-      acceptRate: Math.round(
-        (reviewer.accepted / reviewer.reviews_completed) * 100
-      ),
+      acceptRate: reviewer.reviews_completed > 0
+        ? Math.round((reviewer.accepted / reviewer.reviews_completed) * 100)
+        : 0,
       // Mock trend data
       trend: [
         Math.floor(reviewer.reviews_completed * 0.1),
