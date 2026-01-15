@@ -2,7 +2,7 @@ import { useCallback, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { fetchApi } from "@/shared/lib/api-client";
 import { API_ENDPOINTS } from "@/shared/lib/api-endpoints";
-import type { DemoProcessResponse } from "../types";
+import { PIPELINE_STEPS, type DemoProcessResponse, type PipelineStep, type ProcessAction } from "../types";
 import {
   generateProcessingDuration,
   generateStepDuration,
@@ -14,7 +14,7 @@ import {
 
 interface ProcessTaskPayload {
   taskId: string;
-  action: "start" | "complete-step" | "fail" | "complete" | "not-ready" | "review-required" | "approve" | "reject";
+  action: ProcessAction;
   failureStep?: string;
 }
 
@@ -62,12 +62,7 @@ export const useDemoController = () => {
       const { taskId, currentStep, willFail, failureStep, willRequireReview } = taskProgress;
 
       if (willFail && failureStep) {
-        const failureStepIndex = [
-          "payroll-download",
-          "data-extraction",
-          "tax-submission",
-          "document-upload",
-        ].indexOf(failureStep);
+        const failureStepIndex = PIPELINE_STEPS.indexOf(failureStep as PipelineStep);
 
         if (currentStep >= failureStepIndex) {
           await processTaskApi({ taskId, action: "fail", failureStep });

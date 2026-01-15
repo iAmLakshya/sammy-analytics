@@ -1,5 +1,5 @@
 import type { CsvRow } from "./csv-parser";
-import type { ValidationCheck } from "../types";
+import { PIPELINE_STEPS, type ValidationCheck } from "../types";
 
 const GERMAN_COMPANY_PREFIXES = [
   "Müller",
@@ -49,7 +49,7 @@ export const shouldTaskBeNotReady = (): boolean => {
 };
 
 export const shouldRequireReview = (): boolean => {
-  return Math.random() < 0.2;
+  return true;
 };
 
 export const generateEnrichedData = (
@@ -88,13 +88,6 @@ export const generateEnrichedData = (
   };
 };
 
-const STEP_IDS = [
-  "payroll-download",
-  "data-extraction",
-  "tax-submission",
-  "document-upload",
-];
-
 export const getFailureStep = (): string => {
   const weights = [0.1, 0.15, 0.45, 0.3];
   const random = Math.random();
@@ -103,11 +96,11 @@ export const getFailureStep = (): string => {
   for (let i = 0; i < weights.length; i++) {
     cumulative += weights[i];
     if (random < cumulative) {
-      return STEP_IDS[i];
+      return PIPELINE_STEPS[i];
     }
   }
 
-  return STEP_IDS[2];
+  return PIPELINE_STEPS[2];
 };
 
 const FAILURE_REASONS: Record<string, string[]> = {
