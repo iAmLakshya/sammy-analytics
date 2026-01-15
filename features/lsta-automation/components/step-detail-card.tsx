@@ -1,7 +1,13 @@
 "use client";
 
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { IconCheck, IconLoader2, IconX } from "@tabler/icons-react";
 import type { LstaTaskStep } from "../types";
+import { ValidationCheckList } from "./validation-check-list";
 
 interface StepPillProps {
   step: LstaTaskStep;
@@ -16,8 +22,9 @@ export const StepPill = ({
   isSelected,
   onClick,
 }: StepPillProps) => {
-  const { status, title } = step;
+  const { status, title, statusDescription, description } = step;
   const isInProgress = status === "pending" && isActive;
+  const tooltipContent = statusDescription || description;
 
   let icon: React.ReactNode;
   let borderClass: string;
@@ -52,7 +59,7 @@ export const StepPill = ({
     textClass = "text-muted-foreground";
   }
 
-  return (
+  const button = (
     <button
       type="button"
       onClick={onClick}
@@ -61,6 +68,17 @@ export const StepPill = ({
       {icon}
       <span>{title}</span>
     </button>
+  );
+
+  if (!tooltipContent) return button;
+
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>{button}</TooltipTrigger>
+      <TooltipContent side="top" className="max-w-xs">
+        {tooltipContent}
+      </TooltipContent>
+    </Tooltip>
   );
 };
 
@@ -83,35 +101,42 @@ const formatOutputValue = (value: unknown): string => {
 };
 
 export const StepDetailPanel = ({ step, isActive }: StepDetailPanelProps) => {
-  const { status, data, errorReasons, statusDescription } = step;
+  const { status, data, errorReasons, statusDescription, validationChecks } = step;
   const isInProgress = status === "pending" && isActive;
   const hasData = Object.keys(data).length > 0;
+  const hasValidationChecks = validationChecks && validationChecks.length > 0;
 
   return (
     <div className="mt-1.5 text-xs text-muted-foreground">
-      {status === "completed" && hasData && (
-        <span className="flex flex-wrap gap-x-3">
-          {Object.entries(data).map(([key, value]) => (
-            <span key={key}>
-              {formatOutputKey(key)}:{" "}
-              <span className="font-medium text-foreground">
-                {formatOutputValue(value)}
-              </span>
+      {hasValidationChecks ? (
+        <ValidationCheckList checks={validationChecks} />
+      ) : (
+        <>
+          {status === "completed" && hasData && (
+            <span className="flex flex-wrap gap-x-3">
+              {Object.entries(data).map(([key, value]) => (
+                <span key={key}>
+                  {formatOutputKey(key)}:{" "}
+                  <span className="font-medium text-foreground">
+                    {formatOutputValue(value)}
+                  </span>
+                </span>
+              ))}
             </span>
-          ))}
-        </span>
+          )}
+
+          {status === "failed" && (
+            <span className="text-rose-600 dark:text-rose-400">
+              {errorReasons.length > 0 ? errorReasons.join("; ") : "Step failed"}
+            </span>
+          )}
+        </>
       )}
 
-      {isInProgress && (
+      {isInProgress && !hasValidationChecks && (
         <span className="flex items-center gap-1.5 text-amber-600 dark:text-amber-400">
           <IconLoader2 className="size-3 animate-spin" />
           {statusDescription || "Processing..."}
-        </span>
-      )}
-
-      {status === "failed" && (
-        <span className="text-rose-600 dark:text-rose-400">
-          {errorReasons.length > 0 ? errorReasons.join("; ") : "Step failed"}
         </span>
       )}
 
