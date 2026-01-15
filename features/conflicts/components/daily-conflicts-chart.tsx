@@ -63,7 +63,7 @@ export const DailyConflictsChart = ({
   }, [data]);
 
   const avgDaily = useMemo(() => {
-    return Math.round(totalConflicts / data.length);
+    return data.length > 0 ? Math.round(totalConflicts / data.length) : 0;
   }, [totalConflicts, data.length]);
 
   if (isLoading) {

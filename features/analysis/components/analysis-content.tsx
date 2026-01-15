@@ -53,6 +53,7 @@ export const AnalysisContent = () => {
   const detectionRate = useMemo(() => {
     if (!dailyData?.data?.length) return null;
     const totalRuns = dailyData.data.reduce((acc, d) => acc + d.total_runs, 0);
+    if (totalRuns === 0) return "0.0";
     const runsWithConflicts = dailyData.data.reduce(
       (acc, d) => acc + d.runs_with_conflicts,
       0
@@ -67,7 +68,9 @@ export const AnalysisContent = () => {
     return {
       runs: today.total_runs,
       conflicts: today.conflicts_detected,
-      rate: ((today.runs_with_conflicts / today.total_runs) * 100).toFixed(1),
+      rate: today.total_runs > 0
+        ? ((today.runs_with_conflicts / today.total_runs) * 100).toFixed(1)
+        : "0.0",
     };
   }, [dailyData]);
 
