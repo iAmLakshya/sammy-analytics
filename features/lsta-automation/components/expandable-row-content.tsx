@@ -103,6 +103,7 @@ export const ExpandableRowContent = ({
           <StepDetailPanel
             step={selectedStep}
             isActive={currentStepId === selectedStep.step}
+            taskStatus={status}
           />
         </div>
       </motion.div>

@@ -5,7 +5,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { IconCheck, IconLoader2, IconX } from "@tabler/icons-react";
+import { IconCheck, IconLoader2, IconRefresh, IconX } from "@tabler/icons-react";
 import type { LstaTaskStep } from "../types";
 import { ValidationCheckList } from "./validation-check-list";
 
@@ -85,6 +85,7 @@ export const StepPill = ({
 interface StepDetailPanelProps {
   step: LstaTaskStep;
   isActive: boolean;
+  taskStatus?: "pending" | "completed" | "processing" | "failed" | "retrying";
 }
 
 const formatOutputKey = (key: string): string => {
@@ -100,14 +101,31 @@ const formatOutputValue = (value: unknown): string => {
   return String(value);
 };
 
-export const StepDetailPanel = ({ step, isActive }: StepDetailPanelProps) => {
-  const { status, data, errorReasons, statusDescription, validationChecks } = step;
+export const StepDetailPanel = ({
+  step,
+  isActive,
+  taskStatus,
+}: StepDetailPanelProps) => {
+  const { title, status, data, errorReasons, statusDescription, validationChecks } =
+    step;
   const isInProgress = status === "pending" && isActive;
   const hasData = Object.keys(data).length > 0;
   const hasValidationChecks = validationChecks && validationChecks.length > 0;
+  const isRetrying = taskStatus === "retrying";
 
   return (
     <div className="mt-1.5 text-xs text-muted-foreground">
+      <div className="mb-1.5 text-[11px] font-medium uppercase tracking-wide text-muted-foreground/70">
+        {title}
+      </div>
+
+      {isRetrying && (
+        <div className="mb-2 flex items-center gap-1.5 rounded-md bg-blue-100 px-2 py-1.5 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400">
+          <IconRefresh className="size-3.5" />
+          <span>Scheduled for retry — will restart from beginning</span>
+        </div>
+      )}
+
       {hasValidationChecks ? (
         <ValidationCheckList checks={validationChecks} />
       ) : (
