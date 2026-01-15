@@ -239,9 +239,9 @@ const createNotReadyPayrollChecks = (
         value: null,
         expected: "Accepted",
         actual: "Pending review",
-        description: "Payroll submission awaiting review in source system",
+        description: "Payroll submission is awaiting review. Will retry automatically once approved.",
         downloadLink: null,
-        status: "failed",
+        status: "waiting",
       },
       {
         key: "target-month",
@@ -259,9 +259,9 @@ const createNotReadyPayrollChecks = (
         value: null,
         expected: `payroll_${leId.toLowerCase()}.csv`,
         actual: "Not yet available",
-        description: "Source file will be available after review completion",
+        description: "File will be available after review completion. No action required.",
         downloadLink: null,
-        status: "failed",
+        status: "waiting",
       },
     ];
   }
@@ -292,9 +292,9 @@ const createNotReadyPayrollChecks = (
       value: null,
       expected: `payroll_${leId.toLowerCase()}.csv`,
       actual: "File not yet generated",
-      description: "LSTA export scheduled, file pending generation",
+      description: "LSTA export is scheduled. File will be available shortly.",
       downloadLink: null,
-      status: "failed",
+      status: "waiting",
     },
   ];
 };

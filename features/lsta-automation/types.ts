@@ -8,7 +8,7 @@ export type TaskStatus =
 
 export type StepStatus = "pending" | "failed" | "completed" | "not-ready";
 
-export type ValidationCheckStatus = "passed" | "pending" | "failed";
+export type ValidationCheckStatus = "passed" | "pending" | "failed" | "waiting";
 
 export interface ValidationCheck {
   key: string;

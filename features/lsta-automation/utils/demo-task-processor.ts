@@ -329,9 +329,9 @@ export const generateNotReadyValidationChecks = (
       value: null,
       expected: "Accepted",
       actual: "Pending review",
-      description: "Payroll submission awaiting review in source system",
+      description: "Payroll submission is awaiting review. Will retry automatically once approved.",
       downloadLink: null,
-      status: "failed",
+      status: "waiting",
     },
     {
       key: "lsta-file-found",
@@ -339,9 +339,9 @@ export const generateNotReadyValidationChecks = (
       value: null,
       expected: `payroll_${leId.toLowerCase()}.csv`,
       actual: "Not yet available",
-      description: "Source file will be available after review completion",
+      description: "File will be available after review completion. No action required.",
       downloadLink: null,
-      status: "failed",
+      status: "waiting",
     },
   ];
 };

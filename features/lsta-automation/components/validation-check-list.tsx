@@ -1,6 +1,6 @@
 "use client";
 
-import { IconCheck, IconDownload, IconLoader2, IconX } from "@tabler/icons-react";
+import { IconCheck, IconClock, IconDownload, IconLoader2, IconX } from "@tabler/icons-react";
 import type { ValidationCheck } from "../types";
 
 interface ValidationCheckListProps {
@@ -74,6 +74,28 @@ const FailedCheck = ({ check }: CheckItemProps) => {
   );
 };
 
+const WaitingCheck = ({ check }: CheckItemProps) => {
+  const { title, expected, actual, description } = check;
+
+  return (
+    <div className="flex flex-col gap-0.5">
+      <div className="flex items-center gap-1.5">
+        <IconClock className="size-3 shrink-0 text-amber-600 dark:text-amber-400" />
+        <span className="text-amber-600 dark:text-amber-400">{title}</span>
+      </div>
+      {expected && actual && (
+        <div className="ml-4.5 flex flex-col gap-0.5 text-muted-foreground">
+          <span>Required: <span className="text-foreground">{expected}</span></span>
+          <span>Current: <span className="text-amber-600 dark:text-amber-400">{actual}</span></span>
+        </div>
+      )}
+      {description && (
+        <div className="ml-4.5 text-muted-foreground/80 italic">{description}</div>
+      )}
+    </div>
+  );
+};
+
 export const ValidationCheckList = ({ checks, className }: ValidationCheckListProps) => {
   if (checks.length === 0) return null;
 
@@ -87,6 +109,8 @@ export const ValidationCheckList = ({ checks, className }: ValidationCheckListPr
             return <PendingCheck key={check.key} check={check} />;
           case "failed":
             return <FailedCheck key={check.key} check={check} />;
+          case "waiting":
+            return <WaitingCheck key={check.key} check={check} />;
         }
       })}
     </div>
