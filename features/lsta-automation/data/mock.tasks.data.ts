@@ -22,7 +22,7 @@ const STEP_DEFINITIONS: Record<string, { title: string; description: string }> =
 
 const createStep = (
   stepId: string,
-  status: "pending" | "failed" | "completed",
+  status: "pending" | "failed" | "completed" | "not-ready",
   options: {
     statusDescription?: string;
     data?: Record<string, unknown>;
@@ -225,6 +225,79 @@ const createDocumentUploadChecks = (
     status,
   },
 ];
+
+const createNotReadyPayrollChecks = (
+  leId: string,
+  targetMonth: string,
+  variant: "pending-review" | "file-unavailable"
+): ValidationCheck[] => {
+  if (variant === "pending-review") {
+    return [
+      {
+        key: "status-accepted",
+        title: "Status",
+        value: null,
+        expected: "Accepted",
+        actual: "Pending review",
+        description: "Payroll submission awaiting review in source system",
+        downloadLink: null,
+        status: "failed",
+      },
+      {
+        key: "target-month",
+        title: "Target Month",
+        value: targetMonth,
+        expected: null,
+        actual: null,
+        description: "Target reporting period for this submission",
+        downloadLink: null,
+        status: "passed",
+      },
+      {
+        key: "lsta-file-found",
+        title: "LSTA File",
+        value: null,
+        expected: `payroll_${leId.toLowerCase()}.csv`,
+        actual: "Not yet available",
+        description: "Source file will be available after review completion",
+        downloadLink: null,
+        status: "failed",
+      },
+    ];
+  }
+  return [
+    {
+      key: "status-accepted",
+      title: "Status",
+      value: "Accepted",
+      expected: null,
+      actual: null,
+      description: "Payroll submission status from Personio",
+      downloadLink: null,
+      status: "passed",
+    },
+    {
+      key: "target-month",
+      title: "Target Month",
+      value: targetMonth,
+      expected: null,
+      actual: null,
+      description: "Target reporting period for this submission",
+      downloadLink: null,
+      status: "passed",
+    },
+    {
+      key: "lsta-file-found",
+      title: "LSTA File",
+      value: null,
+      expected: `payroll_${leId.toLowerCase()}.csv`,
+      actual: "File not yet generated",
+      description: "LSTA export scheduled, file pending generation",
+      downloadLink: null,
+      status: "failed",
+    },
+  ];
+};
 
 export const mockLstaTasks: LstaTask[] = [
   {
@@ -836,6 +909,64 @@ export const mockLstaTasks: LstaTask[] = [
     ],
     createdAt: "2026-01-13T16:00:00Z",
     updatedAt: "2026-01-13T18:05:00Z",
+  },
+  {
+    id: "task-013",
+    organisationId: "ORG-001",
+    companyId: "COMP-013",
+    leId: "LE-013",
+    certificate: null,
+    specialCase: false,
+    submitted: false,
+    status: "not-ready",
+    statusDescription: "Waiting for source data...",
+    batch: { id: "batch-001", name: "January 2026 Monthly" },
+    steps: [
+      createStep("payroll-download", "not-ready", {
+        statusDescription: "Waiting for source system",
+        validationChecks: createNotReadyPayrollChecks(
+          "LE-013",
+          "January 2026",
+          "pending-review"
+        ),
+        startedAt: "2026-01-14T08:30:00Z",
+        endedAt: "2026-01-14T08:30:05Z",
+      }),
+      createStep("data-extraction", "pending"),
+      createStep("tax-submission", "pending"),
+      createStep("document-upload", "pending"),
+    ],
+    createdAt: "2026-01-14T08:30:00Z",
+    updatedAt: "2026-01-14T08:30:05Z",
+  },
+  {
+    id: "task-014",
+    organisationId: "ORG-002",
+    companyId: "COMP-014",
+    leId: "LE-014",
+    certificate: null,
+    specialCase: true,
+    submitted: false,
+    status: "not-ready",
+    statusDescription: "Waiting for source data...",
+    batch: { id: "batch-002", name: "Q4 2025 Quarterly" },
+    steps: [
+      createStep("payroll-download", "not-ready", {
+        statusDescription: "LSTA file pending generation",
+        validationChecks: createNotReadyPayrollChecks(
+          "LE-014",
+          "Q4 2025",
+          "file-unavailable"
+        ),
+        startedAt: "2026-01-13T20:00:00Z",
+        endedAt: "2026-01-13T20:00:10Z",
+      }),
+      createStep("data-extraction", "pending"),
+      createStep("tax-submission", "pending"),
+      createStep("document-upload", "pending"),
+    ],
+    createdAt: "2026-01-13T20:00:00Z",
+    updatedAt: "2026-01-13T20:00:10Z",
   },
 ];
 
