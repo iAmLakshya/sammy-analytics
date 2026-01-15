@@ -15,20 +15,30 @@ export const AutomationKpiCards = ({
 }: AutomationKpiCardsProps) => {
   const failedCount = countByStatus.failed;
   const avgTime = 6.4;
+  const progressPercent =
+    totalCount > 0 ? (countByStatus.completed / totalCount) * 100 : 0;
 
   return (
     <div className="flex items-center divide-x divide-border">
-      <div className="flex flex-col gap-0.5 pr-6">
-        <div className="flex items-center gap-1">
-          <span className="text-sm text-muted-foreground">Completed</span>
-          <InfoTooltip content="Tasks that have been fully processed and uploaded to your document management system." />
+      <div className="flex flex-col gap-1.5 pr-6">
+        <div className="flex flex-col gap-0.5">
+          <div className="flex items-center gap-1">
+            <span className="text-sm text-muted-foreground">Completed</span>
+            <InfoTooltip content="Tasks that have been fully processed and uploaded to your document management system." />
+          </div>
+          <p className="text-xl font-semibold tabular-nums">
+            {countByStatus.completed}{" "}
+            <span className="text-sm font-normal text-muted-foreground">
+              / {totalCount}
+            </span>
+          </p>
         </div>
-        <p className="text-xl font-semibold tabular-nums">
-          {countByStatus.completed}{" "}
-          <span className="text-sm font-normal text-muted-foreground">
-            / {totalCount}
-          </span>
-        </p>
+        <div className="h-1.5 w-24 overflow-hidden rounded-full bg-muted">
+          <div
+            className="h-full rounded-full bg-primary"
+            style={{ width: `${progressPercent}%` }}
+          />
+        </div>
       </div>
 
       <div className="flex flex-col gap-0.5 px-6">
