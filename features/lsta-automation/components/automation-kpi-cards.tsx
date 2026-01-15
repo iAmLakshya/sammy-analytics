@@ -1,7 +1,7 @@
 "use client";
 
 import { InfoTooltip } from "@/components/ui/info-tooltip";
-import { IconAlertTriangle } from "@tabler/icons-react";
+import { IconAlertTriangle, IconClock } from "@tabler/icons-react";
 import type { CountByStatus } from "../types";
 
 interface AutomationKpiCardsProps {
@@ -14,6 +14,7 @@ export const AutomationKpiCards = ({
   totalCount,
 }: AutomationKpiCardsProps) => {
   const failedCount = countByStatus.failed;
+  const notReadyCount = countByStatus.notReady;
   const avgTime = 6.4;
   const progressPercent =
     totalCount > 0 ? (countByStatus.completed / totalCount) * 100 : 0;
@@ -56,6 +57,25 @@ export const AutomationKpiCards = ({
             }`}
           >
             {failedCount}
+          </p>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-0.5 px-6">
+        <div className="flex items-center gap-1">
+          <span className="text-sm text-muted-foreground">Not Ready</span>
+          <InfoTooltip content="Tasks waiting for source data or pending review. Will retry automatically." />
+        </div>
+        <div className="flex items-center gap-1.5">
+          {notReadyCount > 0 && (
+            <IconClock className="size-4 text-amber-600 dark:text-amber-400" />
+          )}
+          <p
+            className={`text-xl font-semibold tabular-nums ${
+              notReadyCount > 0 ? "text-amber-600 dark:text-amber-400" : ""
+            }`}
+          >
+            {notReadyCount}
           </p>
         </div>
       </div>

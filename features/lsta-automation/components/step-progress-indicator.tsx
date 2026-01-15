@@ -5,7 +5,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { IconCheck, IconLoader2, IconMinus, IconX } from "@tabler/icons-react";
+import { IconCheck, IconClock, IconLoader2, IconMinus, IconX } from "@tabler/icons-react";
 import type { LstaTaskStep } from "../types";
 
 interface StepProgressIndicatorProps {
@@ -38,6 +38,11 @@ export const StepProgressIndicator = ({
             bgClass = "bg-rose-100 dark:bg-rose-900/40";
             textClass = "text-rose-700 dark:text-rose-400";
             break;
+          case "not-ready":
+            icon = <IconClock className="size-3" />;
+            bgClass = "bg-amber-100 dark:bg-amber-900/40";
+            textClass = "text-amber-700 dark:text-amber-400";
+            break;
           case "pending":
             if (isActive) {
               icon = <IconLoader2 className="size-3 animate-spin" />;
@@ -55,7 +60,9 @@ export const StepProgressIndicator = ({
         if (step.status === "failed" && step.errorReasons.length > 0) {
           tooltipContent += `: ${step.errorReasons[0]}`;
         } else if (step.status === "completed") {
-          tooltipContent += " ✓";
+          tooltipContent += " (completed)";
+        } else if (step.status === "not-ready") {
+          tooltipContent += " (waiting)";
         } else if (isActive) {
           tooltipContent += " (in progress)";
         }
@@ -84,7 +91,9 @@ export const StepProgressIndicator = ({
                 className={`mx-0.5 h-0.5 w-2 ${
                   step.status === "completed"
                     ? "bg-emerald-300 dark:bg-emerald-700"
-                    : "bg-muted"
+                    : step.status === "not-ready"
+                      ? "bg-amber-300 dark:bg-amber-700"
+                      : "bg-muted"
                 }`}
               />
             )}

@@ -54,15 +54,21 @@ const statusConfig: Record<TaskStatus, { label: string; className: string }> = {
     className:
       "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400",
   },
+  "not-ready": {
+    label: "Not Ready",
+    className:
+      "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400",
+  },
 };
 
 const sortTasks = (tasks: LstaTask[]): LstaTask[] => {
   const priority: Record<TaskStatus, number> = {
     failed: 0,
-    processing: 1,
-    retrying: 2,
-    pending: 3,
-    completed: 4,
+    "not-ready": 1,
+    processing: 2,
+    retrying: 3,
+    pending: 4,
+    completed: 5,
   };
   return [...tasks].sort((a, b) => priority[a.status] - priority[b.status]);
 };

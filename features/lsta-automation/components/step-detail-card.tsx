@@ -5,7 +5,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { IconCheck, IconLoader2, IconRefresh, IconX } from "@tabler/icons-react";
+import { IconCheck, IconClock, IconLoader2, IconRefresh, IconX } from "@tabler/icons-react";
 import type { LstaTaskStep } from "../types";
 import { ValidationCheckList } from "./validation-check-list";
 
@@ -45,6 +45,13 @@ export const StepPill = ({
       ? "bg-rose-50 dark:bg-rose-950/50"
       : "bg-white dark:bg-background";
     textClass = "text-rose-600 dark:text-rose-400";
+  } else if (status === "not-ready") {
+    icon = <IconClock className="size-3" />;
+    borderClass = "border-amber-500";
+    bgClass = isSelected
+      ? "bg-amber-50 dark:bg-amber-950/50"
+      : "bg-white dark:bg-background";
+    textClass = "text-amber-600 dark:text-amber-400";
   } else if (isInProgress) {
     icon = <IconLoader2 className="size-3 animate-spin" />;
     borderClass = "border-amber-500";
@@ -85,7 +92,7 @@ export const StepPill = ({
 interface StepDetailPanelProps {
   step: LstaTaskStep;
   isActive: boolean;
-  taskStatus?: "pending" | "completed" | "processing" | "failed" | "retrying";
+  taskStatus?: "pending" | "completed" | "processing" | "failed" | "retrying" | "not-ready";
 }
 
 const formatOutputKey = (key: string): string => {
@@ -160,6 +167,13 @@ export const StepDetailPanel = ({
           {status === "pending" && !isActive && (
             <div className="italic text-muted-foreground/60">
               Waiting for previous steps
+            </div>
+          )}
+
+          {status === "not-ready" && (
+            <div className="flex items-center gap-1.5 text-amber-600 dark:text-amber-400">
+              <IconClock className="size-3" />
+              {statusDescription || "Waiting for source data..."}
             </div>
           )}
         </>
