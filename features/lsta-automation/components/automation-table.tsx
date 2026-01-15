@@ -15,6 +15,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 import { IconCheck, IconChevronRight, IconX } from "@tabler/icons-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
@@ -133,15 +134,18 @@ export const AutomationTable = ({
                 <AnimatePresence key={task.id} initial={false}>
                   <TableRow
                     onClick={() => toggleExpand(task.id)}
-                    className={`cursor-pointer transition-colors hover:bg-muted/50 ${
-                      isFailed ? "bg-rose-50/50 dark:bg-rose-950/20" : ""
-                    } ${isExpanded ? "bg-muted/30" : ""}`}
+                    className={cn(
+                      "cursor-pointer transition-colors hover:bg-muted/50",
+                      isFailed && "bg-rose-50/50 dark:bg-rose-950/20",
+                      isExpanded && "bg-muted/30"
+                    )}
                   >
                     <TableCell className="w-10 pr-0">
                       <IconChevronRight
-                        className={`size-4 text-muted-foreground transition-transform duration-200 ${
-                          isExpanded ? "rotate-90" : ""
-                        }`}
+                        className={cn(
+                          "size-4 text-muted-foreground transition-transform duration-200",
+                          isExpanded && "rotate-90"
+                        )}
                       />
                     </TableCell>
                     <TableCell className="whitespace-nowrap font-mono">
