@@ -2,6 +2,7 @@ import { uploadedBatches } from "../../store";
 import {
   generateEnrichedData,
   getFailureReason,
+  generateFailedValidationChecks,
 } from "@/features/lsta-automation/utils/demo-task-processor";
 import type { LstaTask, LstaTaskStep, ValidationCheck } from "@/features/lsta-automation/types";
 import type { ServiceError, NotFoundError } from "@/shared/utils/server/errors";
@@ -295,12 +296,31 @@ export const processTask =
         task.statusDescription = `Failed at ${task.steps[failureStepIndex]?.title ?? "processing"}`;
         task.updatedAt = now;
 
+        for (let i = 0; i < failureStepIndex; i++) {
+          const step = task.steps[i];
+          if (step.status !== "completed") {
+            step.status = "completed";
+            step.endedAt = now;
+            step.statusDescription = null;
+            step.validationChecks = createValidationChecks(
+              step.step,
+              task.leId,
+              enrichedData
+            );
+          }
+        }
+
         if (failureStepIndex >= 0 && task.steps[failureStepIndex]) {
           const failedStep = task.steps[failureStepIndex];
           failedStep.status = "failed";
           failedStep.endedAt = now;
           failedStep.errorReasons = [getFailureReason(failureStepId)];
           failedStep.statusDescription = "Processing failed";
+          failedStep.validationChecks = generateFailedValidationChecks(
+            failureStepId,
+            task.leId,
+            enrichedData
+          );
         }
         break;
       }
